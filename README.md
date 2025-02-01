@@ -10,7 +10,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```
 2. **Navigate into the project folder:**
    ```bash 
-   cd neuwallet
+   cd neu-wallet-frontend
    ```
 3. Install dependencies
 
