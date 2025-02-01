@@ -6,7 +6,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/blackSyndrome/arcanum.git
+   git clone https://github.com/blackSyndrome/arcanum.git](https://github.com/TheSpecsss/neu-wallet-frontend.git
    ```
 2. **Navigate into the project folder:**
    ```bash 
