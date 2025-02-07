@@ -1,8 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const LandingScreen = () => {
-  console.log('LandingScreen loaded');
+const RegisterScreen = () => {
   return (
     <View>
       <Text>This is the landing screen</Text>
@@ -10,7 +9,7 @@ const LandingScreen = () => {
   );
 };
 
-export default LandingScreen;
+export default RegisterScreen;
 
 const styles = StyleSheet.create({
   container: {
