@@ -1,6 +1,11 @@
-# Welcome to your Expo app 👋
+# Welcome to NEUWallet FrontEnd
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+##Prerequisites
+Before proceeding, ensure you have the following installed on your system:
+
+- Node.js: [Download and install Node.js](https://nodejs.org)
+- Bun: [Install Bun](https://bun.sh/)
+- Android Studio: [Download and install Android Studio](https://developer.android.com/studio)
 
 ## Get started
 
