@@ -4,7 +4,7 @@ import React from "react";
 const LoginScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Landing Screen</Text>
+      <Text>Login Screen</Text>
     </View>
   );
 };
@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    paddingTop: 30,
     alignItems: "center",
   },
 });
