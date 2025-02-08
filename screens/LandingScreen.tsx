@@ -1,11 +1,22 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { loadFont } from "../loadFont";
 
 const LandingScreen = () => {
-  console.log('LandingScreen loaded');
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  useEffect(() => {
+    if (!isFontLoaded) {
+      loadFont().then(() => setIsFontLoaded(true));
+    }
+  }, []);
+  if (!isFontLoaded) {
+    return null;
+  }
   return (
-    <View>
-      <Text>This is the landing screen</Text>
+    <View style={styles.container}>
+      <Text style={{
+        fontFamily: "klavika-bold"
+      }}>Landing Screen</Text>
     </View>
   );
 };

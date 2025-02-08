@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { loadFont } from "./loadFont";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LandingScreen from "./screens/LandingScreen";
@@ -9,6 +10,12 @@ import { MainStackParamList } from "./types";
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
 const App = () => {
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  useEffect(() => {
+    if (!isFontLoaded) {
+      loadFont().then(() => setIsFontLoaded(true));
+    }
+  }, []);
   return (
     <NavigationContainer>
       <MainStack.Navigator initialRouteName="LandingScreen">
