@@ -5,16 +5,15 @@ import {
   heightPercentageToDP as hp 
 } from "react-native-responsive-screen";
 
-
 const SplashScreen = () => {
   return (
     <ImageBackground 
-      source={require("../assets/NEUBackground.png")} 
+      source={require("../assets/NEUBackground.png")}  
       style={styles.background}
     >
       <View style={styles.content}>
         <Image 
-          source={require("../assets/NEUlogo.png")} 
+          source={require("../assets/NEUlogo.png")}  
           style={styles.logo}
         />
         <Text style={styles.title}>NEU WALLET</Text>
