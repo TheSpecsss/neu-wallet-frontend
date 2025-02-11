@@ -3,15 +3,12 @@ import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
 
 const SplashScreen = () => {
   return (
-    <ImageBackground 
-      source={require("assets\NEUBackground.png")} 
+    <ImageBackground
+      source={require("../assets/NEUBackground.png")}
       style={styles.background}
     >
       <View style={styles.content}>
-        <Image 
-          source={require("assets\NEUlogo.png")} 
-          style={styles.logo}
-        />
+        <Image source={require("../assets/NEUlogo.png")} style={styles.logo} />
         <Text style={styles.title}>NEU Wallet</Text>
       </View>
     </ImageBackground>
