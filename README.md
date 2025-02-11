@@ -1,3 +1,5 @@
+# edward-branch
+
 # Welcome to NEUWallet FrontEnd
 
 ##Prerequisites
@@ -14,7 +16,7 @@ Before proceeding, ensure you have the following installed on your system:
    git clone https://github.com/TheSpecsss/neu-wallet-frontend.git
    ```
 2. **Navigate into the project folder:**
-   ```bash 
+   ```bash
    cd neu-wallet-frontend
    ```
 3. Install dependencies
@@ -28,6 +30,7 @@ Before proceeding, ensure you have the following installed on your system:
    ```bash
     bun x expo start
    ```
+
 ## Branching and Workflow
 
 When you are assigned a new task or want to create a new feature, always create a new branch. Here's the complete workflow:
@@ -77,17 +80,20 @@ Once the PR is approved, you'll see the comment/s for approval or something that
 After merging, you can delete the feature branch both locally and on GitHub:
 
 Checkout on your local main branch:
+
 ```bash
 git checkout main
 git pull
 ```
 
 **Locally:**
+
 ```bash
 git branch -d <feature-branch-name>
 ```
 
 **On GitHub:**
+
 ```bash
 git push origin --delete <feature-branch-name>
 ```
