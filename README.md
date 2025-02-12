@@ -1,5 +1,3 @@
-# edward-branch
-
 # Welcome to NEUWallet FrontEnd
 
 ##Prerequisites
