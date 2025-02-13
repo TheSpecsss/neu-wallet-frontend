@@ -1,14 +1,18 @@
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import LandingScreen from "./screens/LandingScreen";
+import SplashScreen from "./screens/SplashScreen";
+import MainBottomTab from "./navigation/MainBottomTab";
+import { MainStackParamList, MainBottomTabParamlist } from "./types";
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { loadFont } from "./loadFont";
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
-import LandingScreen from "./screens/LandingScreen";
-import { MainStackParamList } from "./types";
-import SplashScreen from "./screens/SplashScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
+
+
+
 
 const App = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
@@ -19,15 +23,15 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="LandingScreen">
-        <MainStack.Screen
-          name="LandingScreen"
-          component={LandingScreen}
+      <MainStack.Navigator initialRouteName="MainBottomTab">
+      <MainStack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
           options={{ headerShown: false }}
         />
         <MainStack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
+          name="LandingScreen"
+          component={LandingScreen}
           options={{ headerShown: false }}
         />
         <MainStack.Screen
@@ -36,8 +40,13 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <MainStack.Screen
-          name="SplashScreen"
-          component={SplashScreen}
+          name="LoginScreen"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="MainBottomTab"
+          component={MainBottomTab}
           options={{ headerShown: false }}
         />
       </MainStack.Navigator>
