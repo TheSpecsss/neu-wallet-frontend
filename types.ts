@@ -3,4 +3,10 @@ export type MainStackParamList = {
     LoginScreen: undefined;
     RegisterScreen: undefined;
     LandingScreen: undefined;
+    MainBottomTab: undefined;
+  };
+  export type MainBottomTabParamlist = {
+    HomeScreen: undefined;
+    NotificationScreen: undefined;
+    ProfileScreen: undefined;
   };

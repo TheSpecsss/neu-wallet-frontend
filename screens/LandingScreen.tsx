@@ -41,7 +41,6 @@ const LandingScreen = ({ navigation }: Props) => {
         <Text style={styles.titleText}>NEU WALLET</Text>
       </View>
 
-      {/* Blurred Transparent Container */}
       <BlurView intensity={90} tint="dark" style={styles.transparentContainer}>
         <Text style={styles.headingText}>Welcome to NEU Wallet</Text>
         <Text style={styles.descriptionText}>
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
   transparentContainer: {
     position: "absolute", 
     bottom: 0, 
-    backgroundColor: "rgba(4, 62, 117, 0.6)", // **Deeper blue**
+    backgroundColor: "rgba(4, 62, 117, 0.6)", 
     paddingHorizontal: wp(5),
     paddingVertical: hp(4),
     borderTopLeftRadius: wp(10),
@@ -142,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
   },
   solidButton: {
-    backgroundColor: "#043E75", // **Darker blue for contrast**
+    backgroundColor: "#043E75",
     borderRadius: wp(2),
     paddingVertical: hp(1.5),
     marginTop: hp(2),
