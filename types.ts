@@ -4,6 +4,7 @@ export type MainStackParamList = {
     RegisterScreen: undefined;
     LandingScreen: undefined;
     MainBottomTab: undefined;
+    ConfirmTransactionScreen: undefined;
   };
   export type MainBottomTabParamlist = {
     HomeScreen: undefined;

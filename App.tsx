@@ -3,6 +3,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LandingScreen from "./screens/LandingScreen";
 import SplashScreen from "./screens/SplashScreen";
 import MainBottomTab from "./navigation/MainBottomTab";
+import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
 import { MainStackParamList, MainBottomTabParamlist } from "./types";
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -20,10 +21,10 @@ const App = () => {
     if (!isFontLoaded) {
       loadFont().then(() => setIsFontLoaded(true));
     }
-  }, []);
+  }, [isFontLoaded]);
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="MainBottomTab">
+      <MainStack.Navigator initialRouteName="ConfirmTransactionScreen">
       <MainStack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -48,6 +49,11 @@ const App = () => {
           name="MainBottomTab"
           component={MainBottomTab}
           options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+        name="ConfirmTransactionScreen"
+        component={ConfirmTransactionScreen}
+        options={{ headerShown: false }}
         />
       </MainStack.Navigator>
     </NavigationContainer>
