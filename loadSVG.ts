@@ -31,4 +31,12 @@ const sendLogo =`<svg width="29" height="32" viewBox="0 0 29 32" fill="none" xml
 <path d="M1.5 16V27.3333C1.5 28.0848 1.84241 28.8055 2.4519 29.3368C3.0614 29.8682 3.88805 30.1667 4.75 30.1667H24.25C25.112 30.1667 25.9386 29.8682 26.5481 29.3368C27.1576 28.8055 27.5 28.0848 27.5 27.3333V16M21 7.50001L14.5 1.83334M14.5 1.83334L8 7.50001M14.5 1.83334V20.25" stroke="#204A69" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
-export { homeLogo, notificationLogo, profileLogo, walletLogo, scanQrLogo, sendLogo  };
+
+
+const successLogo = `<svg width="181" height="201" viewBox="0 0 181 201" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.09" d="M180.089 100.701C180.089 155.866 139.774 200.586 90.0443 200.586C40.3142 200.586 0 155.866 0 100.701C0 45.5361 40.3142 0.816222 90.0443 0.816222C141.197 -1.16567 181.184 44.0106 180.089 100.701Z" fill="#204A69"/>
+<path d="M148.273 72.7285L69.4728 151.064L33.6545 115.457" stroke="#1E1E1E" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+export { homeLogo, notificationLogo, profileLogo, walletLogo, scanQrLogo, sendLogo, successLogo  };
