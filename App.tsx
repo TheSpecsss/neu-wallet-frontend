@@ -3,6 +3,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LandingScreen from "./screens/LandingScreen";
 import SplashScreen from "./screens/SplashScreen";
 import MainBottomTab from "./navigation/MainBottomTab";
+import QRScanScreen from "./screens/QRScreen/QRScanScreen";
 import { MainStackParamList, MainBottomTabParamlist } from "./types";
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -10,9 +11,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { loadFont } from "./loadFont";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
-
-
-
 
 const App = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
@@ -23,8 +21,8 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="MainBottomTab">
-      <MainStack.Screen
+      <MainStack.Navigator initialRouteName="QRScanScreen">
+        <MainStack.Screen
           name="SplashScreen"
           component={SplashScreen}
           options={{ headerShown: false }}
@@ -47,6 +45,11 @@ const App = () => {
         <MainStack.Screen
           name="MainBottomTab"
           component={MainBottomTab}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="QRScanScreen"
+          component={QRScanScreen}
           options={{ headerShown: false }}
         />
       </MainStack.Navigator>
