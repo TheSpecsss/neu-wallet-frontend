@@ -5,9 +5,11 @@ export type MainStackParamList = {
     LandingScreen: undefined;
     MainBottomTab: undefined;
     ConfirmTransactionScreen: undefined;
-  };
-  export type MainBottomTabParamlist = {
+    DetailsScreen: undefined;
+};
+
+export type MainBottomTabParamlist = {
     HomeScreen: undefined;
     NotificationScreen: undefined;
     ProfileScreen: undefined;
-  };
+};
