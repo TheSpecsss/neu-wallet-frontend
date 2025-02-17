@@ -1,6 +1,8 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { backLogo, topupLogo } from "../../loadSVG";
 import { Camera, CameraView } from "expo-camera";
+import { SvgXml } from "react-native-svg";
 import {
   AppState,
   Linking,
@@ -8,6 +10,7 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 
 import {
@@ -52,11 +55,33 @@ export default function Home() {
         }}
       />
       <View style={styles.Overlay}>
-        <View style={styles.Top}></View>
+        <View style={styles.Top}>
+          <Text style={styles.textTop}>Please Scan QR to Pay</Text>
+        </View>
         <View style={styles.Middle} />
-        <View style={styles.Bottom} />
+        <View style={styles.Bottom}>
+          <View style={styles.bottomSubpanel}>
+            <TouchableOpacity
+              style={styles.backButton}
+              //onPress={() => navigation.navigate("LoginScreen")}
+            >
+              <View style={styles.centerview}>
+                <SvgXml xml={topupLogo} width={wp(11)} height={wp(11)} />
+                <Text style={styles.text}>Top-up | Cash in</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-      <Text style={styles.texttest}>Read: {QRData}</Text>
+      <Text style={styles.texttest}>DEBUG - Read: {QRData}</Text>
+      <View style={styles.toppannel}>
+        <TouchableOpacity
+          style={styles.backButton}
+          //onPress={() => navigation.navigate("LoginScreen")}
+        >
+          <SvgXml xml={backLogo} width={wp(11)} height={wp(11)} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -72,6 +97,7 @@ const styles = StyleSheet.create({
     width: wp(100),
     height: hp(25),
     backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
   },
   Middle: {
     position: "absolute",
@@ -95,8 +121,46 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     margin: 5,
-    marginBottom: hp(5),
+    marginBottom: hp(4),
     color: "#FFF",
     textAlign: "center",
   },
+  textTop: {
+    position: "absolute",
+    width: wp(100),
+    bottom: 0,
+    left: 0,
+    marginBottom: hp(3),
+    color: "#FFF",
+    textAlign: "center",
+  },
+  text: {
+    color: "#FFF",
+  },
+  bottomSubpanel: {
+    position: "absolute",
+    top: hp(8),
+    width: wp(100),
+    height: hp(15),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  toppannel: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: wp(100),
+    height: hp(11),
+    justifyContent: "center",
+    padding: 20,
+  },
+  centerview: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    width: wp(40),
+    height: hp(10),
+    borderRadius: 20,
+  },
+  backButton: {},
 });

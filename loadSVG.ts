@@ -31,4 +31,11 @@ const sendLogo =`<svg width="29" height="32" viewBox="0 0 29 32" fill="none" xml
 <path d="M1.5 16V27.3333C1.5 28.0848 1.84241 28.8055 2.4519 29.3368C3.0614 29.8682 3.88805 30.1667 4.75 30.1667H24.25C25.112 30.1667 25.9386 29.8682 26.5481 29.3368C27.1576 28.8055 27.5 28.0848 27.5 27.3333V16M21 7.50001L14.5 1.83334M14.5 1.83334L8 7.50001M14.5 1.83334V20.25" stroke="#204A69" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
-export { homeLogo, notificationLogo, profileLogo, walletLogo, scanQrLogo, sendLogo  };
+
+const topupLogo = `<svg width="42" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.5 18.058H21m0 0h9.5m-9.5 0v8.03m0-8.03V10.03M2 27.694V8.424c0-2.249 0-3.374.518-4.232.455-.756 1.181-1.37 2.075-1.754C5.609 2 6.94 2 9.6 2h22.8c2.66 0 3.99 0 5.006.438.894.384 1.62.998 2.076 1.754C40 5.05 40 6.175 40 8.422v19.271c0 2.248 0 3.372-.518 4.231-.455.756-1.182 1.37-2.076 1.756-1.015.437-2.343.437-4.998.437H9.593c-2.655 0-3.985 0-5-.437-.894-.385-1.62-1-2.075-1.756C2 31.066 2 29.942 2 27.694Z" stroke="#FFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+const backLogo = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M400-240 160-480l240-240 56 58-142 142h486v80H314l142 142-56 58Z"/></svg>`;
+export { homeLogo, notificationLogo, profileLogo, topupLogo, walletLogo, scanQrLogo, sendLogo, backLogo  };
