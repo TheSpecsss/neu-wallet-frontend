@@ -5,7 +5,8 @@ import SplashScreen from "./screens/SplashScreen";
 import MainBottomTab from "./navigation/MainBottomTab";
 import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
 import DetailsScreen from "./screens/DetailsScreen";
-import { MainStackParamList, MainBottomTabParamlist } from "./types";
+import SendScreen from "./screens/SendScreen";
+import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,7 +24,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="ConfirmTransactionScreen">
+      <MainStack.Navigator initialRouteName="MainBottomTab">
         <MainStack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -57,6 +58,11 @@ const App = () => {
         <MainStack.Screen
           name="DetailsScreen"
           component={DetailsScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="SendScreen"
+          component={SendScreen}
           options={{ headerShown: false }}
         />
       </MainStack.Navigator>

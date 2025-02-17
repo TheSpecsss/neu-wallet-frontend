@@ -6,6 +6,7 @@ export type MainStackParamList = {
     MainBottomTab: undefined;
     ConfirmTransactionScreen: undefined;
     DetailsScreen: undefined;
+    SendScreen: undefined; 
 };
 
 export type MainBottomTabParamlist = {

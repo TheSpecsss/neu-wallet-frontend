@@ -7,6 +7,17 @@ import {
   widthPercentageToDP as wp, 
   heightPercentageToDP as hp 
 } from "react-native-responsive-screen";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../../types";
+
+type SendScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  "SendScreen"
+>;
+
+type Props = {
+  navigation: SendScreenNavigationProp;
+};
 
 const transactions = [
   { id: "1", title: "Received Money", time: "02:45 PM", date: "02/02/2025", amount: 100.00, type: "received" },
@@ -17,7 +28,7 @@ const transactions = [
 ];
 
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }: Props) => {
     const [isFontLoaded, setIsFontLoaded] = useState(false);
     const [balance, setBalance] = useState(967.00);
 
@@ -25,7 +36,7 @@ const HomeScreen = () => {
       if (!isFontLoaded) {
         loadFont().then(() => setIsFontLoaded(true));
       }
-    }, []);
+    }, [isFontLoaded]);
 
     if (!isFontLoaded) {
       return null;
@@ -49,7 +60,9 @@ const HomeScreen = () => {
                   <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)}/>
                   <Text style={styles.buttonText}>Scan</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => navigation.navigate("SendScreen")}>
                   
                   <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)}/>
                   <Text style={styles.buttonText}>Send</Text>
@@ -65,21 +78,21 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
 
-              <FlatList
-                    data={transactions}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <View style={styles.transactionItem}>
-                            <View>
-                                <Text style={styles.transactionTitle}>{item.title}</Text>
-                                <Text style={styles.transactionDate}>{item.time}  {item.date}</Text>
-                            </View>
-                            <Text style={styles.transactionAmount}>
-                                {item.type === "received" ? "+" : "-"}₱{item.amount.toFixed(2)}
-                            </Text>
-                        </View>
-                    )}
-                />
+                <FlatList
+                      data={transactions}
+                      keyExtractor={(item) => item.id}
+                      renderItem={({ item }) => (
+                          <View style={styles.transactionItem}>
+                              <View>
+                                  <Text style={styles.transactionTitle}>{item.title}</Text>
+                                  <Text style={styles.transactionDate}>{item.time}  {item.date}</Text>
+                              </View>
+                              <Text style={styles.transactionAmount}>
+                                  {item.type === "received" ? "+" : "-"}₱{item.amount.toFixed(2)}
+                              </Text>
+                          </View>
+                      )}
+                  />
             </View>
 
 
