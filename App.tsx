@@ -23,7 +23,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="ConfirmTransactionScreen">
+      <MainStack.Navigator initialRouteName="LoginScreen">
         <MainStack.Screen
           name="SplashScreen"
           component={SplashScreen}
