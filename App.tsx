@@ -3,7 +3,12 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LandingScreen from "./screens/LandingScreen";
 import SplashScreen from "./screens/SplashScreen";
 import MainBottomTab from "./navigation/MainBottomTab";
+
 import QRScanScreen from "./screens/QRScreen/QRScanScreen";
+
+import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
+import DetailsScreen from "./screens/DetailsScreen";
+
 import { MainStackParamList, MainBottomTabParamlist } from "./types";
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -18,10 +23,15 @@ const App = () => {
     if (!isFontLoaded) {
       loadFont().then(() => setIsFontLoaded(true));
     }
-  }, []);
+  }, [isFontLoaded]);
+
   return (
     <NavigationContainer>
+
       <MainStack.Navigator initialRouteName="QRScanScreen">
+
+      <MainStack.Navigator initialRouteName="ConfirmTransactionScreen">
+
         <MainStack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -48,12 +58,23 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <MainStack.Screen
+
           name="QRScanScreen"
           component={QRScanScreen}
+
+          name="ConfirmTransactionScreen"
+          component={ConfirmTransactionScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="DetailsScreen"
+          component={DetailsScreen}
+
           options={{ headerShown: false }}
         />
       </MainStack.Navigator>
     </NavigationContainer>
   );
 };
+
 export default App;
