@@ -33,10 +33,21 @@ const sendLogo =`<svg width="29" height="32" viewBox="0 0 29 32" fill="none" xml
 `;
 
 
+const topupLogo = `<svg width="42" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.5 18.058H21m0 0h9.5m-9.5 0v8.03m0-8.03V10.03M2 27.694V8.424c0-2.249 0-3.374.518-4.232.455-.756 1.181-1.37 2.075-1.754C5.609 2 6.94 2 9.6 2h22.8c2.66 0 3.99 0 5.006.438.894.384 1.62.998 2.076 1.754C40 5.05 40 6.175 40 8.422v19.271c0 2.248 0 3.372-.518 4.231-.455.756-1.182 1.37-2.076 1.756-1.015.437-2.343.437-4.998.437H9.593c-2.655 0-3.985 0-5-.437-.894-.385-1.62-1-2.075-1.756C2 31.066 2 29.942 2 27.694Z" stroke="#FFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+const backLogo = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M400-240 160-480l240-240 56 58-142 142h486v80H314l142 142-56 58Z"/></svg>`;
 const successLogo = `<svg width="181" height="201" viewBox="0 0 181 201" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path opacity="0.09" d="M180.089 100.701C180.089 155.866 139.774 200.586 90.0443 200.586C40.3142 200.586 0 155.866 0 100.701C0 45.5361 40.3142 0.816222 90.0443 0.816222C141.197 -1.16567 181.184 44.0106 180.089 100.701Z" fill="#204A69"/>
 <path d="M148.273 72.7285L69.4728 151.064L33.6545 115.457" stroke="#1E1E1E" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
+export { homeLogo, notificationLogo, profileLogo, topupLogo, walletLogo, scanQrLogo, sendLogo, backLogo, successLogo  };
 
-export { homeLogo, notificationLogo, profileLogo, walletLogo, scanQrLogo, sendLogo, successLogo  };
+
+
+
+
+

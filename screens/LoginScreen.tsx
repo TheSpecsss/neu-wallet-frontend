@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Image, ImageBackground, TextInput, TouchableOpacity } from "react-native";
 import { BlurView } from 'expo-blur';
 
-const SplashScreen = () => {
+const LoginScreen = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -56,7 +56,7 @@ const SplashScreen = () => {
   );
 };
 
-export default SplashScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   background: {

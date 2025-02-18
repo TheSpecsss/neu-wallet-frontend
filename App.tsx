@@ -3,9 +3,14 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LandingScreen from "./screens/LandingScreen";
 import SplashScreen from "./screens/SplashScreen";
 import MainBottomTab from "./navigation/MainBottomTab";
+
+import QRScanScreen from "./screens/QRScreen/QRScanScreen";
+
 import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
 import DetailsScreen from "./screens/DetailsScreen";
-import { MainStackParamList } from "./types";
+
+import { MainStackParamList, MainBottomTabParamlist } from "./types";
+
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -25,6 +30,7 @@ const App = () => {
   }, [isFontLoaded]);
 
   return (
+
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <MainStack.Navigator initialRouteName="ConfirmTransactionScreen">
@@ -63,9 +69,15 @@ const App = () => {
             component={DetailsScreen}
             options={{ headerShown: false }}
           />
+          <MainStack.Screen
+          name="SendScreen"
+          component={SendScreen}
+          options={{ headerShown: false }}
+        />
         </MainStack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>
+      
   );
 };
 
