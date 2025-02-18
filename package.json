@@ -21,8 +21,6 @@
     "@rneui/base": "^4.0.0-rc.8",
 
     "@shopify/react-native-skia": "^1.11.7",
-    "expo": "~52.0.33",
-
     "expo": "~52.0.35",
 
     "expo-blur": "~14.0.3",
@@ -44,7 +42,6 @@
     "react-native-skia": "^0.0.1",
     "react-native-svg": "^15.11.1",
 
-    "react-native-svg": "15.8.0",
 
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
