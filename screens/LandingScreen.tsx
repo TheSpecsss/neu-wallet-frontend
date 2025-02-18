@@ -6,8 +6,8 @@ import {
   heightPercentageToDP as hp 
 } from "react-native-responsive-screen";
 import { BlurView } from "expo-blur";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainStackParamList } from "../types";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../types";
 
 type LandingScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -25,7 +25,7 @@ const LandingScreen = ({ navigation }: Props) => {
     if (!isFontLoaded) {
       loadFont().then(() => setIsFontLoaded(true));
     }
-  }, []);
+  }, [isFontLoaded]);
 
   if (!isFontLoaded) {
     return null;
