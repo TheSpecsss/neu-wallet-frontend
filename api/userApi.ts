@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-
+import api from "../api/axiosInstance"; 
 
 interface User {
   id: string;
   name: string;
 }
+
 const GET_USERS = `
   query GetUsers {
     users {
@@ -15,15 +15,13 @@ const GET_USERS = `
   }
 `;
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 const fetchUsers = async (): Promise<User[]> => {
   try {
-    const response = await axios.post(API_BASE_URL, {
-      query: GET_USERS, 
+    const response = await api.post("", { 
+      query: GET_USERS,
     });
-    console.log("Fetched Users:", response.data); 
-    return response.data.data.users; 
+    console.log("Fetched Users:", response.data);
+    return response.data.data.users;
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
