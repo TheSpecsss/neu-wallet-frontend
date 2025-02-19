@@ -10,10 +10,8 @@ import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 
 import SendScreen from "./screens/SendScreen";
+import LoadScreen from "./screens/LoadScreen";
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
-
-
-import { MainStackParamList, MainBottomTabParamlist } from "./types";
 
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -33,7 +31,7 @@ const App = () => {
   return (
     <NavigationContainer>
 
-      <MainStack.Navigator initialRouteName="MainBottomTab">
+      <MainStack.Navigator initialRouteName="LoadScreen">
 
 
         <MainStack.Screen
@@ -61,11 +59,12 @@ const App = () => {
           component={MainBottomTab}
           options={{ headerShown: false }}
         />
-        <MainStack.Screen
-
+          <MainStack.Screen
           name="QRScanScreen"
           component={QRScanScreen}
-
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
           name="ConfirmTransactionScreen"
           component={ConfirmTransactionScreen}
           options={{ headerShown: false }}
@@ -79,6 +78,11 @@ const App = () => {
         <MainStack.Screen
           name="SendScreen"
           component={SendScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="LoadScreen"
+          component={LoadScreen}
           options={{ headerShown: false }}
         />
       </MainStack.Navigator>
