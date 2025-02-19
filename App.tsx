@@ -1,21 +1,19 @@
+import React, { useEffect, useState } from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { loadFont } from "./loadFont";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LandingScreen from "./screens/LandingScreen";
 import SplashScreen from "./screens/SplashScreen";
 import MainBottomTab from "./navigation/MainBottomTab";
-
 import QRScanScreen from "./screens/QRScreen/QRScanScreen";
-
 import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
 import DetailsScreen from "./screens/DetailsScreen";
-
-import { MainStackParamList, MainBottomTabParamlist } from "./types";
-
-import React, { useEffect, useState } from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-import { loadFont } from "./loadFont";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import SendScreen from "./screens/SendScreen";
+import LoadScreen from "./screens/LoadScreen";
+import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
@@ -30,10 +28,9 @@ const App = () => {
   }, [isFontLoaded]);
 
   return (
-
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="ConfirmTransactionScreen">
+        <MainStack.Navigator initialRouteName="LoadScreen">
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
@@ -60,6 +57,11 @@ const App = () => {
             options={{ headerShown: false }}
           />
           <MainStack.Screen
+            name="QRScanScreen"
+            component={QRScanScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
             name="ConfirmTransactionScreen"
             component={ConfirmTransactionScreen}
             options={{ headerShown: false }}
@@ -70,14 +72,18 @@ const App = () => {
             options={{ headerShown: false }}
           />
           <MainStack.Screen
-          name="SendScreen"
-          component={SendScreen}
-          options={{ headerShown: false }}
-        />
+            name="SendScreen"
+            component={SendScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="LoadScreen"
+            component={LoadScreen}
+            options={{ headerShown: false }}
+          />
         </MainStack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>
-      
   );
 };
 

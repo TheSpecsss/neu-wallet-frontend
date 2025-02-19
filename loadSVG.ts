@@ -44,7 +44,30 @@ const successLogo = `<svg width="181" height="201" viewBox="0 0 181 201" fill="n
 <path d="M148.273 72.7285L69.4728 151.064L33.6545 115.457" stroke="#1E1E1E" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
-export { homeLogo, notificationLogo, profileLogo, topupLogo, walletLogo, scanQrLogo, sendLogo, backLogo, successLogo  };
+
+const expressSendLogo = `svg xmlns="<svg width="37" height="33" viewBox="0 0 37 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M21.9225 29.7413C20.1033 29.7413 17.5287 28.6001 15.4937 23.1413L14.3837 20.1713L11.0537 19.1813C4.94874 17.3663 3.66916 15.0701 3.66916 13.4476C3.66916 11.8388 4.94874 9.52882 11.0537 7.70007L24.1425 3.80882C27.4108 2.83257 30.1396 3.12132 31.82 4.60632C33.5004 6.09132 33.8242 8.53882 32.7296 11.4538L28.3667 23.1276C26.3162 28.6001 23.7417 29.7413 21.9225 29.7413ZM11.7783 9.66632C7.49249 10.9451 5.96624 12.4576 5.96624 13.4476C5.96624 14.4376 7.49249 15.9501 11.7783 17.2151L15.6633 18.3701C16.0025 18.4663 16.28 18.7138 16.3879 19.0163L17.6829 22.4813C19.1012 26.3038 20.8125 27.6651 21.9225 27.6651C23.0325 27.6651 24.7283 26.3038 26.1621 22.4813L30.525 10.8076C31.3112 8.69007 31.1725 6.95757 30.1704 6.06382C29.1683 5.17007 27.2258 5.06007 24.8671 5.76132L11.7783 9.66632Z" fill="#171717"/>
+<path d="M15.5863 19.8C15.2933 19.8 15.0004 19.7038 14.7692 19.4975C14.3221 19.0988 14.3221 18.4387 14.7692 18.04L20.2883 13.1037C20.7354 12.705 21.4754 12.705 21.9225 13.1037C22.3696 13.5025 22.3696 14.1625 21.9225 14.5613L16.4033 19.4975C16.1875 19.7038 15.8792 19.8 15.5863 19.8Z" fill="#171717"/>
+</svg>
+"
+`;
+
+
+const qrcodeLogo = `svg xmlns="<svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.38 3.88V10.88H19.38V3.88H12.38ZM17.88 9.38H13.88V5.38H17.88V9.38Z" fill="#000" style=""></path>
+<path d="M3.88 10.88H10.88V3.88H3.88V10.88ZM5.38 5.38H9.38V9.38H5.38V5.38Z" fill="#000" style=""></path>
+<path d="M3.88 19.38H10.88V12.38H3.88V19.38ZM5.38 13.88H9.38V17.88H5.38V13.88Z" fill="#000" style=""></path>
+<path d="M14.13 12.38H12.38V14.13H14.13V12.38Z" fill="#000" style=""></path>
+<path d="M17.63 12.38H15.88V14.13H17.63V12.38Z" fill="#000" style=""></path>
+<path d="M15.88 14.13H14.13V15.88H15.88V14.13Z" fill="#000" style=""></path>
+<path d="M19.38 14.13H17.63V15.88H19.38V14.13Z" fill="#000" style=""></path>
+<path d="M14.13 15.88H12.38V17.63H14.13V15.88Z" fill="#000" style=""></path>
+<path d="M17.63 15.88H15.88V17.63H17.63V15.88Z" fill="#000" style=""></path>
+<path d="M15.88 17.63H14.13V19.38H15.88V17.63Z" fill="#000" style=""></path>
+<path d="M19.38 17.63H17.63V19.38H19.38V17.63Z" fill="#000" style=""></path>
+</svg>"
+`;
+export { homeLogo, notificationLogo, profileLogo, topupLogo, walletLogo, scanQrLogo, sendLogo, backLogo, successLogo, expressSendLogo, qrcodeLogo  };
 
 
 

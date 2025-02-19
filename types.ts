@@ -4,15 +4,13 @@ export type MainStackParamList = {
     RegisterScreen: undefined;
     LandingScreen: undefined;
     MainBottomTab: undefined;
-
     QRScanScreen: undefined;
-  };
-  export type MainBottomTabParamlist = {
-
     ConfirmTransactionScreen: undefined;
     DetailsScreen: undefined;
-    SendScreen: undefined; 
-};
+    SendScreen: undefined;
+    LoadScreen: undefined;
+  };
+
 
 export type MainBottomTabParamlist = {
 
