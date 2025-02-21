@@ -91,6 +91,7 @@ export default function Home() {
       </View>
     </SafeAreaView>
   ) : (
+    // REQUEST CAMERA PERMISSION
     <View style={styles.RCContainer}>
       <Text style={styles.RCTextCenter}>
         This app needs access to your camera to scan the QR code. Tap 'Allow' to
