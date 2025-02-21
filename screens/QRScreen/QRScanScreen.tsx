@@ -1,7 +1,7 @@
 import React from "react";
-import { Text, View } from "react-native";
-import { backLogo, topupLogo } from "../../loadSVG";
-import { Camera, CameraView } from "expo-camera";
+import { Pressable, Text, View } from "react-native";
+import { backLogo, topupLogo, cameraLogo } from "../../loadSVG";
+import { useCameraPermissions, CameraView } from "expo-camera";
 import { SvgXml } from "react-native-svg";
 import {
   AppState,
@@ -12,7 +12,10 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-
+import {
+  createStaticNavigation,
+  useNavigation,
+} from "@react-navigation/native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -21,6 +24,11 @@ import {
 import { useEffect, useRef } from "react";
 
 export default function Home() {
+  const navigation = useNavigation();
+
+  const [camPermission, requestCamPermission] = useCameraPermissions();
+  const isCamPermissionGranted = Boolean(camPermission?.granted);
+
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
 
@@ -42,9 +50,8 @@ export default function Home() {
     };
   }, []);
 
-  return (
+  return isCamPermissionGranted == true ? (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
-      {Platform.OS === "android" ? <StatusBar hidden /> : null}
       <CameraView
         style={StyleSheet.absoluteFillObject}
         facing="back"
@@ -54,7 +61,7 @@ export default function Home() {
           }
         }}
       />
-      <View style={styles.Overlay}>
+      <View style={styles.OverlayContainer}>
         <View style={styles.Top}>
           <Text style={styles.textTop}>Please Scan QR to Pay</Text>
         </View>
@@ -77,17 +84,57 @@ export default function Home() {
       <View style={styles.toppannel}>
         <TouchableOpacity
           style={styles.backButton}
-          //onPress={() => navigation.navigate("LoginScreen")}
+          onPress={() => navigation.goBack()}
         >
           <SvgXml xml={backLogo} width={wp(11)} height={wp(11)} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
+  ) : (
+    <View style={styles.RCContainer}>
+      <Text style={styles.RCTextCenter}>
+        This app needs access to your camera to scan the QR code. Tap 'Allow' to
+        continue.
+      </Text>
+
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={requestCamPermission}
+      >
+        <View style={styles.RCButton}>
+          <SvgXml xml={cameraLogo} width={wp(9)} height={wp(9)} />
+          <Text style={styles.text}>Request Permission</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  Overlay: {
+  RCContainer: {
+    width: wp(100),
+    height: hp(100),
+    backgroundColor: "#000",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  RCButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    borderColor: "#FFF",
+    borderWidth: 2,
+    width: wp(40),
+    height: hp(10),
+    borderRadius: 20,
+  },
+  RCTextCenter: {
+    color: "#FFF",
+    textAlign: "center",
+    margin: 30,
+  },
+  OverlayContainer: {
     position: "absolute",
     width: wp(100),
     height: hp(100),

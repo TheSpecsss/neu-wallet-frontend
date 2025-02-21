@@ -30,7 +30,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="LoadScreen">
+        <MainStack.Navigator initialRouteName="MainBottomTab">
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
