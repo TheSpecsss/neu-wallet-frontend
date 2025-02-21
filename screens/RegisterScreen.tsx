@@ -9,19 +9,61 @@ import {
 } from "react-native";
 
 import React from "react";
+import Toast from "react-native-toast-message"; 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur";
 
 const RegisterScreen = () => {
-  const [usernameInput, usernameIn] = React.useState("");
-  const [emailInput, emailIn] = React.useState("");
-  const [passwordInput, passwordIn] = React.useState("");
-  const [passwordInput2, passwordIn2] = React.useState("");
+  const [usernameInput, setUsername] = React.useState("");
+  const [emailInput, setEmail] = React.useState("");
+  const [passwordInput, setPassword] = React.useState("");
+  const [passwordInput2, setConfirmPassword] = React.useState("");
+
+  const handleRegister = () => {
+    if (!emailInput || !usernameInput || !passwordInput || !passwordInput2) {
+      Toast.show({
+        type: "error",
+        text1: "Missing Fields",
+        text2: "Please fill in all fields.",
+      });
+      return;
+    }
+
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@neu\.edu\.ph$/;
+    if (!emailRegex.test(emailInput)) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Email",
+        text2: "Use an @neu.edu.ph email address.",
+      });
+      return;
+    }
+
+    if (passwordInput !== passwordInput2) {
+      Toast.show({
+        type: "error",
+        text1: "Password Mismatch",
+        text2: "Passwords do not match. Please try again.",
+      });
+      return;
+    }
+
+    Toast.show({
+      type: "success",
+      text1: "Registration Successful",
+      text2: "Welcome to NEU Wallet!",
+    });
+
+    setEmail("");
+    setUsername("");
+    setPassword("");
+    setConfirmPassword("");
+  };
 
   return (
     <ImageBackground
@@ -49,7 +91,7 @@ const RegisterScreen = () => {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  onChangeText={emailIn}
+                  onChangeText={setEmail}
                   value={emailInput}
                   placeholder="example@neu.edu.ph"
                 />
@@ -59,7 +101,7 @@ const RegisterScreen = () => {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  onChangeText={usernameIn}
+                  onChangeText={setUsername}
                   value={usernameInput}
                   placeholder="username"
                 />
@@ -70,7 +112,7 @@ const RegisterScreen = () => {
                 <TextInput
                   secureTextEntry={true}
                   style={styles.input}
-                  onChangeText={passwordIn}
+                  onChangeText={setPassword}
                   value={passwordInput}
                   placeholder="password"
                 />
@@ -81,7 +123,7 @@ const RegisterScreen = () => {
                 <TextInput
                   secureTextEntry={true}
                   style={styles.input}
-                  onChangeText={passwordIn2}
+                  onChangeText={setConfirmPassword}
                   value={passwordInput2}
                   placeholder="password confirm"
                 />
@@ -93,13 +135,15 @@ const RegisterScreen = () => {
             <Text style={styles.subButton}>Already Have an Account?</Text>
             <TouchableOpacity
               style={styles.solidButton}
-              //onPress={() => navigation.navigate("LoginScreen")}
+              onPress={handleRegister} // Call handleRegister on press
             >
-              <Text style={styles.solidButtonText}>Login</Text>
+              <Text style={styles.solidButtonText}>Register</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+
+      <Toast />
     </ImageBackground>
   );
 };
@@ -145,7 +189,7 @@ const styles = StyleSheet.create({
   squarepanel: {
     bottom: 0,
     position: "absolute",
-    backgroundColor: "rgba(5, 47, 87, 0.6)", // **Deeper blue**
+    backgroundColor: "rgba(5, 47, 87, 0.6)",
     paddingHorizontal: wp(5),
     paddingVertical: hp(4),
     borderTopLeftRadius: wp(10),
@@ -197,7 +241,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(1),
   },
   solidButton: {
-    backgroundColor: "#043E75", // **Darker blue for contrast**
+    backgroundColor: "#043E75",
     borderRadius: wp(2),
     paddingVertical: hp(1.5),
     width: wp(80),
