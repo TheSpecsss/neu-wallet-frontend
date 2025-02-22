@@ -1,10 +1,65 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, ImageBackground, TextInput, TouchableOpacity } from "react-native";
 import { BlurView } from 'expo-blur';
+import Toast from "react-native-toast-message";
+import api from "../api/axiosInstance";
+import { useMutation } from "@tanstack/react-query";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../types";
 
-const LoginScreen = () => {
+
+type LoginScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  "LoginScreen"
+>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
+const LoginScreen = ({navigation} : Props) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const loginMutation =useMutation({
+    mutationFn: async() =>
+      await api({
+        data:{
+          operationName: "Login",
+          query: `mutation Login($email: String!, $password: String!) {
+              login(email: $email, password: $password) {
+              token
+              }
+            }`,
+            variables: {
+              email,
+              password,
+            },
+        },
+      }),
+      onSuccess: ({ data }) => {
+        if (data.errors) {
+          return Toast.show({
+            type: "error",
+            text1: data.errors[0].message,
+          });
+        }
+      
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+        });
+      
+        navigation.navigate("MainBottomTab");
+      },
+      onError: (error) => {
+        Toast.show({
+          type: "error",
+          text1: "Login Failed",
+          text2: error.message || "An unexpected error occurred",
+        });
+      }, 
+  });
 
   return (
     <ImageBackground 
@@ -45,7 +100,18 @@ const LoginScreen = () => {
           
           <Text style={styles.forgot}>Forgot Password?</Text>
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={() => {
+              if (!email.trim() || !password.trim()) {
+                return Toast.show({
+                  type: "error",
+                  text1: "Email and password are required!",
+                });
+              }
+              loginMutation.mutate();
+            }}
+            >
             <Text style={styles.buttonText}>
               Login
             </Text>
