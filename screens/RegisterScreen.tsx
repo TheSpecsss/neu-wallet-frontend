@@ -16,8 +16,19 @@ import {
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import api from "../api/axiosInstance";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../types";
 
-const RegisterScreen = () => {
+type RegisterScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  "RegisterScreen"
+>;
+
+type Props = {
+  navigation: RegisterScreenNavigationProp;
+};
+
+const RegisterScreen = ({navigation} : Props) => {
 	const [name, setName] = React.useState<string>("");
 	const [email, setEmail] = React.useState<string>("");
 	const [password, setPassword] = React.useState<string>("");
@@ -60,7 +71,7 @@ const RegisterScreen = () => {
 				text1: "Registration Successful",
 			});
 
-			// TODO: Navigate to login page
+			navigation.navigate("LoginScreen");
 		},
 	});
 
