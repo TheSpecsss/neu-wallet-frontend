@@ -23,7 +23,7 @@ const CheckOutScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Load Balance</Text>
+            <Text style={styles.header}>QR Generator</Text>
 
             <View style={styles.containerBalance}>
                 <View style={styles.balanceCard}>
@@ -72,13 +72,12 @@ const styles = StyleSheet.create({
         fontFamily: "klavika-bold",
         textAlign: "center",
         color: "#204A69",
-        marginTop: 60,  
+        marginTop: hp(7.7),
     },
     containerBalance: {
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 4,
-        marginTop: 3,
+        marginTop: hp(1.5),
     },
     balanceCard: {
         backgroundColor: "#204A69",
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
         marginTop: hp(0.9),
     },
     containerAmount: {
-        marginTop: hp(2),
+        marginTop: hp(5),
     },
     input: {
         width: wp(90),
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
         color: "#204A69",
         fontSize: wp(4),
         textAlign: "center",
-        marginTop: hp(50),  
+        marginTop: hp(48),  
     },
     buttonContainer: { 
         backgroundColor: "#043E75", 
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         width: "80%",
-        marginTop: hp(5),  
+        marginTop: hp(4),  
       },
     buttonText: {
         color: "#fff",
