@@ -13,6 +13,7 @@ import ConfirmTransactionScreen from "./screens/ConfirmTransactionScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 import SendScreen from "./screens/SendScreen";
 import LoadScreen from "./screens/LoadScreen";
+import CheckOutScreen from "./screens/CheckOutScreen";
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -30,7 +31,7 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<NavigationContainer>
-				<MainStack.Navigator initialRouteName="RegisterScreen">
+				<MainStack.Navigator initialRouteName="CheckOutScreen">
 					<MainStack.Screen
 						name="SplashScreen"
 						component={SplashScreen}
@@ -79,6 +80,11 @@ const App = () => {
 					<MainStack.Screen
 						name="LoadScreen"
 						component={LoadScreen}
+						options={{ headerShown: false }}
+					/>
+					<MainStack.Screen
+						name="CheckOutScreen"
+						component={CheckOutScreen}
 						options={{ headerShown: false }}
 					/>
 				</MainStack.Navigator>
