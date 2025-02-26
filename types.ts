@@ -9,6 +9,7 @@ export type MainStackParamList = {
     DetailsScreen: undefined;
     SendScreen: undefined;
     LoadScreen: undefined;
+    CheckOutScreen: undefined;
   };
 
 

@@ -67,7 +67,7 @@ return (
                 <Text style={styles.detailValue}>{transactions.reference}</Text>
             </View>
         </View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.buttonContainer}>
             <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
         <MainBottomTab />
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontFamily: "klavika",
         color: "#1E3A5F",
-        marginBottom: 10,
+        marginBottom: 11,
     },
 
     detailsContainer: {
@@ -117,21 +117,18 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 
-    button: {
-        backgroundColor: "#1E3A5F",
-        paddingVertical: 2,
-        paddingHorizontal: 70,
-        borderRadius: 5,
-        marginBottom: 0,
-    },
-
-    buttonText: {
-        color: "#FFF",
-        fontFamily: "klavika-bold",
-        fontSize: 20,
-        borderRadius: 5 ,
-        marginBottom: 10,
-        textAlign: "center",
+    buttonContainer: { 
+        backgroundColor: "#043E75", 
+        height: 40,                
+        borderRadius: 8,            
+        alignItems: "center",
         justifyContent: "center",
-    },
+        width: "80%",
+        marginTop: hp(1),  
+      },
+    buttonText: {
+        color: "#fff",
+        fontSize: 20,
+        fontFamily: "klavika-medium",
+      }
 });
