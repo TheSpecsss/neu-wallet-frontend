@@ -14,7 +14,9 @@ import DetailsScreen from "./screens/DetailsScreen";
 import SendScreen from "./screens/SendScreen";
 import LoadScreen from "./screens/LoadScreen";
 import CheckOutScreen from "./screens/CheckOutScreen";
+import AdminTopTab from "./navigation/AdminTopTab";
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
+import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
@@ -31,7 +33,7 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<NavigationContainer>
-				<MainStack.Navigator initialRouteName="CheckOutScreen">
+				<MainStack.Navigator initialRouteName="AdminTopTab">
 					<MainStack.Screen
 						name="SplashScreen"
 						component={SplashScreen}
@@ -85,6 +87,16 @@ const App = () => {
 					<MainStack.Screen
 						name="CheckOutScreen"
 						component={CheckOutScreen}
+						options={{ headerShown: false }}
+					/>
+					<MainStack.Screen
+						name="AdminTopTab"
+						component={AdminTopTab}
+						options={{ headerShown: false }}
+					/>
+					<MainStack.Screen
+						name="EditUserScreen" 
+						component={EditUserScreen}
 						options={{ headerShown: false }}
 					/>
 				</MainStack.Navigator>
