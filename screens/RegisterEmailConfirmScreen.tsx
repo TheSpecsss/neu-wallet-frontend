@@ -53,7 +53,7 @@ const QRGenerate = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Confirm Email</Text>
+      <Text style={styles.header}>Verify Account</Text>
 
       <View style={styles.subcontainer}>
         <Text style={styles.label}>
@@ -63,7 +63,7 @@ const QRGenerate = () => {
       </View>
 
       <View style={styles.subroundedcontainer}>
-        <SvgXml xml={emailLogo("#222")} height={wp(6)} />
+        <SvgXml xml={emailLogo("#333")} height={wp(6)} />
         <Text style={styles.emaillabel}> {hiddenEmail(email)}</Text>
       </View>
 
@@ -79,7 +79,19 @@ const QRGenerate = () => {
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginTop: hp(1) }}>
-          <Text style={styles.emaillabel}>or log-out</Text>
+          <Text style={styles.textPressable}>
+            resend email confirmation code
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity style={styles.borderedButtonContainer}>
+          <Text
+            style={[styles.textPressable, { fontFamily: "klavika-medium" }]}
+          >
+            Log out
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -97,14 +109,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
   },
   subcontainer: {
-    paddingHorizontal: 30,
-    paddingBottom: 30,
+    paddingHorizontal: wp(10),
+    paddingBottom: hp(3),
     width: wp(100),
   },
-
   subroundedcontainer: {
     paddingHorizontal: wp(4),
-    marginBottom: 30,
+    marginBottom: hp(4),
     width: wp(80),
     height: hp(6),
     borderColor: "#ccc",
@@ -114,14 +125,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
-
+  bottomContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: wp(100),
+    alignItems: "center",
+    marginBottom: wp(5),
+  },
   header: {
     fontSize: wp(6),
     fontFamily: "klavika-bold",
     textAlign: "center",
     color: "#204A69",
-    marginTop: hp(7.7),
-    marginBottom: hp(5),
+    marginTop: hp(8.7),
+    marginBottom: hp(4.1),
   },
   balanceHeader: {
     flexDirection: "row",
@@ -147,11 +165,16 @@ const styles = StyleSheet.create({
   },
   emaillabel: {
     fontFamily: "klavika-medium",
-    width: "auto",
-    color: "#222",
+    color: "#333",
     fontSize: wp(4),
     justifyContent: "center",
     alignItems: "center",
+  },
+  textPressable: {
+    color: "#333",
+    fontSize: wp(3.6),
+    margin: wp(2),
+    textAlign: "center",
   },
   label: {
     fontFamily: "klavika-medium",
@@ -174,6 +197,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: hp(2),
+  },
+  borderedButtonContainer: {
+    borderRadius: wp(3.4),
+    borderWidth: 1,
+    width: wp(27),
   },
   buttonText: {
     color: "#fff",
