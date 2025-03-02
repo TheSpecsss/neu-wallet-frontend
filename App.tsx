@@ -14,7 +14,9 @@ import DetailsScreen from "./screens/DetailsScreen";
 import SendScreen from "./screens/SendScreen";
 import LoadScreen from "./screens/LoadScreen";
 import CheckOutScreen from "./screens/CheckOutScreen";
+import QRGenerateScreen from "./screens/QRScreen/QRGenerateScreen";
 import AdminTopTab from "./navigation/AdminTopTab";
+
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
 
@@ -22,13 +24,13 @@ const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
 
 const App = () => {
-	const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
 
-	useEffect(() => {
-		if (!isFontLoaded) {
-			loadFont().then(() => setIsFontLoaded(true));
-		}
-	}, [isFontLoaded]);
+  useEffect(() => {
+    if (!isFontLoaded) {
+      loadFont().then(() => setIsFontLoaded(true));
+    }
+  }, [isFontLoaded]);
 
 	return (
 		<QueryClientProvider client={queryClient}>
@@ -94,6 +96,11 @@ const App = () => {
 						component={AdminTopTab}
 						options={{ headerShown: false }}
 					/>
+          <MainStack.Screen
+            name="QRGenerateScreen"
+            component={QRGenerateScreen}
+            options={{ headerShown: false }}
+          />
 					<MainStack.Screen
 						name="EditUserScreen" 
 						component={EditUserScreen}
