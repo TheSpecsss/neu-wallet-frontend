@@ -79,9 +79,7 @@ const QRGenerate = () => {
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginTop: hp(1) }}>
-          <Text style={styles.textPressable}>
-            resend email confirmation code
-          </Text>
+          <Text style={styles.textPressable}>Resend Code</Text>
         </TouchableOpacity>
       </View>
 
