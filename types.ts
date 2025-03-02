@@ -10,6 +10,7 @@ export type MainStackParamList = {
     SendScreen: undefined;
     LoadScreen: undefined;
     CheckOutScreen: undefined;
+    QRGenerateScreen: undefined;
   };
 
 
