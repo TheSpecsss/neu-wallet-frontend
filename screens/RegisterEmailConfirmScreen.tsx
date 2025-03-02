@@ -20,7 +20,7 @@ import {
 const QRGenerate = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [code, inputCode] = useState("");
-  const [email, setEmail] = useState("edwardangellorica@gmail.com");
+  const [email, setEmail] = useState("placeholder@gmail.com");
 
   // use to hide the email address
   function hiddenEmail(input: string): string {
