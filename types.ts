@@ -13,6 +13,7 @@ export type MainStackParamList = {
     QRGenerateScreen: undefined;
     AdminTopTab: undefined;
     EditUserScreen: undefined;
+    RegisterEmailConfirmScreen: undefined;
 
   };
 
