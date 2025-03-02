@@ -11,6 +11,9 @@ export type MainStackParamList = {
     LoadScreen: undefined;
     CheckOutScreen: undefined;
     QRGenerateScreen: undefined;
+    AdminTopTab: undefined;
+    EditUserScreen: undefined;
+
   };
 
 
@@ -19,4 +22,9 @@ export type MainBottomTabParamlist = {
     HomeScreen: undefined;
     NotificationScreen: undefined;
     ProfileScreen: undefined;
+};
+
+export type AdminTopTabParamList = {
+    UserScreen: undefined;
+    AuditLogScreen: undefined;
 };
