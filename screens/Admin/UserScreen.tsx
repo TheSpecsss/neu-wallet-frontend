@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { DeleteUserModal } from "./optionScreens/modals/DeleteUserModal";
 import type {  MainStackParamList } from "../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 
@@ -27,6 +28,7 @@ const ITEMS_PER_PAGE = 6;
 const UserScreen = ({ navigation }: Props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -71,13 +73,21 @@ const UserScreen = ({ navigation }: Props) => {
                 <TouchableOpacity onPress={() => navigation.navigate("EditUserScreen")}>
                   <FontAwesome name="pencil" size={18} color="#204A69" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => setIsDeleteModalVisible(true)}>
                   <FontAwesome name="trash" size={18} color="red" />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         )}
+      />
+      <DeleteUserModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+        onConfirmDelete={() => {
+          setIsDeleteModalVisible(false);
+          // TODO: Add logic to delete the user
+        }}
       />
 
       <View style={styles.paginationContainer}>
