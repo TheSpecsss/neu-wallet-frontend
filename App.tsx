@@ -16,6 +16,7 @@ import LoadScreen from "./screens/LoadScreen";
 import CheckOutScreen from "./screens/CheckOutScreen";
 import QRGenerateScreen from "./screens/QRScreen/QRGenerateScreen";
 import AdminTopTab from "./navigation/AdminTopTab";
+import TransactionHistoryScreen from "./screens/TransactionHistoryScreen";
 
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
@@ -35,7 +36,7 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<NavigationContainer>
-				<MainStack.Navigator initialRouteName="AdminTopTab">
+				<MainStack.Navigator initialRouteName="TransactionHistoryScreen">
 					<MainStack.Screen
 						name="SplashScreen"
 						component={SplashScreen}
@@ -96,14 +97,19 @@ const App = () => {
 						component={AdminTopTab}
 						options={{ headerShown: false }}
 					/>
-          <MainStack.Screen
-            name="QRGenerateScreen"
-            component={QRGenerateScreen}
-            options={{ headerShown: false }}
-          />
+          			<MainStack.Screen
+           			 name="QRGenerateScreen"
+          		     component={QRGenerateScreen}
+                     options={{ headerShown: false }}
+                   />
 					<MainStack.Screen
 						name="EditUserScreen" 
 						component={EditUserScreen}
+						options={{ headerShown: false }}
+					/>
+					<MainStack.Screen
+						name="TransactionHistoryScreen" 
+						component={TransactionHistoryScreen}
 						options={{ headerShown: false }}
 					/>
 				</MainStack.Navigator>
