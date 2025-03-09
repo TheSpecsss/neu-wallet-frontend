@@ -1,19 +1,19 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
-import { 
-  widthPercentageToDP as wp, 
-  heightPercentageToDP as hp 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 const SplashScreen = () => {
   return (
-    <ImageBackground 
-      source={require("../assets/NEUBackground.png")}  
+    <ImageBackground
+      source={require("../../assets/NEUBackground.png")}
       style={styles.background}
     >
       <View style={styles.content}>
-        <Image 
-          source={require("../assets/NEUlogo.png")}  
+        <Image
+          source={require("../../assets/NEUlogo.png")}
           style={styles.logo}
         />
         <Text style={styles.title}>NEU WALLET</Text>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   logo: {
     width: wp(30),
     height: hp(15),
-    marginBottom: hp(2), 
+    marginBottom: hp(2),
     borderRadius: wp(4),
   },
   title: {
