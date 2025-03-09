@@ -2,10 +2,10 @@ import React from "react";
 import { StyleSheet, Text, View, Image, ImageBackground, TextInput, TouchableOpacity } from "react-native";
 import { BlurView } from 'expo-blur';
 import Toast from "react-native-toast-message";
-import api from "../api/axiosInstance";
+import api from "../../api/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import type { StackNavigationProp } from "@react-navigation/stack";
-import type { MainStackParamList } from "../types";
+import type { MainStackParamList } from "../../types";
 
 
 type LoginScreenNavigationProp = StackNavigationProp<

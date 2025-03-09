@@ -1,0 +1,154 @@
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { walletLogo } from "../../loadSVG";
+import { loadFont } from "../../loadFont";
+import { SvgXml } from "react-native-svg";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
+const CheckOutScreen = () => {
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [balance, setBalance] = useState(967.14);
+  const [amount, setAmount] = useState("");
+
+  useEffect(() => {
+    loadFont().then(() => setIsFontLoaded(true));
+  }, []);
+
+  if (!isFontLoaded) {
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>QR Generator</Text>
+
+      <View style={styles.containerBalance}>
+        <View style={styles.balanceCard}>
+          <View style={styles.balanceHeader}>
+            <SvgXml xml={walletLogo} width={100} height={90} />
+            <View style={styles.balanceInfo}>
+              <Text style={styles.balanceText}>Available Balance:</Text>
+              <Text style={styles.balanceAmount}>₱{balance.toFixed(2)}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.containerAmount}>
+        <Text style={styles.label}>Input Amount:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="₱0.00"
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+        />
+      </View>
+
+      <Text style={styles.warningText}>
+        * PLEASE MAKE SURE YOU CHECK THE AMOUNT YOU INPUT.
+      </Text>
+
+      <TouchableOpacity style={styles.buttonContainer}>
+        <Text style={styles.buttonText}>Generate</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default CheckOutScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexDirection: "column",
+    backgroundColor: "#F5F5F5",
+  },
+  header: {
+    fontSize: wp(6),
+    fontFamily: "klavika-bold",
+    textAlign: "center",
+    color: "#204A69",
+    marginTop: hp(7.7),
+  },
+  containerBalance: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: hp(1.5),
+  },
+  balanceCard: {
+    backgroundColor: "#204A69",
+    padding: wp(7),
+    borderRadius: wp(4),
+    alignItems: "flex-start",
+  },
+  balanceHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp(10),
+  },
+  balanceInfo: {
+    alignItems: "flex-end",
+  },
+  balanceText: {
+    color: "#FFFFFF",
+    fontSize: wp(5),
+    fontFamily: "klavika-regular-italic",
+  },
+  balanceAmount: {
+    fontFamily: "klavika-medium-italic",
+    color: "#FFFFFF",
+    fontSize: wp(7),
+    marginTop: hp(0.9),
+  },
+  containerAmount: {
+    marginTop: hp(5),
+  },
+  input: {
+    width: wp(90),
+    padding: wp(4),
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: wp(2),
+    fontSize: wp(4),
+    backgroundColor: "#fff",
+  },
+  label: {
+    fontFamily: "klavika-medium",
+    color: "#204A69",
+    fontSize: wp(5),
+    marginBottom: 5,
+  },
+  warningText: {
+    fontFamily: "klavika-medium-italic",
+    color: "#204A69",
+    fontSize: wp(4),
+    textAlign: "center",
+    marginTop: hp(48),
+  },
+  buttonContainer: {
+    backgroundColor: "#043E75",
+    height: 40,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    marginTop: hp(4),
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 20,
+    fontFamily: "klavika-medium",
+  },
+});

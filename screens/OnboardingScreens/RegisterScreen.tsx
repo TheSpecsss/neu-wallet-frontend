@@ -15,9 +15,9 @@ import {
 } from "react-native-responsive-screen";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import api from "../api/axiosInstance";
 import type { StackNavigationProp } from "@react-navigation/stack";
-import type { MainStackParamList } from "../types";
+import api from "../../api/axiosInstance";
+import type { MainStackParamList } from "../../types";
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   MainStackParamList,

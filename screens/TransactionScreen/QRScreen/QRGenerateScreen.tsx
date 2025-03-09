@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 
-import { loadFont } from "../../loadFont";
+import { loadFont } from "../../../loadFont";
 
 import {
   widthPercentageToDP as wp,
@@ -9,7 +9,7 @@ import {
 } from "react-native-responsive-screen";
 
 import QRCode from "react-native-qrcode-svg";
-import { NEUSun } from "../../loadSVG";
+import { NEUSun } from "../../../loadSVG";
 
 const QRGenerate = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);

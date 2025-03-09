@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/BottomTab/HomeScreen";
-import NotificationScreen from "../screens/BottomTab/NotificationScreen";
+import TransactionHistoryScreen from "../screens/BottomTab/TransactionHistoryScreen";
 import ProfileScreen from "../screens/BottomTab/ProfileScreen";
 import { MainBottomTabParamlist } from "../types";
 import { SvgXml } from "react-native-svg";
@@ -40,11 +40,11 @@ const MainBottomTab = () => {
         }}
       />
       <BottomNavigator.Screen
-        name="NotificationScreen"
-        component={NotificationScreen}
+        name="TransactionHistoryScreen"
+        component={TransactionHistoryScreen}
         options={{
             headerShown: false,
-            tabBarLabel: 'Notification',
+            tabBarLabel: 'Transactions',
             tabBarLabelStyle: {fontSize: 12, fontFamily: "klavika-medium-italic"},
             tabBarIcon: ({ focused }) => <SvgXml xml={notificationLogo(focused ? "#FFD700" : "white")} width={20} height={25} />, 
         }}

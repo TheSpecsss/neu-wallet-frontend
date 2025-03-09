@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { loadFont } from "../loadFont";
+import { loadFont } from "../../loadFont";
 import { 
   widthPercentageToDP as wp, 
   heightPercentageToDP as hp 
 } from "react-native-responsive-screen";
 import { BlurView } from "expo-blur";
 import type { StackNavigationProp } from "@react-navigation/stack";
-import type { MainStackParamList } from "../types";
+import type { MainStackParamList } from "../../types";
 
 type LandingScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
