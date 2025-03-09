@@ -17,10 +17,8 @@ import CheckOutScreen from "./screens/TransactionScreen/CheckOutScreen";
 import QRGenerateScreen from "./screens/TransactionScreen/QRScreen/QRGenerateScreen";
 import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
-
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
-import Toast from "react-native-toast-message";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
@@ -37,7 +35,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="LoginScreen">
+        <MainStack.Navigator initialRouteName="MainBottomTab">
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
