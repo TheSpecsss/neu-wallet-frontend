@@ -29,7 +29,7 @@ const QRGenerate = () => {
       <Text style={styles.header}>QR Generate Screen</Text>
       <QRCode
         size={wp(60)}
-        logo={require("../../assets/NEUlogo.png")}
+        logo={require("../../../assets/NEUlogo.png")}
         logoSize={wp(20)}
         value="neu"
       />
