@@ -13,14 +13,14 @@ export type MainStackParamList = {
     QRGenerateScreen: undefined;
     AdminTopTab: undefined;
     EditUserScreen: undefined;
-    TransactionHistoryScreen: undefined;
+    QRGenerator: undefined;
   };
 
 
 export type MainBottomTabParamlist = {
 
     HomeScreen: undefined;
-    NotificationScreen: undefined;
+    TransactionHistoryScreen: undefined;
     ProfileScreen: undefined;
 };
 

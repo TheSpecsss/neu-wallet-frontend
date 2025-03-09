@@ -55,7 +55,6 @@ const UserScreen = ({ navigation }: Props) => {
         </TouchableOpacity>
       </View>
  
-
       <FlatList
         data={paginatedUsers}
         keyExtractor={(item) => item.id}

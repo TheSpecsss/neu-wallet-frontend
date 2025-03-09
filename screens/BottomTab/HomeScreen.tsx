@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { loadFont } from "../../loadFont";
 import { SvgXml } from "react-native-svg";
-import { walletLogo, scanQrLogo, sendLogo } from "../../loadSVG";
+import { walletLogo, scanQrLogo, sendLogo, checkoutLogo, loadBalanceLogo } from "../../loadSVG";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -24,6 +24,16 @@ type SendScreenNavigationProp = StackNavigationProp<
 type QRScanScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "QRScanScreen"
+>;
+
+type CheckOutScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  "CheckOutScreen"
+>;
+
+type LoadScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  "LoadScreen"
 >;
 
 type Props = {
@@ -116,7 +126,26 @@ const HomeScreen = ({ navigation }: Props) => {
           <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)} />
           <Text style={styles.buttonText}>Send</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("CheckOutScreen")}
+        >
+          <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
+
+          <Text style={styles.buttonText}>Checkout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("LoadScreen")}
+        >
+          <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
+          <Text style={styles.buttonText}>Load Balance</Text>
+        </TouchableOpacity>
+
       </View>
+
+      
 
       <View style={styles.historyContainer}>
         <View style={styles.historyHeader}>

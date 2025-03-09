@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import { loadFont } from "../loadFont";
+import { loadFont } from "../../loadFont";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -159,7 +159,13 @@ const TransactionHistoryScreen = () => {
     return null;
   }
 
-  const renderTransactionItem = ({ item, index }: { item: typeof transactions[0]; index: number }) => (
+  const renderTransactionItem = ({
+    item,
+    index,
+  }: {
+    item: (typeof transactions)[0];
+    index: number;
+  }) => (
     <View style={styles.transactionItem}>
       {index === 0 || item.date !== transactions[index - 1]?.date ? (
         <Text style={styles.date}>{item.date}</Text>

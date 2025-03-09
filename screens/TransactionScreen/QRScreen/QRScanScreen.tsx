@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import { backLogo, topupLogo, cameraLogo } from "../../loadSVG";
+import { backLogo, topupLogo, cameraLogo } from "../../../loadSVG";
 import { useCameraPermissions, CameraView } from "expo-camera";
 import { SvgXml } from "react-native-svg";
 import {
