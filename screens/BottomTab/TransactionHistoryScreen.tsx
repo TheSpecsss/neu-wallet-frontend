@@ -5,149 +5,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
-const transactions = [
-  {
-    id: "1",
-    title: "Received Money",
-    date: "Feb 02, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "2",
-    title: "Received Money",
-    date: "Feb 02, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "3",
-    title: "Received Money",
-    date: "Feb 02, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "4",
-    title: "Received Money",
-    date: "Feb 02, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "5",
-    title: "Received Money",
-    date: "Feb 02, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "6",
-    title: "Received Money",
-    date: "Feb 02, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "7",
-    title: "Received Money",
-    date: "Feb 05, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "8",
-    title: "Received Money",
-    date: "Feb 05, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "9",
-    title: "Received Money",
-    date: "Feb 05, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "10",
-    title: "Received Money",
-    date: "Feb 05, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "11",
-    title: "Received Money",
-    date: "Feb 05, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "12",
-    title: "Received Money",
-    date: "Feb 05, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "13",
-    title: "Received Money",
-    date: "Feb 16, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "14",
-    title: "Received Money",
-    date: "Feb 16, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "15",
-    title: "Received Money",
-    date: "Feb 16, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "16",
-    title: "Received Money",
-    date: "Feb 20, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "17",
-    title: "Received Money",
-    date: "Feb 20, 2025",
-    time: "04:00 PM",
-    amount: 200.0,
-    type: "received",
-  },
-];
+import { useRecentTransactions } from "../../hooks/useRecentTransactions";
 
 const TransactionHistoryScreen = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [balance, setBalance] = useState(967.0);
+  const { data, data: transactions, isLoading, error } = useRecentTransactions(10, 1);
 
   useEffect(() => {
     if (!isFontLoaded) {
@@ -159,32 +22,62 @@ const TransactionHistoryScreen = () => {
     return null;
   }
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.header}>Transaction History</Text>
+        <Text style={styles.transactionItem}>Loading transactions...</Text>
+      </View>
+    );
+  }
+  if (!data || data.length === 0) {
+    return( 
+      <View style={styles.container}>
+        <Text style={styles.header}>Transaction History</Text>
+        <Text style={styles.transactionItem}>No recent transactions found.</Text>
+      </View>
+  );
+  }
+  if (error) {
+    console.log(error);
+    return (
+      <View style={styles.container}>
+        <Text style={styles.header}>Transaction History</Text>
+        <Text style={styles.transactionItem}>Error loading transactions.</Text>
+      </View>
+    );
+  }
+
   const renderTransactionItem = ({
     item,
     index,
   }: {
     item: (typeof transactions)[0];
     index: number;
-  }) => (
-    <View style={styles.transactionItem}>
-      {index === 0 || item.date !== transactions[index - 1]?.date ? (
-        <Text style={styles.date}>{item.date}</Text>
-      ) : null}
-      <View style={styles.transactionRow}>
-        <View>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.time}>{item.time}</Text>
+  }) => {
+    if (!transactions || transactions.length === 0) return null;
+
+    return (
+      <View style={styles.transactionItem}>
+        {index === 0 || item.date !== transactions[index - 1]?.date ? (
+          <Text style={styles.date}>{item.date}</Text>
+        ) : null}
+        <View style={styles.transactionRow}>
+          <View>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.time}>{item.time}</Text>
+          </View>
+          <Text style={styles.amount}>+₱{item.amount.toFixed(2)}</Text>
         </View>
-        <Text style={styles.amount}>+₱{item.amount.toFixed(2)}</Text>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
       <FlatList
-        data={transactions}
+        data={transactions || []} 
         renderItem={renderTransactionItem}
         keyExtractor={(item) => item.id}
       />
@@ -204,7 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "klavika-bold",
     textAlign: "center",
-    marginTop: hp(7),
+    marginTop: hp(2),
   },
   date: {
     fontSize: 22,

@@ -14,79 +14,21 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import type { StackNavigationProp } from "@react-navigation/stack";
-import type { MainStackParamList } from "../../types";
+import type { MainBottomTabParamlist } from "../../types";
+import { useRecentTransactions } from "../../hooks/useRecentTransactions";  
 
-type SendScreenNavigationProp = StackNavigationProp<
-  MainStackParamList,
-  "SendScreen"
->;
-
-type QRScanScreenNavigationProp = StackNavigationProp<
-  MainStackParamList,
-  "QRScanScreen"
->;
-
-type CheckOutScreenNavigationProp = StackNavigationProp<
-  MainStackParamList,
-  "CheckOutScreen"
->;
-
-type LoadScreenNavigationProp = StackNavigationProp<
-  MainStackParamList,
-  "LoadScreen"
+type HomeScreenNavigationProp = StackNavigationProp<
+  MainBottomTabParamlist,
+  "HomeScreen"
 >;
 
 type Props = {
-  navigation: SendScreenNavigationProp;
+  navigation: HomeScreenNavigationProp;
 };
-
-const transactions = [
-  {
-    id: "1",
-    title: "Received Money",
-    time: "02:45 PM",
-    date: "02/02/2025",
-    amount: 100.0,
-    type: "received",
-  },
-  {
-    id: "2",
-    title: "Sent Money",
-    time: "03:15 PM",
-    date: "02/02/2025",
-    amount: 50.0,
-    type: "sent",
-  },
-  {
-    id: "3",
-    title: "Received Money",
-    time: "04:00 PM",
-    date: "02/02/2025",
-    amount: 200.0,
-    type: "received",
-  },
-  {
-    id: "4",
-    title: "Sent Money",
-    time: "04:30 PM",
-    date: "02/02/2025",
-    amount: 30.0,
-    type: "sent",
-  },
-  {
-    id: "5",
-    title: "Received Money",
-    time: "05:00 PM",
-    date: "02/02/2025",
-    amount: 150.0,
-    type: "received",
-  },
-];
-
 const HomeScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [balance, setBalance] = useState(967.0);
-
+  const { data, data: transactions, isLoading, error } = useRecentTransactions(5, 1);
   useEffect(() => {
     if (!isFontLoaded) {
       loadFont().then(() => setIsFontLoaded(true));
@@ -113,7 +55,7 @@ const HomeScreen = ({ navigation }: Props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("QRScanScreen")}
+          onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
         >
           <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)} />
 
@@ -121,7 +63,7 @@ const HomeScreen = ({ navigation }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("SendScreen")}
+          onPress={() => navigation.getParent()?.navigate("SendScreen")}
         >
           <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)} />
           <Text style={styles.buttonText}>Send</Text>
@@ -129,7 +71,7 @@ const HomeScreen = ({ navigation }: Props) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("CheckOutScreen")}
+          onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
         >
           <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
 
@@ -137,7 +79,7 @@ const HomeScreen = ({ navigation }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("LoadScreen")}
+          onPress={() => navigation.getParent()?.navigate("LoadScreen")}
         >
           <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
           <Text style={styles.buttonText}>Load Balance</Text>
@@ -148,31 +90,39 @@ const HomeScreen = ({ navigation }: Props) => {
       
 
       <View style={styles.historyContainer}>
-        <View style={styles.historyHeader}>
-          <Text style={styles.historyTitle}>History</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAll}>View All</Text>
-          </TouchableOpacity>
-        </View>
+  <View style={styles.historyHeader}>
+    <Text style={styles.historyTitle}>Recent Transactions</Text>
+    <TouchableOpacity>
+      <Text style={styles.viewAll}>View All</Text>
+    </TouchableOpacity>
+  </View>
 
-        <FlatList
-          data={transactions}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.transactionItem}>
-              <View>
-                <Text style={styles.transactionTitle}>{item.title}</Text>
-                <Text style={styles.transactionDate}>
-                  {item.time} {item.date}
-                </Text>
-              </View>
-              <Text style={styles.transactionAmount}>
-                {item.type === "received" ? "+" : "-"}₱{item.amount.toFixed(2)}
-              </Text>
-            </View>
-          )}
-        />
-      </View>
+  {isLoading ? (
+    <Text>Loading...</Text>
+  ) : !transactions || transactions.length === 0? (
+    <Text>No recent transactions</Text>
+  ) : error ? (
+    <Text>Error loading transactions.</Text>
+  ) : (
+    <FlatList
+      data={transactions}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <View style={styles.transactionItem}>
+          <View>
+            <Text style={styles.transactionTitle}>{item.title}</Text>
+            <Text style={styles.transactionDate}>
+              {item.time} {item.date}
+            </Text>
+          </View>
+          <Text style={styles.transactionAmount}>
+            {item.type === "received" ? "+" : "-"}₱{item.amount.toFixed(2)}
+          </Text>
+        </View>
+      )}
+    />
+  )}
+</View>
     </View>
   );
 };
