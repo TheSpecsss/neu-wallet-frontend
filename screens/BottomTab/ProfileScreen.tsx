@@ -24,7 +24,6 @@ const ProfileScreen = () => {
         <Text style={styles.role}>Cashier</Text>
       </View>
 
-        
       <View style={styles.detailsContainer}>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Username:</Text>
@@ -42,11 +41,6 @@ const ProfileScreen = () => {
           <Text style={styles.detailLabel}>Change Password:</Text>
           <Text style={styles.detailValue}>{userInfo.password}</Text>
         </View>
-        
-
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.aboutApp}>
@@ -92,15 +86,15 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
   },
   detailsContainer: {
-    width: "95%", 
+    width: "95%",
     backgroundColor: "#fff",
-    borderRadius: 12, 
-    padding: 20, 
+    borderRadius: 12,
+    padding: 20,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginBottom: hp(15),
+    marginBottom: hp(25),
   },
   detailItem: {
     flexDirection: "row",
@@ -151,17 +145,5 @@ const styles = StyleSheet.create({
     fontFamily: "klavika-bold",
     color: "#204A69",
     marginLeft: 20,
-  },
-  editButton: {
-    marginTop: 20,
-    backgroundColor: "#204A69",
-    padding: 10,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  editButtonText: {
-    fontSize: 16,
-    fontFamily: "klavika-bold",
-    color: "#fff",
   },
 });
