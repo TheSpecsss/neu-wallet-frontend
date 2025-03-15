@@ -15,12 +15,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "\n  mutation Login($email: String!, $password: String!) {\n    login(email: $email, password: $password) {\n      token\n    }\n  }\n": typeof types.LoginDocument,
-    "\n  mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n    register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n      id\n    }\n  }\n": typeof types.RegisterDocument,
+    "mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n  register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n    id\n  }\n}": typeof types.RegisterDocument,
     "\n  query GetRecentTransactionByUserId($perPage: Int!, $page: Int!) {\n    getRecentTransactionByUserId(perPage: $perPage, page: $page) {\n      transactions {\n        id\n        amount\n        createdAt\n        receiver {\n          name\n        }\n        sender {\n          name\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n": typeof types.GetRecentTransactionByUserIdDocument,
 };
 const documents: Documents = {
     "\n  mutation Login($email: String!, $password: String!) {\n    login(email: $email, password: $password) {\n      token\n    }\n  }\n": types.LoginDocument,
-    "\n  mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n    register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n      id\n    }\n  }\n": types.RegisterDocument,
+    "mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n  register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n    id\n  }\n}": types.RegisterDocument,
     "\n  query GetRecentTransactionByUserId($perPage: Int!, $page: Int!) {\n    getRecentTransactionByUserId(perPage: $perPage, page: $page) {\n      transactions {\n        id\n        amount\n        createdAt\n        receiver {\n          name\n        }\n        sender {\n          name\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n": types.GetRecentTransactionByUserIdDocument,
 };
 
@@ -45,7 +45,7 @@ export function gql(source: "\n  mutation Login($email: String!, $password: Stri
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n    register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n    register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n      id\n    }\n  }\n"];
+export function gql(source: "mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n  register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n    id\n  }\n}"): (typeof documents)["mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {\n  register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {\n    id\n  }\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

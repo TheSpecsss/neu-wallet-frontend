@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { REGISTER } from "../../api/graphql/mutation";
 import React from "react";
 import {
   StyleSheet,
@@ -38,12 +39,12 @@ const RegisterScreen = ({ navigation }: Props) => {
     mutationFn: async () =>
       await api({
         data: {
-          operationName: "CreateUser",
-          query: `mutation CreateUser($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {
-						createUser(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {
-							id
-						}
-					}`,
+          operationName: "Register",
+          query: `mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {
+  register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {
+    id
+  }
+}`,
           variables: {
             email,
             name,
@@ -149,8 +150,6 @@ const RegisterScreen = ({ navigation }: Props) => {
           </View>
         </View>
       </View>
-
-      <Toast />
     </ImageBackground>
   );
 };

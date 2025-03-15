@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loadFont } from "./loadFont";
+
 import LoginScreen from "./screens/OnboardingScreens/LoginScreen";
 import RegisterScreen from "./screens/OnboardingScreens/RegisterScreen";
 import LandingScreen from "./screens/OnboardingScreens/LandingScreen";
@@ -37,7 +38,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="LoginScreen">
+        <MainStack.Navigator initialRouteName="LandingScreen">
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
@@ -115,6 +116,7 @@ const App = () => {
           />
         </MainStack.Navigator>
       </NavigationContainer>
+      <Toast />
     </QueryClientProvider>
   );
 };

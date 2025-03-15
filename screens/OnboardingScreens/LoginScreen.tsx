@@ -140,7 +140,6 @@ const LoginScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
         </BlurView>
       </View>
-      <Toast />
     </ImageBackground>
   );
 };

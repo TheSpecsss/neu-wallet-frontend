@@ -31,7 +31,7 @@ const QRGenerate = () => {
         size={wp(60)}
         logo={require("../../../assets/NEUlogo.png")}
         logoSize={wp(20)}
-        value="neu"
+        value="fhjhjkukfykfytftyjsupot"
       />
     </View>
   );

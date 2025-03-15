@@ -8,10 +8,8 @@ export const LOGIN = gql(`
   }
 `);
 
-export const REGISTER = gql(`
-  mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {
-    register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {
-      id
-    }
+export const REGISTER = gql(`mutation Register($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {
+  register(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {
+    id
   }
-`);
+}`);
