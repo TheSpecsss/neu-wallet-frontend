@@ -208,7 +208,6 @@ const EmailConfirm = ({ route, navigation }: Props) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <Toast />
     </View>
   );
 };

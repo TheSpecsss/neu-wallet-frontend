@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Toast from "react-native-toast-message";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -35,7 +36,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="MainBottomTab">
+        <MainStack.Navigator initialRouteName="LandingScreen">
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
@@ -112,6 +113,7 @@ const App = () => {
             options={{ headerShown: false }}
           />
         </MainStack.Navigator>
+        <Toast />
       </NavigationContainer>
     </QueryClientProvider>
   );

@@ -15,6 +15,14 @@ import { useMutation } from "@tanstack/react-query";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
+import { LOGIN } from "../../api/graphql/mutation";
+import { print as graphqlPrint } from "graphql";
+
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "LoginScreen"
@@ -40,11 +48,7 @@ const LoginScreen = ({ navigation }: Props) => {
       await api({
         data: {
           operationName: "Login",
-          query: `mutation Login($email: String!, $password: String!) {
-              login(email: $email, password: $password) {
-              token
-              }
-            }`,
+          query: graphqlPrint(LOGIN),
           variables: {
             email,
             password,
@@ -53,7 +57,6 @@ const LoginScreen = ({ navigation }: Props) => {
       }),
     onSuccess: ({ data }) => {
       if (data.errors) {
-        console.log("sdf");
         if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
           navigation.navigate("EmailConfirmationScreen", {
             emailadd: email,
@@ -138,9 +141,27 @@ const LoginScreen = ({ navigation }: Props) => {
           >
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
+
+          <Text
+            style={{
+              fontFamily: "klavika-light",
+              fontSize: 14,
+              marginTop: 20,
+              margin: 10,
+              color: "#FFF",
+            }}
+          >
+            Don't have an account?
+          </Text>
+
+          <TouchableOpacity
+            style={styles.buttonOutline}
+            onPress={() => navigation.replace("RegisterScreen")}
+          >
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
         </BlurView>
       </View>
-      <Toast />
     </ImageBackground>
   );
 };
@@ -179,7 +200,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   card: {
-    width: 300,
+    width: wp(85),
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -189,7 +210,6 @@ const styles = StyleSheet.create({
   input: {
     width: "90%",
     height: 42,
-    marginBottom: 15,
     backgroundColor: "#fff",
     borderRadius: 8,
     borderWidth: 2,
@@ -200,6 +220,7 @@ const styles = StyleSheet.create({
     fontFamily: "klavika-medium",
     fontSize: 16,
     color: "#fff",
+    marginTop: 10,
     marginBottom: 5,
     alignSelf: "flex-start",
     paddingLeft: 20,
@@ -208,6 +229,7 @@ const styles = StyleSheet.create({
     fontFamily: "klavika-light",
     fontSize: 14,
     color: "#fff",
+    marginTop: 10,
     marginBottom: 25,
     alignSelf: "flex-start",
     paddingLeft: 20,
@@ -220,6 +242,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "90%",
   },
+  buttonOutline: {
+    borderColor: "#FFF",
+    borderWidth: 2,
+    height: 40,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+  },
+
   buttonText: {
     color: "#fff",
     fontSize: 15,

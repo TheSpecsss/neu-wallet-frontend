@@ -19,6 +19,9 @@ import type { StackNavigationProp } from "@react-navigation/stack";
 import api from "../../api/axiosInstance";
 import type { MainStackParamList } from "../../types";
 
+import { REGISTER } from "../../api/graphql/mutation";
+import { print as graphqlPrint } from "graphql";
+
 type RegisterScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "RegisterScreen"
@@ -38,12 +41,8 @@ const RegisterScreen = ({ navigation }: Props) => {
     mutationFn: async () =>
       await api({
         data: {
-          operationName: "CreateUser",
-          query: `mutation CreateUser($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {
-						createUser(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {
-							id
-						}
-					}`,
+          operationName: "Register",
+          query: graphqlPrint(REGISTER),
           variables: {
             email,
             name,
@@ -113,6 +112,7 @@ const RegisterScreen = ({ navigation }: Props) => {
                   style={styles.input}
                   onChangeText={setName}
                   value={name}
+                  placeholder="Juan Dela Cruz"
                 />
               </View>
 
@@ -139,7 +139,9 @@ const RegisterScreen = ({ navigation }: Props) => {
           </SafeAreaProvider>
 
           <View style={styles.bottomContainer}>
-            <Text style={styles.subButton}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.replace("LoginScreen")}>
+              <Text style={styles.subButton}>Already have an account?</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.solidButton}
               onPress={() => registerMutation.mutate()}
@@ -149,8 +151,6 @@ const RegisterScreen = ({ navigation }: Props) => {
           </View>
         </View>
       </View>
-
-      <Toast />
     </ImageBackground>
   );
 };
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   squarepanel: {
     bottom: 0,
     position: "absolute",
-    backgroundColor: "rgba(5, 47, 87, 0.6)", // **Deeper blue**
+    backgroundColor: "rgba(7, 18, 29, 0.72)",
     paddingHorizontal: wp(5),
     paddingVertical: hp(4),
     borderTopLeftRadius: wp(10),
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 48,
-    width: wp(68.9),
+    width: wp(78),
     margin: 10,
     marginTop: 6,
     borderWidth: 1,
