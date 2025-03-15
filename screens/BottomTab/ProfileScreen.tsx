@@ -6,14 +6,50 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainBottomTabParamlist } from "../../types";
+
+type ProfileScreenNavigationProp = StackNavigationProp<
+  MainBottomTabParamlist,
+  "ProfileScreen"
+>;
+
+type Props = {
+  navigation: ProfileScreenNavigationProp;
+};
+
 
 const ProfileScreen = () => {
+  const navigation = useNavigation(); 
+
+
+  const signOut = async () => {
+    try {
+      await AsyncStorage.removeItem("authToken");
+  
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "LoginScreen" }],
+        })
+      );
+  
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+  
   const userInfo = {
     username: "Luis Joshua D. Bulatao",
     accountId: "11-1111-111",
     email: "example@gmail.com",
     password: "*******",
   };
+
+
+
 
   return (
     <View style={styles.container}>
@@ -48,7 +84,7 @@ const ProfileScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.divider} />
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={signOut}>
         <SvgXml xml={logoutLogo} width={wp(5)} height={hp(5)} />
         <Text style={styles.logoutText}>Log Out</Text>
       </TouchableOpacity>

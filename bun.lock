@@ -5,7 +5,7 @@
       "name": "my-expo-app",
       "dependencies": {
         "@expo/metro-runtime": "~4.0.1",
-        "@react-native-async-storage/async-storage": "^2.1.2",
+        "@react-native-async-storage/async-storage": "1.23.1",
         "@react-native-vector-icons/material-icons": "^0.0.1",
         "@react-navigation/bottom-tabs": "^7.2.0",
         "@react-navigation/elements": "^2.2.5",
@@ -25,6 +25,7 @@
         "expo-router": "^4.0.17",
         "expo-status-bar": "~2.0.1",
         "graphql": "^16.10.0",
+        "jwt-decode": "^4.0.0",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-native": "0.76.7",
@@ -497,8 +498,6 @@
     "@radix-ui/react-compose-refs": ["@radix-ui/react-compose-refs@1.0.0", "", { "dependencies": { "@babel/runtime": "^7.13.10" }, "peerDependencies": { "react": "^16.8 || ^17.0 || ^18.0" } }, "sha512-0KaSv6sx787/hK3eF53iOkiSLwAGlFMx5lotrqD2pTjB18KbybKoEIgkNZTKC60YECDQTKGTRcDBILwZVqVKvA=="],
 
     "@radix-ui/react-slot": ["@radix-ui/react-slot@1.0.1", "", { "dependencies": { "@babel/runtime": "^7.13.10", "@radix-ui/react-compose-refs": "1.0.0" }, "peerDependencies": { "react": "^16.8 || ^17.0 || ^18.0" } }, "sha512-avutXAFL1ehGvAXtPquu0YK5oz6ctS474iM3vNGQIkswrVhdrS52e3uoMQBzZhNRAIE0jBnUyXWNmSjGHhCFcw=="],
-
-    "@react-native-async-storage/async-storage": ["@react-native-async-storage/async-storage@2.1.2", "", { "dependencies": { "merge-options": "^3.0.4" }, "peerDependencies": { "react-native": "^0.0.0-0 || >=0.65 <1.0" } }, "sha512-dvlNq4AlGWC+ehtH12p65+17V0Dx7IecOWl6WanF2ja38O1Dcjjvn7jVzkUHJ5oWkQBlyASurTPlTHgKXyYiow=="],
 
     "@react-native-community/cli-tools": ["@react-native-community/cli-tools@15.1.3", "", { "dependencies": { "appdirsjs": "^1.2.4", "chalk": "^4.1.2", "execa": "^5.0.0", "find-up": "^5.0.0", "mime": "^2.4.1", "open": "^6.2.0", "ora": "^5.4.1", "prompts": "^2.4.2", "semver": "^7.5.2", "shell-quote": "^1.7.3", "sudo-prompt": "^9.0.0" } }, "sha512-2RzoUKR+Y03ijBeeSoCSQihyN6dxy3fbHjraO4MheZZUzt/Yd1VMEDd0R5aa6rtiRDoknbHt45RL2GMa8MSaEA=="],
 
@@ -1317,6 +1316,8 @@
     "json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
     "jsonfile": ["jsonfile@4.0.0", "", { "optionalDependencies": { "graceful-fs": "^4.1.6" } }, "sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg=="],
+
+    "jwt-decode": ["jwt-decode@4.0.0", "", {}, "sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA=="],
 
     "kind-of": ["kind-of@6.0.3", "", {}, "sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw=="],
 
