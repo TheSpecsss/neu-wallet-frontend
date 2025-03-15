@@ -15,6 +15,9 @@ import { useMutation } from "@tanstack/react-query";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
 
+import { LOGIN } from "../../api/graphql/mutation";
+import { print as graphqlPrint } from "graphql";
+
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "LoginScreen"
@@ -40,11 +43,7 @@ const LoginScreen = ({ navigation }: Props) => {
       await api({
         data: {
           operationName: "Login",
-          query: `mutation Login($email: String!, $password: String!) {
-              login(email: $email, password: $password) {
-              token
-              }
-            }`,
+          query: graphqlPrint(LOGIN),
           variables: {
             email,
             password,
@@ -53,7 +52,6 @@ const LoginScreen = ({ navigation }: Props) => {
       }),
     onSuccess: ({ data }) => {
       if (data.errors) {
-        console.log("sdf");
         if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
           navigation.navigate("EmailConfirmationScreen", {
             emailadd: email,

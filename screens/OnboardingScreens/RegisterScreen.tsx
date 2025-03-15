@@ -19,6 +19,9 @@ import type { StackNavigationProp } from "@react-navigation/stack";
 import api from "../../api/axiosInstance";
 import type { MainStackParamList } from "../../types";
 
+import { REGISTER } from "../../api/graphql/mutation";
+import { print as graphqlPrint } from "graphql";
+
 type RegisterScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "RegisterScreen"
@@ -38,12 +41,8 @@ const RegisterScreen = ({ navigation }: Props) => {
     mutationFn: async () =>
       await api({
         data: {
-          operationName: "CreateUser",
-          query: `mutation CreateUser($email: String!, $name: String!, $password: String!, $confirmPassword: String!) {
-						createUser(email: $email, name: $name, password: $password, confirmPassword: $confirmPassword) {
-							id
-						}
-					}`,
+          operationName: "Register",
+          query: graphqlPrint(REGISTER),
           variables: {
             email,
             name,
