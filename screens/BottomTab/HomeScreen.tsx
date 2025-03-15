@@ -16,6 +16,8 @@ import {
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainBottomTabParamlist } from "../../types";
 import { useRecentTransactions } from "../../hooks/useRecentTransactions";  
+import { jwtDecode } from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -28,17 +30,30 @@ type Props = {
 const HomeScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [balance, setBalance] = useState(967.0);
+  const [role, setRole] = useState<string | null>(null);
   const { data, data: transactions, isLoading, error } = useRecentTransactions(5, 1);
+
   useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-  }, [isFontLoaded]);
+    const loadUserRole = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (token) {
+          const decoded: any = jwtDecode(token);
+          setRole(decoded.role); 
+        }
+      } catch (error) {
+        console.error("Error decoding token", error);
+      }
+    };
+
+    loadUserRole();
+
+    loadFont().then(() => setIsFontLoaded(true));
+  }, []);
 
   if (!isFontLoaded) {
     return null;
   }
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>NEU Wallet</Text>
@@ -52,44 +67,41 @@ const HomeScreen = ({ navigation }: Props) => {
         </View>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
-        >
-          <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)} />
+<View style={styles.buttonContainer}>
+  {/* Show "Send" button only for USER, CASHIER, ADMIN */}
+  {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+  <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("QRScanScreen")}>
+    <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)} />
+    <Text style={styles.buttonText}>Scan</Text>
+  </TouchableOpacity>
+    )}
 
-          <Text style={styles.buttonText}>Scan</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.getParent()?.navigate("SendScreen")}
-        >
-          <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)} />
-          <Text style={styles.buttonText}>Send</Text>
-        </TouchableOpacity>
+  {/* Show "Send" button only for USER, CASHIER, ADMIN */}
+  {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+    <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("SendScreen")}>
+      <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)} />
+      <Text style={styles.buttonText}>Send</Text>
+    </TouchableOpacity>
+  )}
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
-        >
-          <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
+  {/* Show "Checkout" button only for CASHIER */}
+  {role === "CASHIER" && (
+    <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}>
+      <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
+      <Text style={styles.buttonText}>Checkout</Text>
+    </TouchableOpacity>
+  )}
 
-          <Text style={styles.buttonText}>Checkout</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.getParent()?.navigate("LoadScreen")}
-        >
-          <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
-          <Text style={styles.buttonText}>Load Balance</Text>
-        </TouchableOpacity>
+  {/* Show "Load Balance" button only for CASH_TOP_UP */}
+  {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+    <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("LoadScreen")}>
+      <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
+      <Text style={styles.buttonText}>Load Balance</Text>
+    </TouchableOpacity>
+  )}
+</View>
 
-      </View>
-
-      
-
-      <View style={styles.historyContainer}>
+  <View style={styles.historyContainer}>
   <View style={styles.historyHeader}>
     <Text style={styles.historyTitle}>Recent Transactions</Text>
     <TouchableOpacity>
