@@ -8,14 +8,15 @@ export type MainStackParamList = {
   MainBottomTab: undefined;
   QRScanScreen: undefined;
   ConfirmTransactionScreen: undefined;
-  DetailsScreen: undefined;
+  DetailsScreen: {data: string};
   SendScreen: undefined;
   LoadScreen: undefined;
   CheckOutScreen: undefined;
   AdminTopTab: undefined;
-  QRGenerateScreen: undefined;
+  QRGenerateScreen: {data: string};
   EditUserScreen: undefined;
-  EmailConfirmationScreen: {emailadd:string};
+  EmailConfirmationScreen: {emailadd: string};
+  QRGeneratorScreen: undefined;
 };
 
 export type MainBottomTabParamlist = {

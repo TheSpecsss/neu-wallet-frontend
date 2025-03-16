@@ -7,8 +7,16 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainStackParamList } from "../../types";
 
-const LoadScreen = () => {
+type LoadScreenProp = StackNavigationProp<MainStackParamList, "LoadScreen">;
+
+type Props = {
+  navigation: LoadScreenProp;
+};
+
+export const LoadScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [balance, setBalance] = useState(967.0);
 
@@ -43,8 +51,11 @@ const LoadScreen = () => {
         <Text style={styles.optionText}>Express Send</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.optionButton}>
-        <SvgXml xml={qrcodeLogo} width={24} height={24} />
+      <TouchableOpacity
+        style={styles.optionButton}
+        onPress={() => navigation.navigate("QRGeneratorScreen")}
+      >
+        <SvgXml xml={qrcodeLogo("#000")} width={24} height={24} />
         <Text style={styles.optionText}>QR Generator</Text>
       </TouchableOpacity>
     </View>
