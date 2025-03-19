@@ -26,6 +26,9 @@ import {
 
 import { LOGIN } from "../../api/graphql/mutation";
 import { print as graphqlPrint } from "graphql";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -59,7 +62,7 @@ const LoginScreen = ({ navigation }: Props) => {
           },
         },
       }),
-      onSuccess: ({ data }) => {
+      onSuccess: async ({ data }) => {
         if (data.errors) {
           if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
             navigation.navigate("EmailConfirmationScreen", { emailadd: email });
@@ -69,16 +72,16 @@ const LoginScreen = ({ navigation }: Props) => {
           }
         } else {
           Toast.show({ type: "success", text1: "Login Successful" });
-      
+    
           const token: string = data.data.login.token;
-          storeToken(token);
-      
+          await AsyncStorage.setItem("userToken", token);
+    
           const decodedToken: { accountType: string } = jwtDecode(token);
-      
+    
           if (decodedToken.accountType === "SUPER_ADMIN") {
-            navigation.navigate("AdminTopTab");
+            navigation.replace("AdminTopTab");
           } else {
-            navigation.navigate("MainBottomTab");
+            navigation.replace("MainBottomTab");
           }
         }
       },
@@ -90,7 +93,7 @@ const LoginScreen = ({ navigation }: Props) => {
       });
     },
   });
-
+  
   return (
     <ImageBackground
       source={require("../../assets/NEUBackground.png")}

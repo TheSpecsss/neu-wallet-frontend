@@ -22,18 +22,30 @@ import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmati
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
 import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
+import { getUserRole } from "./api/auth";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-  }, [isFontLoaded]);
+    const checkUserRole = async () => {
+      const role = await getUserRole();
+      console.log("User Role:", role);
+
+      if (role === "SUPER_ADMIN") {
+        setInitialRoute("AuditLogsScreen");
+      } else {
+        setInitialRoute("MainBottomTab");
+      }
+    };
+
+    checkUserRole();
+  }, []);
+
+  if (!initialRoute) return <SplashScreen />; // Show loading while checking role
 
   return (
     <QueryClientProvider client={queryClient}>
