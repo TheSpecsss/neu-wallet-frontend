@@ -12,20 +12,26 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import {
-  createStaticNavigation,
-  useNavigation,
-} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainStackParamList } from "../../../types";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 import { useEffect, useRef } from "react";
+import { decryptString } from "../../../api/cryptoUtils";
 
-export default function Home() {
-  const navigation = useNavigation();
+type QRScanScreenProps = StackNavigationProp<
+  MainStackParamList,
+  "QRScanScreen"
+>;
 
+type Props = {
+  navigation: QRScanScreenProps;
+};
+
+export const QRScan = ({ navigation }: Props) => {
   const [camPermission, requestCamPermission] = useCameraPermissions();
   const isCamPermissionGranted = Boolean(camPermission?.granted);
 
@@ -57,7 +63,17 @@ export default function Home() {
         facing="back"
         onBarcodeScanned={({ data }) => {
           if (data && !qrLock.current) {
-            setQRData(data);
+            qrLock.current = true;
+            const scanned = decryptString(data);
+            if (scanned) {
+              setQRData("locked: " + scanned);
+              const send: string = scanned;
+
+              navigation.navigate("DetailsScreen", { data: send });
+            } else {
+              setQRData("Invalid QR Code");
+            }
+            qrLock.current = false;
           }
         }}
       />
@@ -67,7 +83,7 @@ export default function Home() {
         </View>
         <View style={styles.Middle} />
         <View style={styles.Bottom}>
-          <View style={styles.bottomSubpanel}>
+          {/*<View style={styles.bottomSubpanel}>
             <TouchableOpacity
               style={styles.backButton}
               //onPress={() => navigation.navigate("LoginScreen")}
@@ -77,7 +93,7 @@ export default function Home() {
                 <Text style={styles.text}>Top-up | Cash in</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </View>*/}
         </View>
       </View>
       <Text style={styles.texttest}>DEBUG - Read: {QRData}</Text>
@@ -109,7 +125,7 @@ export default function Home() {
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   RCContainer: {
@@ -212,3 +228,5 @@ const styles = StyleSheet.create({
   },
   backButton: {},
 });
+
+export default QRScan;

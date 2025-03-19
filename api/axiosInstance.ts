@@ -1,5 +1,6 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToken } from './auth';
 
 const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_GRAPHQL_URL,
@@ -8,6 +9,17 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+export const createAxiosInstance = async () => {
+    const token = await getToken();
+    return axios.create({
+        baseURL: process.env.EXPO_PUBLIC_GRAPHQL_URL,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+};
 
 // Add request interceptor to attach token to all requests
 api.interceptors.request.use(

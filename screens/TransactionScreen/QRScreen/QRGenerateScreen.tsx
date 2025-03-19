@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainStackParamList } from "../../../types";
+import { RouteProp } from "@react-navigation/native";
 import { loadFont } from "../../../loadFont";
 
 import {
@@ -9,12 +11,29 @@ import {
 } from "react-native-responsive-screen";
 
 import QRCode from "react-native-qrcode-svg";
-import { NEUSun } from "../../../loadSVG";
 
-const QRGenerate = () => {
+type QRGenerateScreenProps = StackNavigationProp<
+  MainStackParamList,
+  "QRGenerateScreen"
+>;
+
+// Define the type for your route parameters
+
+type QRGenerateParams = {
+  data: string;
+};
+
+// Define the props type
+type Props = {
+  navigation: QRGenerateScreenProps;
+  route: RouteProp<MainStackParamList, "QRGenerateScreen">;
+};
+
+const QRGenerate = ({ route, navigation }: Props) => {
+  const { data } = route.params;
   const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [balance, setBalance] = useState(967.14);
-  const [amount, setAmount] = useState("");
+
+  console.log("QR DATA:" + data);
 
   useEffect(() => {
     loadFont().then(() => setIsFontLoaded(true));
@@ -31,7 +50,7 @@ const QRGenerate = () => {
         size={wp(60)}
         logo={require("../../../assets/NEUlogo.png")}
         logoSize={wp(20)}
-        value="neu"
+        value={data}
       />
     </View>
   );

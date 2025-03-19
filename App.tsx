@@ -1,3 +1,4 @@
+import "react-native-get-random-values";
 import React, { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -20,6 +21,7 @@ import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
+import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
@@ -36,7 +38,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="LandingScreen">
+        <MainStack.Navigator initialRouteName="MainBottomTab">
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
@@ -110,6 +112,11 @@ const App = () => {
           <MainStack.Screen
             name="EmailConfirmationScreen"
             component={EmailConfirmationScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="QRGeneratorScreen"
+            component={QRGeneratorScreen}
             options={{ headerShown: false }}
           />
         </MainStack.Navigator>

@@ -29,12 +29,6 @@ type EmailConfirmationScreenProps = StackNavigationProp<
   "EmailConfirmationScreen"
 >;
 
-// Define the type for your route parameters
-
-type EmailConfirmationParams = {
-  emailadd: string;
-};
-
 // Define the props type
 type Props = {
   navigation: EmailConfirmationScreenProps;

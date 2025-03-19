@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { BlurView } from "expo-blur";
+
+import { storeToken } from "../../api/auth";
+
 import Toast from "react-native-toast-message";
 import api from "../../api/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
@@ -56,6 +59,7 @@ const LoginScreen = ({ navigation }: Props) => {
         },
       }),
     onSuccess: ({ data }) => {
+      console.log(data);
       if (data.errors) {
         if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
           navigation.navigate("EmailConfirmationScreen", {
@@ -76,6 +80,11 @@ const LoginScreen = ({ navigation }: Props) => {
           type: "success",
           text1: "Login Successful",
         });
+
+        const token: string = data.data.login.token;
+
+        console.log("Login successful:", token);
+        storeToken(token);
 
         navigation.navigate("MainBottomTab");
       }
