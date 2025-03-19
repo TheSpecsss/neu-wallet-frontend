@@ -58,7 +58,18 @@ export const removeToken = async () => {
 };
 
 
+export const getUserRole = async (): Promise<string | null> => {
+    try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) return null;
 
+        const decodedToken = jwtDecode<{ accountType: string }>(token);
+        return decodedToken.accountType || null;
+    } catch (error) {
+        console.error("Error retrieving user role:", error);
+        return null;
+    }
+};
 
 // unused / unfinished 
 export const fetchUserInfo = async () => {
