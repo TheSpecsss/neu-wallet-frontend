@@ -8,16 +8,23 @@ import {
 import React, { useEffect, useState } from "react";
 import { loadFont } from "../../loadFont";
 import { SvgXml } from "react-native-svg";
-import { walletLogo, scanQrLogo, sendLogo, checkoutLogo, loadBalanceLogo } from "../../loadSVG";
+import {
+  walletLogo,
+  scanQrLogo,
+  sendLogo,
+  checkoutLogo,
+  loadBalanceLogo,
+} from "../../loadSVG";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainBottomTabParamlist } from "../../types";
-import { useRecentTransactions } from "../../hooks/useRecentTransactions";  
+import { useRecentTransactions } from "../../hooks/useRecentTransactions";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserBalance } from "../../api/auth";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -29,9 +36,14 @@ type Props = {
 };
 const HomeScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [balance, setBalance] = useState(967.0);
+  const [balance, setBalance] = useState(0.0);
   const [role, setRole] = useState<string | null>(null);
-  const { data, data: transactions, isLoading, error } = useRecentTransactions(5, 1);
+  const {
+    data,
+    data: transactions,
+    isLoading,
+    error,
+  } = useRecentTransactions(5, 1);
 
   useEffect(() => {
     const loadUserRole = async () => {
@@ -39,14 +51,20 @@ const HomeScreen = ({ navigation }: Props) => {
         const token = await AsyncStorage.getItem("token");
         if (token) {
           const decoded: any = jwtDecode(token);
-          setRole(decoded.role); 
+          setRole(decoded.role);
         }
       } catch (error) {
         console.error("Error decoding token", error);
       }
     };
 
+    const walletBalance = async () => {
+      const balance = await getUserBalance();
+      setBalance(balance.data.balance);
+    };
+
     loadUserRole();
+    walletBalance();
 
     loadFont().then(() => setIsFontLoaded(true));
   }, []);
@@ -67,74 +85,87 @@ const HomeScreen = ({ navigation }: Props) => {
         </View>
       </View>
 
-<View style={styles.buttonContainer}>
-  {/* Show "Send" button only for USER, CASHIER, ADMIN */}
-  {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
-  <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("QRScanScreen")}>
-    <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)} />
-    <Text style={styles.buttonText}>Scan</Text>
-  </TouchableOpacity>
-    )}
+      <View style={styles.buttonContainer}>
+        {/* Show "Send" button only for USER, CASHIER, ADMIN */}
+        {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
+          >
+            <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)} />
+            <Text style={styles.buttonText}>Scan</Text>
+          </TouchableOpacity>
+        )}
 
-  {/* Show "Send" button only for USER, CASHIER, ADMIN */}
-  {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
-    <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("SendScreen")}>
-      <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)} />
-      <Text style={styles.buttonText}>Send</Text>
-    </TouchableOpacity>
-  )}
+        {/* Show "Send" button only for USER, CASHIER, ADMIN */}
+        {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.getParent()?.navigate("SendScreen")}
+          >
+            <SvgXml xml={sendLogo} width={wp(8)} height={hp(10)} />
+            <Text style={styles.buttonText}>Send</Text>
+          </TouchableOpacity>
+        )}
 
-  {/* Show "Checkout" button only for CASHIER */}
-  {role === "CASHIER" && (
-    <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}>
-      <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
-      <Text style={styles.buttonText}>Checkout</Text>
-    </TouchableOpacity>
-  )}
+        {/* Show "Checkout" button only for CASHIER */}
+        {role === "CASHIER" && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
+          >
+            <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
+            <Text style={styles.buttonText}>Checkout</Text>
+          </TouchableOpacity>
+        )}
 
-  {/* Show "Load Balance" button only for CASH_TOP_UP */}
-  {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
-    <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate("LoadScreen")}>
-      <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
-      <Text style={styles.buttonText}>Load Balance</Text>
-    </TouchableOpacity>
-  )}
-</View>
+        {/* Show "Load Balance" button only for CASH_TOP_UP */}
+        {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.getParent()?.navigate("LoadScreen")}
+          >
+            <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
+            <Text style={styles.buttonText}>Load Balance</Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
-  <View style={styles.historyContainer}>
-  <View style={styles.historyHeader}>
-    <Text style={styles.historyTitle}>Recent Transactions</Text>
-    <TouchableOpacity>
-      <Text style={styles.viewAll}>View All</Text>
-    </TouchableOpacity>
-  </View>
-
-  {isLoading ? (
-    <Text>Loading...</Text>
-  ) : !transactions || transactions.length === 0? (
-    <Text>No recent transactions</Text>
-  ) : error ? (
-    <Text>Error loading transactions.</Text>
-  ) : (
-    <FlatList
-      data={transactions}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <View style={styles.transactionItem}>
-          <View>
-            <Text style={styles.transactionTitle}>{item.title}</Text>
-            <Text style={styles.transactionDate}>
-              {item.time} {item.date}
-            </Text>
-          </View>
-          <Text style={styles.transactionAmount}>
-            {item.type === "received" ? "+" : "-"}₱{item.amount.toFixed(2)}
-          </Text>
+      <View style={styles.historyContainer}>
+        <View style={styles.historyHeader}>
+          <Text style={styles.historyTitle}>Recent Transactions</Text>
+          <TouchableOpacity>
+            <Text style={styles.viewAll}>View All</Text>
+          </TouchableOpacity>
         </View>
-      )}
-    />
-  )}
-</View>
+
+        {isLoading ? (
+          <Text>Loading...</Text>
+        ) : !transactions || transactions.length === 0 ? (
+          <Text>No recent transactions</Text>
+        ) : error ? (
+          <Text>Error loading transactions.</Text>
+        ) : (
+          <FlatList
+            data={transactions}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.transactionItem}>
+                <View>
+                  <Text style={styles.transactionTitle}>{item.title}</Text>
+                  <Text style={styles.transactionDate}>
+                    {item.time} {item.date}
+                  </Text>
+                </View>
+                <Text style={styles.transactionAmount}>
+                  {item.type === "received" ? "+" : "-"}₱
+                  {item.amount.toFixed(2)}
+                </Text>
+              </View>
+            )}
+          />
+        )}
+      </View>
     </View>
   );
 };
