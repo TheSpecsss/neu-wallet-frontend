@@ -65,13 +65,23 @@ const LoginScreen = ({ navigation }: Props) => {
       onSuccess: async ({ data }) => {
         if (data.errors) {
           if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
-            navigation.navigate("EmailConfirmationScreen", { emailadd: email });
-            return Toast.show({ type: "error", text1: "Email needs to be verified." });
+            navigation.navigate("EmailConfirmationScreen", { 
+              emailadd: email 
+            });
+            return Toast.show({ 
+              type: "error",
+               text1: "Email needs to be verified." });
           } else {
-            return Toast.show({ type: "error", text1: data.errors[0].message });
+            return Toast.show({ 
+              type: "error", 
+              text1: data.errors[0].message 
+            });
           }
         } else {
-          Toast.show({ type: "success", text1: "Login Successful" });
+          Toast.show({ 
+            type: "success", 
+            text1: "Login Successful" 
+          });
     
           const token: string = data.data.login.token;
           await AsyncStorage.setItem("userToken", token);
