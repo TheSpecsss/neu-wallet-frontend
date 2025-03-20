@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './axiosInstance';
 import { createAxiosInstance } from './axiosInstance';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 type User = {
   id: string;
@@ -53,6 +54,20 @@ export const removeToken = async () => {
         await AsyncStorage.removeItem('userToken');
     } catch (error) {
         console.error('Error removing token', error);
+    }
+};
+
+
+export const getUserRole = async (): Promise<string | null> => {
+    try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) return null;
+
+        const decodedToken = jwtDecode<{ accountType: string }>(token);
+        return decodedToken.accountType || null;
+    } catch (error) {
+        console.error("Error retrieving user role:", error);
+        return null;
     }
 };
 
