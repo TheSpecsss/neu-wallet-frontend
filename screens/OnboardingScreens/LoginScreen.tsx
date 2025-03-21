@@ -87,7 +87,8 @@ const LoginScreen = ({ navigation }: Props) => {
           await AsyncStorage.setItem("userToken", token);
     
           const decodedToken: { accountType: string } = jwtDecode(token);
-    
+          console.log("Decoded Token:", decodedToken);   
+           
           if (decodedToken.accountType === "SUPER_ADMIN") {
             navigation.replace("AdminTopTab");
           } else {

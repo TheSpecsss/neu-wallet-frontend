@@ -59,23 +59,21 @@ const expressSendLogo = `<svg width="37" height="33" viewBox="0 0 37 33" fill="n
 </svg>
 `;
 
-
-
-const loadBalanceLogo = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M18.04 13.55C17.62 13.96 17.38 14.55 17.44 15.18C17.53 16.26 18.52 17.05 19.6 17.05H21.5V18.24C21.5 20.31 19.81 22 17.74 22H7.63C7.94 21.74 8.21 21.42 8.42 21.06C8.79 20.46 9 19.75 9 19C9 16.79 7.21 15 5 15C4.06 15 3.19 15.33 2.5 15.88V11.51C2.5 9.44001 4.19 7.75 6.26 7.75H17.74C19.81 7.75 21.5 9.44001 21.5 11.51V12.95H19.48C18.92 12.95 18.41 13.17 18.04 13.55Z" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M2.5 12.4101V7.8401C2.5 6.6501 3.23 5.59006 4.34 5.17006L12.28 2.17006C13.52 1.70006 14.85 2.62009 14.85 3.95009V7.75008" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M22.5588 13.9702V16.0302C22.5588 16.5802 22.1188 17.0302 21.5588 17.0502H19.5988C18.5188 17.0502 17.5288 16.2602 17.4388 15.1802C17.3788 14.5502 17.6188 13.9602 18.0388 13.5502C18.4088 13.1702 18.9188 12.9502 19.4788 12.9502H21.5588C22.1188 12.9702 22.5588 13.4202 22.5588 13.9702Z" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M7 12H14" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9 19C9 19.75 8.79 20.46 8.42 21.06C8.21 21.42 7.94 21.74 7.63 22C6.93 22.63 6.01 23 5 23C3.54 23 2.27 22.22 1.58 21.06C1.21 20.46 1 19.75 1 19C1 17.74 1.58 16.61 2.5 15.88C3.19 15.33 4.06 15 5 15C7.21 15 9 16.79 9 19Z" stroke="#204A69" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M6.49171 18.9795H3.51172" stroke="#204A69" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5 17.5195V20.5095" stroke="#204A69" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+const loadBalanceLogo = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.04 13.55C17.62 13.96 17.38 14.55 17.44 15.18C17.53 16.26 18.52 17.05 19.6 17.05H21.5V18.24C21.5 20.31 19.81 22 17.74 22H7.63C7.94 21.74 8.21 21.42 8.42 21.06C8.79 20.46 9 19.75 9 19C9 16.79 7.21 15 5 15C4.06 15 3.19 15.33 2.5 15.88V11.51C2.5 9.44001 4.19 7.75 6.26 7.75H17.74C19.81 7.75 21.5 9.44001 21.5 11.51V12.95H19.48C18.92 12.95 18.41 13.17 18.04 13.55Z" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.5 12.4101V7.8401C2.5 6.6501 3.23 5.59006 4.34 5.17006L12.28 2.17006C13.52 1.70006 14.85 2.62009 14.85 3.95009V7.75008" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22.5588 13.9702V16.0302C22.5588 16.5802 22.1188 17.0302 21.5588 17.0502H19.5988C18.5188 17.0502 17.5288 16.2602 17.4388 15.1802C17.3788 14.5502 17.6188 13.9602 18.0388 13.5502C18.4088 13.1702 18.9188 12.9502 19.4788 12.9502H21.5588C22.1188 12.9702 22.5588 13.4202 22.5588 13.9702Z" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 12H14" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 19C9 19.75 8.79 20.46 8.42 21.06C8.21 21.42 7.94 21.74 7.63 22C6.93 22.63 6.01 23 5 23C3.54 23 2.27 22.22 1.58 21.06C1.21 20.46 1 19.75 1 19C1 17.74 1.58 16.61 2.5 15.88C3.19 15.33 4.06 15 5 15C7.21 15 9 16.79 9 19Z" stroke="#204A69" stroke-width="1.7" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.49171 18.9795H3.51172" stroke="#204A69" stroke-width="1.7" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 17.5195V20.5095" stroke="#204A69" stroke-width="1.7" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
 
-const checkoutLogo = `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13.042 9H7.04199" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M22.042 10.9699V13.03C22.042 13.58 21.602 14.0299 21.042 14.0499H19.0819C18.0019 14.0499 17.012 13.2599 16.922 12.1799C16.862 11.5499 17.1019 10.9599 17.5219 10.5499C17.8919 10.1699 18.4019 9.94995 18.9619 9.94995H21.042C21.602 9.96995 22.042 10.4199 22.042 10.9699Z" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M17.522 10.55C17.102 10.96 16.862 11.55 16.922 12.18C17.012 13.26 18.002 14.05 19.082 14.05H21.042V15.5C21.042 18.5 19.042 20.5 16.042 20.5H7.04199C4.04199 20.5 2.04199 18.5 2.04199 15.5V8.5C2.04199 5.78 3.68199 3.88 6.23199 3.56C6.49199 3.52 6.76199 3.5 7.04199 3.5H16.042C16.302 3.5 16.552 3.50999 16.792 3.54999C19.372 3.84999 21.042 5.76 21.042 8.5V9.95001H18.962C18.402 9.95001 17.892 10.17 17.522 10.55Z" stroke="#204A69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+const checkoutLogo = `<svg width="40" height="40" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.042 9H7.04199" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22.042 10.9699V13.03C22.042 13.58 21.602 14.0299 21.042 14.0499H19.0819C18.0019 14.0499 17.012 13.2599 16.922 12.1799C16.862 11.5499 17.1019 10.9599 17.5219 10.5499C17.8919 10.1699 18.4019 9.94995 18.9619 9.94995H21.042C21.602 9.96995 22.042 10.4199 22.042 10.9699Z" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.522 10.55C17.102 10.96 16.862 11.55 16.922 12.18C17.012 13.26 18.002 14.05 19.082 14.05H21.042V15.5C21.042 18.5 19.042 20.5 16.042 20.5H7.04199C4.04199 20.5 2.04199 18.5 2.04199 15.5V8.5C2.04199 5.78 3.68199 3.88 6.23199 3.56C6.49199 3.52 6.76199 3.5 7.04199 3.5H16.042C16.302 3.5 16.552 3.50999 16.792 3.54999C19.372 3.84999 21.042 5.76 21.042 8.5V9.95001H18.962C18.402 9.95001 17.892 10.17 17.522 10.55Z" stroke="#204A69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
 

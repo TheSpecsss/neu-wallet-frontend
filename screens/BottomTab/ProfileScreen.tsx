@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginBottom: hp(18),
+    marginBottom: hp(25),
   },
   detailItem: {
     flexDirection: "row",
