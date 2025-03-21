@@ -1,9 +1,9 @@
 // auth.ts - Login and token handling
-
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './axiosInstance';
-import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import * as SecureStore from 'expo-secure-store';
+
 
 type User = {
   id: string;
@@ -19,7 +19,6 @@ type LoginResponse = {
   expiresIn?: number;
 };
 
-// const login
 
 export const logout = async (): Promise<void> => {
   removeToken();
@@ -64,6 +63,19 @@ export const removeToken = async () => {
     }
 };
 
+
+export const getUserRole = async (): Promise<string | null> => {
+    try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) return null;
+
+        const decodedToken = jwtDecode<{ accountType: string }>(token);
+        return decodedToken.accountType || null;
+    } catch (error) {
+        console.error("Error retrieving user role:", error);
+        return null;
+    }
+};
 export const getUserInfo = async () => {
     const fetchUserData = async () => {
         const response = await api({
@@ -80,35 +92,7 @@ export const getUserInfo = async () => {
                 }`,
             },
         });
-
-
-export const getUserRole = async (): Promise<string | null> => {
-    try {
-        const token = await AsyncStorage.getItem("userToken");
-        if (!token) return null;
-
-        const decodedToken = jwtDecode<{ accountType: string }>(token);
-        return decodedToken.accountType || null;
-    } catch (error) {
-        console.error("Error retrieving user role:", error);
-        return null;
-    }
-};
-
-// unused / unfinished 
-export const fetchUserInfo = async () => {
-  const axiosInstance = await createAxiosInstance();
-  const query = `
-      query {
-          user {
-              id
-              name
-              email
-          }
-      }
-  `;
-        // Assuming the API response structure is { data: { get:User  ... } }
-        return response.data.data.getUser ; // Return the user data directly
+        return response.data.data.getUser ; 
     };
     try {
         const data = await fetchUserData();
@@ -117,8 +101,8 @@ export const fetchUserInfo = async () => {
         console.error("Error fetching user data:", error);
         throw error; // Rethrow the error for the caller to handle
     }
-};
-
+}
+        
 export const getUserBalance = async () => {
     const fetchUserData = async () => {
         const response = await api({
@@ -132,8 +116,7 @@ export const getUserBalance = async () => {
             },
         });
 
-        // Assuming the API response structure is { data: { get:User  ... } }
-        return response.data.data.getUserBalanceByUserId ; // Return the user data directly
+        return response.data.data.getUserBalanceByUserId ; 
     };
     try {
         const data = await fetchUserData();
