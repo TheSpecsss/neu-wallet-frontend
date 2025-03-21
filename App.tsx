@@ -22,13 +22,16 @@ import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmati
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
 import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
-import { getUserRole } from "./api/auth";
+import api from "./api/axiosInstance";
+import { useMutation } from "@tanstack/react-query";
+
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState<string | null>(null);
+
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
 
   useEffect(() => {
     const checkUserRole = async () => {
@@ -50,7 +53,8 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="LoginScreen">
+        <MainStack.Navigator initialRouteName="LandingScreen">
+
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}

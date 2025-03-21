@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { BlurView } from "expo-blur";
 
-import { storeToken } from "../../api/auth";
+import { getToken, storeToken } from "../../api/auth";
 
 import Toast from "react-native-toast-message";
 import api from "../../api/axiosInstance";
@@ -94,7 +94,21 @@ const LoginScreen = ({ navigation }: Props) => {
             navigation.replace("MainBottomTab");
           }
         }
-      },
+      } else {
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+        });
+
+        const token: string = data.data.login.token;
+        console.log("Token: " + token);
+        storeToken(token);
+        console.log(getToken);
+
+        navigation.navigate("MainBottomTab");
+      }
+    },
+
     onError: (error) => {
       Toast.show({
         type: "error",

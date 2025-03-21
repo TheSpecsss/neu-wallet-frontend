@@ -29,6 +29,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow NEU Wallet to access your Face ID biometric data."
+        }
+      ]
+    ]
   }
 }

@@ -13,6 +13,9 @@ import { MainBottomTabParamlist } from "../../types";
 
 import { logout } from "../../api/auth";
 
+import { getUserInfo } from "../../api/auth";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 type ProfileScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
   "ProfileScreen"
@@ -40,11 +43,35 @@ const ProfileScreen = () => {
     }
   };
 
+  const [email, setEmail] = React.useState<string>("");
+  const [accType, setAccType] = React.useState<string>("");
+  const [accountID, setAccountID] = React.useState<string>("");
+  const [name, setName] = React.useState<string>("");
+  const [dateCreated, setDateCreated] = React.useState<string>("");
+
+  const handleUser = async () => {
+    try {
+      const userInfo = await getUserInfo();
+
+      setName(userInfo.data.name);
+      setAccType(userInfo.data.accountType);
+      setEmail(userInfo.data.email);
+      setAccountID(userInfo.data.id);
+      setDateCreated(userInfo.data.createdAt);
+    } catch (error) {
+      console.error("Failed to fetch user info:", error);
+    }
+  };
+
+  handleUser();
+
   const userInfo = {
-    username: "Luis Joshua D. Bulatao",
-    accountId: "11-1111-111",
-    email: "example@gmail.com",
+    name: name,
+    accountType: accType,
+    accountId: accountID,
+    email: email,
     password: "*******",
+    createdAt: dateCreated,
   };
 
   return (
@@ -52,15 +79,11 @@ const ProfileScreen = () => {
       <Text style={styles.header}>Profile</Text>
       <View style={styles.profileContainer}>
         <SvgXml xml={personLogo} width={80} height={70} />
-        <Text style={styles.name}>Luis Joshua Bulatao</Text>
-        <Text style={styles.role}>Cashier</Text>
+        <Text style={styles.name}>{userInfo.name}</Text>
+        <Text style={styles.role}>{userInfo.accountType}</Text>
       </View>
 
       <View style={styles.detailsContainer}>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Username:</Text>
-          <Text style={styles.detailValue}>{userInfo.username}</Text>
-        </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Account ID:</Text>
           <Text style={styles.detailValue}>{userInfo.accountId}</Text>
@@ -72,6 +95,10 @@ const ProfileScreen = () => {
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Change Password:</Text>
           <Text style={styles.detailValue}>{userInfo.password}</Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailLabel}>Date Created:</Text>
+          <Text style={styles.detailValue}>{userInfo.createdAt}</Text>
         </View>
       </View>
 

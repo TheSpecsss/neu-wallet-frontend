@@ -11,52 +11,81 @@ import { loadFont } from "./../loadFont";
 
 const BottomNavigator = createBottomTabNavigator<MainBottomTabParamlist>();
 
-
 const MainBottomTab = () => {
-      const [isFontLoaded, setIsFontLoaded] = useState(false);
-      useEffect(() => {
-        if (!isFontLoaded) {
-          loadFont().then(() => setIsFontLoaded(true));
-        }
-      }, []);
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  useEffect(() => {
+    if (!isFontLoaded) {
+      loadFont().then(() => setIsFontLoaded(true));
+    }
+  }, []);
   return (
     <BottomNavigator.Navigator
-    initialRouteName ="HomeScreen"
-    screenOptions={{
-        tabBarActiveTintColor: '#FFD700',
-        tabBarInactiveTintColor:'white',
-        tabBarStyle: { backgroundColor: "#204A69", height: 59, paddingBottom: 5 },
-    }}
-
+      initialRouteName="HomeScreen"
+      screenOptions={{
+        tabBarActiveTintColor: "#FFD700",
+        tabBarInactiveTintColor: "white",
+        tabBarStyle: {
+          backgroundColor: "#204A69",
+          height: 59,
+          paddingBottom: 5,
+        },
+      }}
     >
       <BottomNavigator.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={{
-            headerShown: false,
-            tabBarLabel: 'Home',
-            tabBarLabelStyle: {fontSize: 12, fontFamily: "klavika-medium-italic"},
-            tabBarIcon: ({ focused }) => <SvgXml xml={homeLogo(focused ? "#FFD700" : "white")} width={20} height={25} />, 
+          headerShown: false,
+          tabBarLabel: "Home",
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: "klavika-medium-italic",
+          },
+          tabBarIcon: ({ focused }) => (
+            <SvgXml
+              xml={homeLogo(focused ? "#FFD700" : "white")}
+              width={20}
+              height={25}
+            />
+          ),
         }}
       />
       <BottomNavigator.Screen
         name="TransactionHistoryScreen"
         component={TransactionHistoryScreen}
         options={{
-            headerShown: false,
-            tabBarLabel: 'Transactions',
-            tabBarLabelStyle: {fontSize: 12, fontFamily: "klavika-medium-italic"},
-            tabBarIcon: ({ focused }) => <SvgXml xml={notificationLogo(focused ? "#FFD700" : "white")} width={20} height={25} />, 
+          headerShown: false,
+          tabBarLabel: "Transactions",
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: "klavika-medium-italic",
+          },
+          tabBarIcon: ({ focused }) => (
+            <SvgXml
+              xml={notificationLogo(focused ? "#FFD700" : "white")}
+              width={20}
+              height={25}
+            />
+          ),
         }}
       />
       <BottomNavigator.Screen
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-            headerShown: false,
-            tabBarLabel: 'Profile',
-            tabBarLabelStyle: {fontSize: 12, fontFamily: "klavika-medium-italic"},
-            tabBarIcon: ({ focused }) => <SvgXml xml={profileLogo(focused ? "#FFD700" : "white")} width={20} height={25} />, 
+          headerShown: false,
+          tabBarLabel: "Profile",
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: "klavika-medium-italic",
+          },
+          tabBarIcon: ({ focused }) => (
+            <SvgXml
+              xml={profileLogo(focused ? "#FFD700" : "white")}
+              width={20}
+              height={25}
+            />
+          ),
         }}
       />
     </BottomNavigator.Navigator>
@@ -64,4 +93,3 @@ const MainBottomTab = () => {
 };
 
 export default MainBottomTab;
-

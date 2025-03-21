@@ -16,6 +16,10 @@ import { BlurView } from "expo-blur";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
 
+import { getToken, isAuthenticated } from "./../../api/auth";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import api from "../../api/axiosInstance";
+
 type LandingScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "LandingScreen"
@@ -33,6 +37,14 @@ const LandingScreen = ({ navigation }: Props) => {
       loadFont().then(() => setIsFontLoaded(true));
     }
   }, [isFontLoaded]);
+
+  const checkAuth = async () => {
+    const authenticated = await isAuthenticated();
+    if (authenticated) {
+      navigation.replace("MainBottomTab");
+    }
+  };
+  checkAuth();
 
   if (!isFontLoaded) {
     return null;
