@@ -1,8 +1,7 @@
 import CryptoJS from 'crypto-js';
 
-
 // 
-const SECRET_KEY = process.env.QR_ENCRYPTION_KEY;
+const SECRET_KEY = process.env.EXPO_PUBLIC_QR_KEY || "not found";
 
 // Function to encrypt a string
 

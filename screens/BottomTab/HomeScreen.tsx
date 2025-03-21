@@ -24,6 +24,7 @@ import type { MainBottomTabParamlist } from "../../types";
 import { useRecentTransactions } from "../../hooks/useRecentTransactions";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserBalance } from "../../api/auth";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -35,7 +36,7 @@ type Props = {
 };
 const HomeScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [balance, setBalance] = useState(967.0);
+  const [balance, setBalance] = useState(0.0);
   const [role, setRole] = useState<string | null>(null);
   const {
     data,
@@ -49,15 +50,23 @@ const HomeScreen = ({ navigation }: Props) => {
       try {
         const token = await AsyncStorage.getItem("userToken");
         if (token) {
+
           const decodedToken: { accountType: string } = jwtDecode(token);
           setRole(decodedToken.accountType);
+
         }
       } catch (error) {
         console.error("Error decoding token", error);
       }
     };
 
+    const walletBalance = async () => {
+      const balance = await getUserBalance();
+      setBalance(balance.data.balance);
+    };
+
     loadUserRole();
+    walletBalance();
 
     loadFont().then(() => setIsFontLoaded(true));
   }, []);
@@ -79,17 +88,23 @@ const HomeScreen = ({ navigation }: Props) => {
       </View>
 
       <View style={styles.buttonContainer}>
+
         {role && role === "USER" && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
           >
+
             <SvgXml xml={scanQrLogo} width={wp(8)} height={hp(10)} />
+
             <Text style={styles.buttonText}>Scan</Text>
           </TouchableOpacity>
         )}
 
+
         {role && role === "USER" && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("SendScreen")}
@@ -99,11 +114,14 @@ const HomeScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
         )}
 
+
         {role && (role === "USER" || role === "CASH_TOP_UP"  || role === "CASHIER") && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
           >
+
             <SvgXml xml={checkoutLogo} width={wp(10.5)} height={hp(10)} />
             <Text style={styles.buttonText}>
             {role === "USER" ? "Generate QR" : role === "CASH_TOP_UP" ? "Chit Out" : "Checkout"}
@@ -112,11 +130,14 @@ const HomeScreen = ({ navigation }: Props) => {
         )}
 
         {role && role === "CASH_TOP_UP"  && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("LoadScreen")}
           >
+
             <SvgXml xml={loadBalanceLogo} width={wp(10.5)} height={hp(10)} />
+
             <Text style={styles.buttonText}>Load Balance</Text>
           </TouchableOpacity>
         )}

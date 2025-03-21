@@ -1,9 +1,9 @@
 // auth.ts - Login and token handling
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './axiosInstance';
-import { createAxiosInstance } from './axiosInstance';
-import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import * as SecureStore from 'expo-secure-store';
+
 
 type User = {
   id: string;
@@ -19,22 +19,27 @@ type LoginResponse = {
   expiresIn?: number;
 };
 
-// const login
 
 export const logout = async (): Promise<void> => {
-  await AsyncStorage.removeItem('authToken');
-  await AsyncStorage.removeItem('tokenExpiration');
+  removeToken();
 };
 
 export const isAuthenticated = async (): Promise<boolean> => {
-  const token = await AsyncStorage.getItem('authToken');
-  return !!token;
+    try {
+        const token = await getToken();
+        console.log('11 Token received:', token);
+        return token !== null;
+    } catch (error) {
+        console.error('Error checking authentication status', error);
+        return false;
+    }
 };
 
 
 export const storeToken = async (token: string) => {
     try {
-        await AsyncStorage.setItem('userToken', token);
+        await SecureStore.setItemAsync('userToken', token);
+        console.log('Token stored');
     } catch (error) {
         console.error('Error storing token', error);
     }
@@ -42,7 +47,8 @@ export const storeToken = async (token: string) => {
 
 export const getToken = async (): Promise<string | null> => {
     try {
-        return await AsyncStorage.getItem('userToken');
+        let token = await SecureStore.getItemAsync('userToken');
+        return token;
     } catch (error) {
         console.error('Error retrieving token', error);
         return null;
@@ -51,7 +57,7 @@ export const getToken = async (): Promise<string | null> => {
 
 export const removeToken = async () => {
     try {
-        await AsyncStorage.removeItem('userToken');
+        await SecureStore.deleteItemAsync('userToken');
     } catch (error) {
         console.error('Error removing token', error);
     }
@@ -70,35 +76,53 @@ export const getUserRole = async (): Promise<string | null> => {
         return null;
     }
 };
+export const getUserInfo = async () => {
+    const fetchUserData = async () => {
+        const response = await api({
+            data: {
+                operationName: "GetUser",
+                query: `query GetUser  {
+                    getUser  {
+                        id
+                        name
+                        email
+                        accountType
+                        createdAt
+                    }
+                }`,
+            },
+        });
+        return response.data.data.getUser ; 
+    };
+    try {
+        const data = await fetchUserData();
+        return { data }; // Return the data in an object
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+}
+        
+export const getUserBalance = async () => {
+    const fetchUserData = async () => {
+        const response = await api({
+            data: {
+                operationName: "GetUserBalanceByUserId",
+                query: `query GetUserBalanceByUserId {
+                            getUserBalanceByUserId {
+                                balance
+                            }
+                        }`,
+            },
+        });
 
-// unused / unfinished 
-export const fetchUserInfo = async () => {
-  const axiosInstance = await createAxiosInstance();
-  const query = `
-      query {
-          user {
-              id
-              name
-              email
-          }
-      }
-  `;
-
-  try {
-      const response = await axiosInstance.post('', { query });
-      return response.data.data.user;
-  } catch (error) {
-      if (axios.isAxiosError(error)) {
-          if (error.response?.status === 401) {
-              console.error('Token expired or unauthorized. Please log in again.');
-              // Optionally, you can call removeToken() here to clear the expired token
-              await removeToken();
-          } else {
-              console.error('Network error or other issue:', error.message);
-          }
-      } else {
-          console.error('Unexpected error:', error);
-      }
-      throw error; // Rethrow the error for further handling if needed
-  }
+        return response.data.data.getUserBalanceByUserId ; 
+    };
+    try {
+        const data = await fetchUserData();
+        return { data }; // Return the data in an object
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
 };

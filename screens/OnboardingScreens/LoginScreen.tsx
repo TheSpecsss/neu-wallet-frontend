@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { BlurView } from "expo-blur";
 
-import { storeToken } from "../../api/auth";
+import { getToken, storeToken } from "../../api/auth";
 
 import Toast from "react-native-toast-message";
 import api from "../../api/axiosInstance";
@@ -27,8 +27,6 @@ import {
 import { LOGIN } from "../../api/graphql/mutation";
 import { print as graphqlPrint } from "graphql";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -62,26 +60,22 @@ const LoginScreen = ({ navigation }: Props) => {
           },
         },
       }),
-      onSuccess: async ({ data }) => {
-        if (data.errors) {
-          if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
-            navigation.navigate("EmailConfirmationScreen", { 
-              emailadd: email 
-            });
-            return Toast.show({ 
-              type: "error",
-               text1: "Email needs to be verified." });
-          } else {
-            return Toast.show({ 
-              type: "error", 
-              text1: data.errors[0].message 
-            });
-          }
-        } else {
-          Toast.show({ 
-            type: "success", 
-            text1: "Login Successful" 
+    onSuccess: async ({ data }) => {
+      if (data.errors) {
+        if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
+          navigation.navigate("EmailConfirmationScreen", {
+            emailadd: email,
           });
+          return Toast.show({
+            type: "error",
+            text1: "Email needs to be verified.",
+          });
+        } else {
+          return Toast.show({
+            type: "error",
+            text1: data.errors[0].message,
+          });
+
     
           const token: string = data.data.login.token;
           await AsyncStorage.setItem("userToken", token);
@@ -94,8 +88,32 @@ const LoginScreen = ({ navigation }: Props) => {
           } else {
             navigation.replace("MainBottomTab");
           }
+
         }
-      },
+      } else {
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+        });
+
+        const token: string = data.data.login.token;
+        await AsyncStorage.setItem("userToken", token);
+
+        const decodedToken: { accountType: string } = jwtDecode(token);
+
+        console.log("Token: " + token);
+        storeToken(token);
+        console.log(getToken);
+
+        if (decodedToken.accountType === "SUPER_ADMIN") {
+          navigation.replace("AdminTopTab");
+        } else {
+          navigation.replace("MainBottomTab");
+        }
+      }
+
+      navigation.navigate("MainBottomTab");
+    },
     onError: (error) => {
       Toast.show({
         type: "error",
@@ -104,7 +122,7 @@ const LoginScreen = ({ navigation }: Props) => {
       });
     },
   });
-  
+
   return (
     <ImageBackground
       source={require("../../assets/NEUBackground.png")}
