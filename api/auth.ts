@@ -3,6 +3,7 @@
 import * as SecureStore from 'expo-secure-store';
 import api from './axiosInstance';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 type User = {
   id: string;
@@ -80,6 +81,32 @@ export const getUserInfo = async () => {
             },
         });
 
+
+export const getUserRole = async (): Promise<string | null> => {
+    try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) return null;
+
+        const decodedToken = jwtDecode<{ accountType: string }>(token);
+        return decodedToken.accountType || null;
+    } catch (error) {
+        console.error("Error retrieving user role:", error);
+        return null;
+    }
+};
+
+// unused / unfinished 
+export const fetchUserInfo = async () => {
+  const axiosInstance = await createAxiosInstance();
+  const query = `
+      query {
+          user {
+              id
+              name
+              email
+          }
+      }
+  `;
         // Assuming the API response structure is { data: { get:User  ... } }
         return response.data.data.getUser ; // Return the user data directly
     };

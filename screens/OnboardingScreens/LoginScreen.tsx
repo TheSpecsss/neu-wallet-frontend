@@ -17,6 +17,7 @@ import api from "../../api/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
+import { jwtDecode } from "jwt-decode";
 
 import {
   widthPercentageToDP as wp,
@@ -25,6 +26,9 @@ import {
 
 import { LOGIN } from "../../api/graphql/mutation";
 import { print as graphqlPrint } from "graphql";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -58,22 +62,37 @@ const LoginScreen = ({ navigation }: Props) => {
           },
         },
       }),
-    onSuccess: ({ data }) => {
-      console.log(data);
-      if (data.errors) {
-        if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
-          navigation.navigate("EmailConfirmationScreen", {
-            emailadd: email,
-          });
-          return Toast.show({
-            type: "error",
-            text1: "Email need to verify.",
-          });
+      onSuccess: async ({ data }) => {
+        if (data.errors) {
+          if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
+            navigation.navigate("EmailConfirmationScreen", { 
+              emailadd: email 
+            });
+            return Toast.show({ 
+              type: "error",
+               text1: "Email needs to be verified." });
+          } else {
+            return Toast.show({ 
+              type: "error", 
+              text1: data.errors[0].message 
+            });
+          }
         } else {
-          return Toast.show({
-            type: "error",
-            text1: data.errors[0].message,
+          Toast.show({ 
+            type: "success", 
+            text1: "Login Successful" 
           });
+    
+          const token: string = data.data.login.token;
+          await AsyncStorage.setItem("userToken", token);
+    
+          const decodedToken: { accountType: string } = jwtDecode(token);
+    
+          if (decodedToken.accountType === "SUPER_ADMIN") {
+            navigation.replace("AdminTopTab");
+          } else {
+            navigation.replace("MainBottomTab");
+          }
         }
       } else {
         Toast.show({
@@ -89,6 +108,7 @@ const LoginScreen = ({ navigation }: Props) => {
         navigation.navigate("MainBottomTab");
       }
     },
+
     onError: (error) => {
       Toast.show({
         type: "error",
@@ -97,7 +117,7 @@ const LoginScreen = ({ navigation }: Props) => {
       });
     },
   });
-
+  
   return (
     <ImageBackground
       source={require("../../assets/NEUBackground.png")}

@@ -25,21 +25,36 @@ import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
 import api from "./api/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 
+
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
 
 const App = () => {
+
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+
   useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-  }, [isFontLoaded]);
+    const checkUserRole = async () => {
+      const role = await getUserRole();
+      console.log("User Role:", role);
+
+      if (role === "SUPER_ADMIN") {
+        setInitialRoute("AuditLogsScreen");
+      } else {
+        setInitialRoute("MainBottomTab");
+      }
+    };
+
+    checkUserRole();
+  }, []);
+
+  if (!initialRoute) return <SplashScreen />; // Show loading while checking role
 
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <MainStack.Navigator initialRouteName="LandingScreen">
+
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}
