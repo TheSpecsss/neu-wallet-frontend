@@ -28,8 +28,6 @@ import { LOGIN } from "../../api/graphql/mutation";
 import { print as graphqlPrint } from "graphql";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
   "LoginScreen"
@@ -62,37 +60,21 @@ const LoginScreen = ({ navigation }: Props) => {
           },
         },
       }),
-      onSuccess: async ({ data }) => {
-        if (data.errors) {
-          if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
-            navigation.navigate("EmailConfirmationScreen", { 
-              emailadd: email 
-            });
-            return Toast.show({ 
-              type: "error",
-               text1: "Email needs to be verified." });
-          } else {
-            return Toast.show({ 
-              type: "error", 
-              text1: data.errors[0].message 
-            });
-          }
-        } else {
-          Toast.show({ 
-            type: "success", 
-            text1: "Login Successful" 
+    onSuccess: async ({ data }) => {
+      if (data.errors) {
+        if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
+          navigation.navigate("EmailConfirmationScreen", {
+            emailadd: email,
           });
-    
-          const token: string = data.data.login.token;
-          await AsyncStorage.setItem("userToken", token);
-    
-          const decodedToken: { accountType: string } = jwtDecode(token);
-    
-          if (decodedToken.accountType === "SUPER_ADMIN") {
-            navigation.replace("AdminTopTab");
-          } else {
-            navigation.replace("MainBottomTab");
-          }
+          return Toast.show({
+            type: "error",
+            text1: "Email needs to be verified.",
+          });
+        } else {
+          return Toast.show({
+            type: "error",
+            text1: data.errors[0].message,
+          });
         }
       } else {
         Toast.show({
@@ -101,14 +83,23 @@ const LoginScreen = ({ navigation }: Props) => {
         });
 
         const token: string = data.data.login.token;
+        await AsyncStorage.setItem("userToken", token);
+
+        const decodedToken: { accountType: string } = jwtDecode(token);
+
         console.log("Token: " + token);
         storeToken(token);
         console.log(getToken);
 
-        navigation.navigate("MainBottomTab");
+        if (decodedToken.accountType === "SUPER_ADMIN") {
+          navigation.replace("AdminTopTab");
+        } else {
+          navigation.replace("MainBottomTab");
+        }
       }
-    },
 
+      navigation.navigate("MainBottomTab");
+    },
     onError: (error) => {
       Toast.show({
         type: "error",
@@ -117,7 +108,7 @@ const LoginScreen = ({ navigation }: Props) => {
       });
     },
   });
-  
+
   return (
     <ImageBackground
       source={require("../../assets/NEUBackground.png")}
