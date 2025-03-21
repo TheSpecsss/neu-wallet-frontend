@@ -1,28 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import UserScreen from "../screens/Admin/UserScreen";
 import AuditLogScreen from "../screens/Admin/AuditLogScreen";
 import type { AdminTopTabParamList } from "../types";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { getUserInfo } from "../api/auth";
+import { logout } from "../api/auth";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 const TopTab = createMaterialTopTabNavigator<AdminTopTabParamList>();
 
-
-
 const AdminTopTab = () => {
+  const [name, setName] = React.useState("");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await getUserInfo();
+      setName(userInfo.name);
+    };
+    fetchUserInfo();
+  }, []);
+
+  const navigation = useNavigation();
+
+  const signOut = async () => {
+    try {
+      await logout();
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "LoginScreen" }],
+        })
+      );
+      Toast.show({
+        type: "success",
+        text1: `User "${name}" logged out.`,
+      });
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View>
-          <Text style={styles.mediumText}>Hi Admin!</Text>
-          <Text style={styles.smallText}>Welcome back to your panel.</Text>
+          <Text style={styles.mediumText}>Hi {name}!</Text>
+          <Text style={styles.smallText}>
+            Welcome back to your admin panel.
+          </Text>
         </View>
-        <TouchableOpacity style={styles.signOutButton}>
-          <FontAwesome name="sign-out" size={24} color="#204A69"/>
+        <TouchableOpacity style={styles.signOutButton} onPress={signOut}>
+          <FontAwesome name="sign-out" size={24} color="#204A69" />
         </TouchableOpacity>
       </View>
-      
+
       <TopTab.Navigator
         initialRouteName="UserScreen"
         screenOptions={{
@@ -39,9 +74,17 @@ const AdminTopTab = () => {
           component={UserScreen}
           options={{
             tabBarLabel: ({ focused }) => (
-              <View style={[styles.tabButton, focused && styles.tabButtonActive]}>
-                <FontAwesome name="users" size={16} color={focused ? "#fff" : "#204A69"} />
-                <Text style={[styles.tabText, focused && styles.tabTextActive]}>Users</Text>
+              <View
+                style={[styles.tabButton, focused && styles.tabButtonActive]}
+              >
+                <FontAwesome
+                  name="users"
+                  size={16}
+                  color={focused ? "#fff" : "#204A69"}
+                />
+                <Text style={[styles.tabText, focused && styles.tabTextActive]}>
+                  Users
+                </Text>
               </View>
             ),
           }}
@@ -51,9 +94,17 @@ const AdminTopTab = () => {
           component={AuditLogScreen}
           options={{
             tabBarLabel: ({ focused }) => (
-              <View style={[styles.tabButton, focused && styles.tabButtonActive]}>
-                <FontAwesome name="file-text" size={16} color={focused ? "#fff" : "#204A69"} />
-                <Text style={[styles.tabText, focused && styles.tabTextActive]}>Audit Logs</Text>
+              <View
+                style={[styles.tabButton, focused && styles.tabButtonActive]}
+              >
+                <FontAwesome
+                  name="file-text"
+                  size={16}
+                  color={focused ? "#fff" : "#204A69"}
+                />
+                <Text style={[styles.tabText, focused && styles.tabTextActive]}>
+                  Audit Logs
+                </Text>
               </View>
             ),
           }}
@@ -79,7 +130,7 @@ const styles = StyleSheet.create({
   },
   mediumText: {
     fontSize: 32,
-    fontFamily:"klavika-bold" ,
+    fontFamily: "klavika-bold",
     color: "#204A69",
   },
   smallText: {
@@ -94,7 +145,6 @@ const styles = StyleSheet.create({
     paddingVertical: "2%",
     borderRadius: 6,
     gap: 5,
-
   },
   signOutText: {
     color: "#204A69",

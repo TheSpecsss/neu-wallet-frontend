@@ -171,8 +171,8 @@ const EmailConfirm = ({ route, navigation }: Props) => {
         <TextInput
           style={styles.input}
           placeholder="Enter 6 character code"
-          value={code.toUpperCase()}
-          onChangeText={inputCode}
+          value={code}
+          onChangeText={(inputext) => inputCode(inputext.toUpperCase())}
         />
         <TouchableOpacity
           style={styles.buttonContainer}

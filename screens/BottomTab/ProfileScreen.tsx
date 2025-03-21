@@ -10,11 +10,9 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MainBottomTabParamlist } from "../../types";
-
 import { logout } from "../../api/auth";
-
 import { getUserInfo } from "../../api/auth";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import Toast from "react-native-toast-message";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -38,6 +36,10 @@ const ProfileScreen = () => {
           routes: [{ name: "LoginScreen" }],
         })
       );
+      Toast.show({
+        type: "success",
+        text1: `User "${name}" logged out.`,
+      });
     } catch (error) {
       console.error("Error logging out:", error);
     }
