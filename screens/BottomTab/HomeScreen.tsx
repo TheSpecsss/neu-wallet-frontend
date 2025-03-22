@@ -24,7 +24,7 @@ import type { MainBottomTabParamlist } from "../../types";
 import { useRecentTransactions } from "../../hooks/useRecentTransactions";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getUserBalance } from "../../api/auth";
+import { getUserBalance, getUserRole } from "../../api/auth";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -47,15 +47,10 @@ const HomeScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     const loadUserRole = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        if (token) {
-          const decoded: any = jwtDecode(token);
-          setRole(decoded.role);
-        }
-      } catch (error) {
-        console.error("Error decoding token", error);
-      }
+      const role = await getUserRole();
+      setRole(role);
+
+      console.log(role);
     };
 
     const walletBalance = async () => {
@@ -86,19 +81,17 @@ const HomeScreen = ({ navigation }: Props) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        {/* Show "Send" button only for USER, CASHIER, ADMIN */}
-        {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+        {role && role === "USER" && (
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
           >
-            <SvgXml xml={scanQrLogo} width={wp(10)} height={hp(10)} />
+            <SvgXml xml={scanQrLogo} width={wp(8)} height={hp(10)} />
             <Text style={styles.buttonText}>Scan</Text>
           </TouchableOpacity>
         )}
 
-        {/* Show "Send" button only for USER, CASHIER, ADMIN */}
-        {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+        {role && role === "USER" && (
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("SendScreen")}
@@ -108,24 +101,29 @@ const HomeScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
         )}
 
-        {/* Show "Checkout" button only for CASHIER */}
-        {role === "CASHIER" && (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
-          >
-            <SvgXml xml={checkoutLogo} width={wp(10)} height={hp(10)} />
-            <Text style={styles.buttonText}>Checkout</Text>
-          </TouchableOpacity>
-        )}
+        {role &&
+          (role === "USER" || role === "CASH_TOP_UP" || role === "CASHIER") && (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
+            >
+              <SvgXml xml={checkoutLogo} width={wp(10.5)} height={hp(10)} />
+              <Text style={styles.buttonText}>
+                {role === "USER"
+                  ? "TopUPs"
+                  : role === "CASH_TOP_UP"
+                  ? "Chit Out"
+                  : "Checkout"}
+              </Text>
+            </TouchableOpacity>
+          )}
 
-        {/* Show "Load Balance" button only for CASH_TOP_UP */}
-        {role !== "CASH_TOP_UP" && role !== "SUPER_ADMIN" && (
+        {role && role === "CASH_TOP_UP" && (
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("LoadScreen")}
           >
-            <SvgXml xml={loadBalanceLogo} width={wp(8)} height={hp(10)} />
+            <SvgXml xml={loadBalanceLogo} width={wp(10.5)} height={hp(10)} />
             <Text style={styles.buttonText}>Load Balance</Text>
           </TouchableOpacity>
         )}

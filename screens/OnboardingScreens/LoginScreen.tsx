@@ -18,7 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
 import { jwtDecode } from "jwt-decode";
-
+import { getUserRole } from "../../api/auth";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -91,14 +91,14 @@ const LoginScreen = ({ navigation }: Props) => {
         storeToken(token);
         console.log(getToken);
 
-        if (decodedToken.accountType === "SUPER_ADMIN") {
+        const role = await getUserRole();
+
+        if (role === "SUPER_ADMIN") {
           navigation.replace("AdminTopTab");
         } else {
           navigation.replace("MainBottomTab");
         }
       }
-
-      navigation.navigate("MainBottomTab");
     },
     onError: (error) => {
       Toast.show({
