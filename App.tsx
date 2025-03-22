@@ -22,13 +22,17 @@ import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmati
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
 import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
+import AuditLogScreen from "./screens/Admin/AuditLogScreen";
+import UserScreen from "./screens/Admin/UserScreen";
 import { getUserRole } from "./api/auth";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState<string | null>(null);
+  const [initialRoute, setInitialRoute] = useState<
+    keyof MainStackParamList | undefined
+  >(undefined);
   const [isFontLoaded, setIsFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -37,9 +41,10 @@ const App = () => {
       console.log("User Role:", role);
 
       if (role === "SUPER_ADMIN") {
-        setInitialRoute("AuditLogsScreen");
+        // ADMIN SCREEN
+        setInitialRoute("AdminTopTab" as keyof MainStackParamList);
       } else {
-        setInitialRoute("MainBottomTab");
+        setInitialRoute("MainBottomTab" as keyof MainStackParamList);
       }
     };
 
@@ -51,7 +56,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="LandingScreen">
+        <MainStack.Navigator initialRouteName={initialRoute}>
           <MainStack.Screen
             name="SplashScreen"
             component={SplashScreen}

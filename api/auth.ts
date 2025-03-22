@@ -66,15 +66,16 @@ export const removeToken = async () => {
 
 export const getUserRole = async (): Promise<string | null> => {
     try {
-        const token = await AsyncStorage.getItem("userToken");
-        if (!token) return null;
+        const userInfo = await getUserInfo();
+        const userRole : string | null = userInfo.data.accountType || null;
 
-        const decodedToken = jwtDecode<{ accountType: string }>(token);
-        return decodedToken.accountType || null;
-    } catch (error) {
-        console.error("Error retrieving user role:", error);
-        return null;
-    }
+        return userRole ;
+
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+
+      return null;
 };
 export const getUserInfo = async () => {
     const fetchUserData = async () => {
@@ -96,7 +97,13 @@ export const getUserInfo = async () => {
     };
     try {
         const data = await fetchUserData();
-        return { data }; // Return the data in an object
+
+        const name : string = data.name || "none";
+        const email : string = data.email || "none";
+        const accountID : string = data.id || "none";
+        const dateCreated : string  = data.id || "none";
+
+        return { data, name, email, accountID, dateCreated }; // Return the data in an object
     } catch (error) {
         console.error("Error fetching user data:", error);
         throw error; // Rethrow the error for the caller to handle

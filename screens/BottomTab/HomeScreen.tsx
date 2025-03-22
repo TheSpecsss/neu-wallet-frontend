@@ -24,7 +24,7 @@ import type { MainBottomTabParamlist } from "../../types";
 import { useRecentTransactions } from "../../hooks/useRecentTransactions";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getUserBalance } from "../../api/auth";
+import { getUserBalance, getUserRole } from "../../api/auth";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -47,17 +47,12 @@ const HomeScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     const loadUserRole = async () => {
-      try {
-        const token = await AsyncStorage.getItem("userToken");
-        if (token) {
 
-          const decodedToken: { accountType: string } = jwtDecode(token);
-          setRole(decodedToken.accountType);
+      const role = await getUserRole();
+      setRole(role);
 
-        }
-      } catch (error) {
-        console.error("Error decoding token", error);
-      }
+      console.log(role);
+
     };
 
     const walletBalance = async () => {
@@ -115,21 +110,24 @@ const HomeScreen = ({ navigation }: Props) => {
         )}
 
 
-        {role && (role === "USER" || role === "CASH_TOP_UP"  || role === "CASHIER") && (
+        {role &&
+          (role === "USER" || role === "CASH_TOP_UP" || role === "CASHIER") && (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
+            >
+              <SvgXml xml={checkoutLogo} width={wp(10.5)} height={hp(10)} />
+              <Text style={styles.buttonText}>
+                {role === "USER"
+                  ? "TopUPs"
+                  : role === "CASH_TOP_UP"
+                  ? "Chit Out"
+                  : "Checkout"}
+              </Text>
+            </TouchableOpacity>
+          )}
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.getParent()?.navigate("CheckOutScreen")}
-          >
-
-            <SvgXml xml={checkoutLogo} width={wp(10.5)} height={hp(10)} />
-            <Text style={styles.buttonText}>
-            {role === "USER" ? "Generate QR" : role === "CASH_TOP_UP" ? "Chit Out" : "Checkout"}
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        {role && role === "CASH_TOP_UP"  && (
+        {role && role === "CASH_TOP_UP" && (
 
           <TouchableOpacity
             style={styles.button}
