@@ -47,10 +47,12 @@ const HomeScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     const loadUserRole = async () => {
+
       const role = await getUserRole();
       setRole(role);
 
       console.log(role);
+
     };
 
     const walletBalance = async () => {
@@ -81,17 +83,23 @@ const HomeScreen = ({ navigation }: Props) => {
       </View>
 
       <View style={styles.buttonContainer}>
+
         {role && role === "USER" && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
           >
+
             <SvgXml xml={scanQrLogo} width={wp(8)} height={hp(10)} />
+
             <Text style={styles.buttonText}>Scan</Text>
           </TouchableOpacity>
         )}
 
+
         {role && role === "USER" && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("SendScreen")}
@@ -100,6 +108,7 @@ const HomeScreen = ({ navigation }: Props) => {
             <Text style={styles.buttonText}>Send</Text>
           </TouchableOpacity>
         )}
+
 
         {role &&
           (role === "USER" || role === "CASH_TOP_UP" || role === "CASHIER") && (
@@ -119,11 +128,14 @@ const HomeScreen = ({ navigation }: Props) => {
           )}
 
         {role && role === "CASH_TOP_UP" && (
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("LoadScreen")}
           >
+
             <SvgXml xml={loadBalanceLogo} width={wp(10.5)} height={hp(10)} />
+
             <Text style={styles.buttonText}>Load Balance</Text>
           </TouchableOpacity>
         )}
