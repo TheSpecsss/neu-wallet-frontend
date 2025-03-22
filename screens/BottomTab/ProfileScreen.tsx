@@ -124,25 +124,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FA",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: hp(10),  //d hp(25)
   },
   header: {
-    fontSize: 22,
+    fontSize: wp(5), //c
     fontFamily: "klavika-bold",
     color: "#204A69",
-    marginBottom: 20,
+    marginBottom: hp(1.5), // c
   },
   profileContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: hp(2), // c
   },
   name: {
-    fontSize: 18,
+    fontSize: wp(5), // c
     fontFamily: "klavika-bold",
     color: "#1E3A5F",
   },
   role: {
-    fontSize: 14,
+    fontSize: wp(3), //c
     fontFamily: "klavika-bold",
     color: "#8E8E93",
   },
@@ -150,41 +150,41 @@ const styles = StyleSheet.create({
     width: "95%",
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: 20,
+    padding: wp(5), //c
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginBottom: hp(25),
+    marginBottom: hp(20), //c
   },
   detailItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
+    paddingVertical: hp(1), //c
+    borderBottomWidth: 1, 
     borderBottomColor: "#E0E0E0",
-    marginBottom: wp(4),
+    marginBottom: hp(2), //c
   },
   detailLabel: {
-    fontSize: 14,
+    fontSize: wp(3.5), //c
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
   detailValue: {
-    fontSize: 14,
+    fontSize: wp(3.5), //c
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
   aboutApp: {
-    marginTop: 30,
+    marginTop: hp(4), //c
     width: "90%",
     backgroundColor: "#E0E0E0",
-    padding: 12,
+    padding: 12, 
     borderRadius: 10,
     alignItems: "center",
   },
   aboutAppText: {
-    fontSize: 14,
+    fontSize: wp(4), //c
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
@@ -192,19 +192,19 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 1,
     backgroundColor: "#D1D1D1",
-    marginVertical: 20,
+    marginVertical: hp(2), //c
   },
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
     width: "90%",
-    paddingVertical: 12,
-    borderRadius: 10,
+    paddingVertical: hp(1), //c
+    borderRadius: 10, 
   },
   logoutText: {
-    fontSize: 17,
+    fontSize: wp(4), //c
     fontFamily: "klavika-bold",
     color: "#204A69",
-    marginLeft: 20,
+    marginLeft: hp(2), //c
   },
 });
