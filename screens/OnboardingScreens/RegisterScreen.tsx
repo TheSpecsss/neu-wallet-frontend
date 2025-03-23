@@ -1,5 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,13 +13,9 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import type { StackNavigationProp } from "@react-navigation/stack";
-import api from "../../api/axiosInstance";
 import type { MainStackParamList } from "../../types";
-
-import { REGISTER } from "../../api/graphql/mutation";
-import { print as graphqlPrint } from "graphql";
+import { useRegisterMutation } from "../../hooks/mutation/useRegisterMutation";
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -37,42 +32,12 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [password, setPassword] = React.useState<string>("");
   const [confirmPassword, setConfirmPassword] = React.useState<string>("");
 
-  const registerMutation = useMutation({
-    mutationFn: async () =>
-      await api({
-        data: {
-          operationName: "Register",
-          query: graphqlPrint(REGISTER),
-          variables: {
-            email,
-            name,
-            password,
-            confirmPassword,
-          },
-        },
-      }),
-    onError(error) {
-      Toast.show({
-        type: "error",
-        text1: error.message,
-      });
-    },
-    onSuccess({ data }) {
-      if (data.errors) {
-        return Toast.show({
-          type: "error",
-          text1: data.errors[0].message,
-        });
-      }
+  const { mutate: register } = useRegisterMutation();
 
-      Toast.show({
-        type: "success",
-        text1: "Registration Successful",
-      });
-
-      navigation.navigate("LoginScreen");
-    },
-  });
+  const handleRegister = useCallback(
+    () => register({ email, name, password, confirmPassword }),
+    [email, name, password, confirmPassword, register]
+  );
 
   return (
     <ImageBackground
@@ -144,7 +109,7 @@ const RegisterScreen = ({ navigation }: Props) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.solidButton}
-              onPress={() => registerMutation.mutate()}
+              onPress={handleRegister}
             >
               <Text style={styles.solidButtonText}>Register</Text>
             </TouchableOpacity>

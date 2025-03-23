@@ -4,6 +4,7 @@ export const LOGIN = gql(`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      expiresAt
     }
   }
 `);
@@ -16,13 +17,20 @@ export const REGISTER = gql(`
   }
 `);
 
+export const CONFIRM_VERIFICATION = gql(`
+  mutation ConfirmVerification($email: String!, $code: String!) {
+    confirmVerification(email: $email, code: $code) {
+      id
+    }
+  }  
+`)
 
 export const PAY = gql(`
   mutation Pay($cashierId: String!, $amount: Int!) {
-  pay(cashierId: $cashierId, amount: $amount) {
-    balance
-    createdAt
-    id
-  }
-} 
-  `);
+    pay(cashierId: $cashierId, amount: $amount) {
+      balance
+      createdAt
+      id
+    }
+  } 
+`);

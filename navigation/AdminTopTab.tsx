@@ -1,33 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useCallback } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import UserScreen from "../screens/Admin/UserScreen";
 import AuditLogScreen from "../screens/Admin/AuditLogScreen";
 import type { AdminTopTabParamList } from "../types";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { getUserInfo } from "../api/auth";
-import { logout } from "../api/auth";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { useSession } from "../context/Session";
+import type { StackNavigationProp } from "@react-navigation/stack";
 
 const TopTab = createMaterialTopTabNavigator<AdminTopTabParamList>();
 
 const AdminTopTab = () => {
-  const [name, setName] = React.useState("");
+  const navigation = useNavigation<StackNavigationProp<AdminTopTabParamList>>();
+  const { user, clearSession } = useSession();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const userInfo = await getUserInfo();
-      setName(userInfo.name);
-    };
-    fetchUserInfo();
-  }, []);
-
-  const navigation = useNavigation();
-
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
-      await logout();
+      await clearSession();
 
       navigation.dispatch(
         CommonActions.reset({
@@ -37,18 +28,18 @@ const AdminTopTab = () => {
       );
       Toast.show({
         type: "success",
-        text1: `User "${name}" logged out.`,
+        text1: "Successfully logged out",
       });
     } catch (error) {
       console.error("Error logging out:", error);
     }
-  };
+  }, [clearSession, navigation.dispatch]);
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View>
-          <Text style={styles.mediumText}>Hi {name}!</Text>
+          <Text style={styles.mediumText}>Hi {user?.name}!</Text>
           <Text style={styles.smallText}>
             Welcome back to your admin panel.
           </Text>

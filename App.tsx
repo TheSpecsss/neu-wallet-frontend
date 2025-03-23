@@ -4,7 +4,6 @@ import Toast from "react-native-toast-message";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { loadFont } from "./loadFont";
 import LoginScreen from "./screens/OnboardingScreens/LoginScreen";
 import RegisterScreen from "./screens/OnboardingScreens/RegisterScreen";
 import LandingScreen from "./screens/OnboardingScreens/LandingScreen";
@@ -19,11 +18,10 @@ import CheckOutScreen from "./screens/TransactionScreen/CheckOutScreen";
 import QRGenerateScreen from "./screens/TransactionScreen/QRScreen/QRGenerateScreen";
 import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
-import { type MainStackParamList, MainBottomTabParamlist } from "./types";
+import type { MainStackParamList } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
-import AuditLogScreen from "./screens/Admin/AuditLogScreen";
-import UserScreen from "./screens/Admin/UserScreen";
-import { getUserRole } from "./api/auth";
+import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
+import { SessionProvider, useSession } from "./context/Session";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
@@ -32,110 +30,111 @@ const App = () => {
   const [initialRoute, setInitialRoute] = useState<
     keyof MainStackParamList | undefined
   >(undefined);
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
 
+  const { user } = useSession();
   useEffect(() => {
-    const checkUserRole = async () => {
-      const role = await getUserRole();
-      console.log("User Role:", role);
-
-      if (role === null) {
-        setInitialRoute("LandingScreen");
-      } else if (role === "SUPER_ADMIN") {
-        // ADMIN SCREEN
-        setInitialRoute("AdminTopTab" as keyof MainStackParamList);
+    if (user) {
+      if (user.accountType === "ADMIN" || user.accountType === "SUPER_ADMIN") {
+        setInitialRoute("AdminTopTab");
       } else {
-        setInitialRoute("MainBottomTab" as keyof MainStackParamList);
+        setInitialRoute("MainBottomTab");
       }
-    };
-
-    checkUserRole();
-  }, []);
+    } else {
+      setInitialRoute("LandingScreen");
+    }
+  }, [user]);
 
   if (!initialRoute) return <SplashScreen />; // Show loading while checking role
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <MainStack.Navigator initialRouteName={initialRoute}>
-          <MainStack.Screen
-            name="SplashScreen"
-            component={SplashScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="LandingScreen"
-            component={LandingScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="RegisterScreen"
-            component={RegisterScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="MainBottomTab"
-            component={MainBottomTab}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="QRScanScreen"
-            component={QRScanScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="ConfirmTransactionScreen"
-            component={ConfirmTransactionScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="DetailsScreen"
-            component={DetailsScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="SendScreen"
-            component={SendScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="LoadScreen"
-            component={LoadScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="CheckOutScreen"
-            component={CheckOutScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="AdminTopTab"
-            component={AdminTopTab}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="QRGenerateScreen"
-            component={QRGenerateScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="EditUserScreen"
-            component={EditUserScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="EmailConfirmationScreen"
-            component={EmailConfirmationScreen}
-            options={{ headerShown: false }}
-          />
-        </MainStack.Navigator>
-        <Toast />
-      </NavigationContainer>
+      <SessionProvider queryClient={queryClient}>
+        <NavigationContainer>
+          <MainStack.Navigator initialRouteName={initialRoute}>
+            <MainStack.Screen
+              name="SplashScreen"
+              component={SplashScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="LandingScreen"
+              component={LandingScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="RegisterScreen"
+              component={RegisterScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="LoginScreen"
+              component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="MainBottomTab"
+              component={MainBottomTab}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="QRScanScreen"
+              component={QRScanScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="ConfirmTransactionScreen"
+              component={ConfirmTransactionScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="DetailsScreen"
+              component={DetailsScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="SendScreen"
+              component={SendScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="LoadScreen"
+              component={LoadScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="CheckOutScreen"
+              component={CheckOutScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="AdminTopTab"
+              component={AdminTopTab}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="QRGenerateScreen"
+              component={QRGenerateScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="EditUserScreen"
+              component={EditUserScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="EmailConfirmationScreen"
+              component={EmailConfirmationScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="QRGeneratorScreen"
+              component={QRGeneratorScreen}
+              options={{ headerShown: false }}
+            />
+          </MainStack.Navigator>
+          <Toast />
+        </NavigationContainer>
+      </SessionProvider>
     </QueryClientProvider>
   );
 };

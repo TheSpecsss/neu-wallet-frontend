@@ -1,8 +1,8 @@
 import { gql } from "./codegen";
 
-export const GET_RECENT_TRANSACTION_BY_USER_ID = gql(`
-  query GetRecentTransactionByUserId($perPage: Int!, $page: Int!) {
-    getRecentTransactionByUserId(perPage: $perPage, page: $page) {
+export const GET_RECENT_TRANSACTIONS_BY_USER_ID = gql(`
+  query GetRecentTransactionsByUserId($perPage: Int!, $page: Int!) {
+    getRecentTransactionsByUserId(perPage: $perPage, page: $page) {
       transactions {
         id
         amount
@@ -20,4 +20,24 @@ export const GET_RECENT_TRANSACTION_BY_USER_ID = gql(`
       hasPreviousPage
     }
   }
+`);
+
+export const GET_USER = gql(`
+  query GetUser  {
+    getUser  {
+        id
+        name
+        email
+        accountType
+        createdAt
+    }
+  }
+`);
+
+export const GET_USER_BALANCE = gql(`
+  query GetUserBalanceByUserId {
+    getUserBalanceByUserId {
+      balance
+    }
+  }  
 `);
