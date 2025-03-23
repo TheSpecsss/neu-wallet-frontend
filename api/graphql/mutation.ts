@@ -15,3 +15,14 @@ export const REGISTER = gql(`
     }
   }
 `);
+
+
+export const PAY = gql(`
+  mutation Pay($cashierId: String!, $amount: Int!) {
+  pay(cashierId: $cashierId, amount: $amount) {
+    balance
+    createdAt
+    id
+  }
+} 
+  `);

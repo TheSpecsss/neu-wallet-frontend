@@ -1,17 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MainStackParamList } from "../../../types";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, CommonActions } from "@react-navigation/native";
 import { loadFont } from "../../../loadFont";
-
+import { checkoutLogo } from "../../../loadSVG";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 import QRCode from "react-native-qrcode-svg";
-
+import { SvgXml } from "react-native-svg";
+import { getUserRole } from "../../../api/auth";
 type QRGenerateScreenProps = StackNavigationProp<
   MainStackParamList,
   "QRGenerateScreen"
@@ -32,11 +33,17 @@ type Props = {
 const QRGenerate = ({ route, navigation }: Props) => {
   const { data } = route.params;
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
 
   console.log("QR DATA:" + data);
 
   useEffect(() => {
     loadFont().then(() => setIsFontLoaded(true));
+    const loadUserRole = async () => {
+      const role = await getUserRole();
+      setRole(role);
+    };
+    loadUserRole();
   }, []);
 
   if (!isFontLoaded) {
@@ -46,12 +53,22 @@ const QRGenerate = ({ route, navigation }: Props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>QR Generate Screen</Text>
-      <QRCode
-        size={wp(60)}
-        logo={require("../../../assets/NEUlogo.png")}
-        logoSize={wp(20)}
-        value={data}
-      />
+      <QRCode size={wp(60)} logoSize={wp(20)} value={data} />
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "MainBottomTab" }],
+              })
+            );
+          }}
+        >
+          <Text style={styles.buttonText}>Home</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -66,6 +83,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#F5F5F5",
   },
+  bottomContainer: {
+    position: "absolute",
+    bottom: 0,
+    marginBottom: hp(3),
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexDirection: "column",
+    backgroundColor: "#F5F5F5",
+  },
   header: {
     fontSize: wp(6),
     fontFamily: "klavika-bold",
@@ -73,6 +100,21 @@ const styles = StyleSheet.create({
     color: "#204A69",
     marginTop: hp(7.7),
     marginBottom: hp(5),
+  },
+  buttonContainer: {
+    backgroundColor: "#043E75",
+    height: 45,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    width: wp(60),
+    marginTop: hp(1),
+  },
+
+  buttonText: {
+    color: "white",
+    fontSize: wp(4),
+    fontFamily: "klavika-medium",
   },
   containerBalance: {
     justifyContent: "center",
@@ -122,25 +164,12 @@ const styles = StyleSheet.create({
     fontSize: wp(5),
     marginBottom: 5,
   },
+
   warningText: {
     fontFamily: "klavika-medium-italic",
     color: "#204A69",
     fontSize: wp(4),
     textAlign: "center",
     marginTop: hp(48),
-  },
-  buttonContainer: {
-    backgroundColor: "#043E75",
-    height: 40,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "80%",
-    marginTop: hp(4),
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 20,
-    fontFamily: "klavika-medium",
   },
 });

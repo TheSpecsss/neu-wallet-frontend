@@ -21,7 +21,6 @@ import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
 import { type MainStackParamList, MainBottomTabParamlist } from "./types";
 import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
-import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
 import AuditLogScreen from "./screens/Admin/AuditLogScreen";
 import UserScreen from "./screens/Admin/UserScreen";
 import { getUserRole } from "./api/auth";
@@ -130,11 +129,6 @@ const App = () => {
           <MainStack.Screen
             name="EmailConfirmationScreen"
             component={EmailConfirmationScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="QRGeneratorScreen"
-            component={QRGeneratorScreen}
             options={{ headerShown: false }}
           />
         </MainStack.Navigator>

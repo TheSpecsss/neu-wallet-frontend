@@ -75,20 +75,6 @@ const LoginScreen = ({ navigation }: Props) => {
             type: "error",
             text1: data.errors[0].message,
           });
-
-    
-          const token: string = data.data.login.token;
-          await AsyncStorage.setItem("userToken", token);
-    
-          const decodedToken: { accountType: string } = jwtDecode(token);
-          console.log("Decoded Token:", decodedToken);   
-           
-          if (decodedToken.accountType === "SUPER_ADMIN") {
-            navigation.replace("AdminTopTab");
-          } else {
-            navigation.replace("MainBottomTab");
-          }
-
         }
       } else {
         Toast.show({
@@ -98,8 +84,6 @@ const LoginScreen = ({ navigation }: Props) => {
 
         const token: string = data.data.login.token;
         await AsyncStorage.setItem("userToken", token);
-
-        const decodedToken: { accountType: string } = jwtDecode(token);
 
         console.log("Token: " + token);
         storeToken(token);

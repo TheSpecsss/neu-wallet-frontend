@@ -13,7 +13,7 @@ api.interceptors.request.use(
   async (config) => {
     try {
       const token = await getToken();
-      console.log('[api.interceptors] Token retrieved: ' + token);
+      //console.log('[api.interceptors] Token retrieved: ' + token);
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
