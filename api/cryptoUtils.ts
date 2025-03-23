@@ -7,8 +7,8 @@ const SECRET_KEY = process.env.EXPO_PUBLIC_QR_KEY || "not found";
 
 export const encryptString = (text: string): string => {
 
-    console.log("SECRET_KEY: "+SECRET_KEY);
-    console.log("env.QR_ENCRYPTION_KEY: "+ (process.env.QR_ENCRYPTION_KEY || "not found"));
+    //console.log("SECRET_KEY: "+SECRET_KEY);
+    //console.log("env.QR_ENCRYPTION_KEY: "+ (process.env.EXPO_PUBLIC_QR_KEY? "" || "not found"));
 
     const ciphertext = CryptoJS.AES.encrypt(text, SECRET_KEY).toString();
     return ciphertext;

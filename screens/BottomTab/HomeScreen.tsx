@@ -22,9 +22,9 @@ import {
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainBottomTabParamlist } from "../../types";
 import { useRecentTransactions } from "../../hooks/useRecentTransactions";
-import { jwtDecode } from "jwt-decode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserBalance, getUserRole } from "../../api/auth";
+
+import { getUserInfo } from "../../api/auth";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   MainBottomTabParamlist,
@@ -38,6 +38,8 @@ const HomeScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [balance, setBalance] = useState(0.0);
   const [role, setRole] = useState<string | null>(null);
+  const [name, setName] = useState("");
+
   const {
     data,
     data: transactions,
@@ -45,21 +47,22 @@ const HomeScreen = ({ navigation }: Props) => {
     error,
   } = useRecentTransactions(5, 1);
 
+  const loadUserRole = async () => {
+    const role = await getUserRole();
+    setRole(role);
+
+    console.log(role);
+
+    const userInfo = await getUserInfo();
+    setName(userInfo.name);
+  };
+
+  const walletBalance = async () => {
+    const balance = await getUserBalance();
+    setBalance(balance);
+  };
+
   useEffect(() => {
-    const loadUserRole = async () => {
-
-      const role = await getUserRole();
-      setRole(role);
-
-      console.log(role);
-
-    };
-
-    const walletBalance = async () => {
-      const balance = await getUserBalance();
-      setBalance(balance.data.balance);
-    };
-
     loadUserRole();
     walletBalance();
 
@@ -73,33 +76,38 @@ const HomeScreen = ({ navigation }: Props) => {
     <View style={styles.container}>
       <Text style={styles.header}>NEU Wallet</Text>
       <View style={styles.balanceCard}>
-        <View style={styles.balanceHeader}>
-          <SvgXml xml={walletLogo} width={100} height={90} />
-          <View style={styles.balanceInfo}>
-            <Text style={styles.balanceText}>Available Balance:</Text>
-            <Text style={styles.balanceAmount}>₱{balance.toFixed(2)}</Text>
+        {role && role === "USER" && (
+          <View style={styles.balanceHeader}>
+            <SvgXml xml={walletLogo} width={100} height={90} />
+            <View style={styles.balanceInfo}>
+              <Text style={styles.balanceText}>Available Balance:</Text>
+              <Text style={styles.balanceAmount}>₱{balance.toFixed(2)}</Text>
+            </View>
           </View>
-        </View>
+        )}
+        {role && role !== "USER" && (
+          <View style={styles.balanceHeader}>
+            <View>
+              <Text style={styles.headerText}>Welcome Back: {name}</Text>
+              <Text style={styles.header2Text}>Cashier </Text>
+            </View>
+          </View>
+        )}
       </View>
 
       <View style={styles.buttonContainer}>
-
         {role && role === "USER" && (
-
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("QRScanScreen")}
           >
-
             <SvgXml xml={scanQrLogo} width={wp(8)} height={hp(10)} />
 
             <Text style={styles.buttonText}>Scan</Text>
           </TouchableOpacity>
         )}
 
-
         {role && role === "USER" && (
-
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("SendScreen")}
@@ -108,7 +116,6 @@ const HomeScreen = ({ navigation }: Props) => {
             <Text style={styles.buttonText}>Send</Text>
           </TouchableOpacity>
         )}
-
 
         {role &&
           (role === "USER" || role === "CASH_TOP_UP" || role === "CASHIER") && (
@@ -128,12 +135,10 @@ const HomeScreen = ({ navigation }: Props) => {
           )}
 
         {role && role === "CASH_TOP_UP" && (
-
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.getParent()?.navigate("LoadScreen")}
           >
-
             <SvgXml xml={loadBalanceLogo} width={wp(10.5)} height={hp(10)} />
 
             <Text style={styles.buttonText}>Load Balance</Text>
@@ -144,8 +149,13 @@ const HomeScreen = ({ navigation }: Props) => {
       <View style={styles.historyContainer}>
         <View style={styles.historyHeader}>
           <Text style={styles.historyTitle}>Recent Transactions</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAll}>View All</Text>
+          <TouchableOpacity
+            onPress={() => {
+              loadUserRole();
+              walletBalance();
+            }}
+          >
+            <Text style={styles.viewAll}>Refresh</Text>
           </TouchableOpacity>
         </View>
 
@@ -219,6 +229,16 @@ const styles = StyleSheet.create({
     fontSize: wp(7),
     marginTop: hp(0.9),
     marginRight: wp(6.5),
+  },
+  headerText: {
+    color: "#FFFFFF",
+    fontSize: wp(5),
+    fontFamily: "klavika-regular-italic",
+  },
+  header2Text: {
+    fontFamily: "klavika-medium-italic",
+    color: "#FFFFFF",
+    fontSize: wp(7),
   },
   buttonContainer: {
     flexDirection: "row",
