@@ -55,11 +55,11 @@ const ProfileScreen = () => {
     try {
       const userInfo = await getUserInfo();
 
-      setName(userInfo.data.name);
+      setName(userInfo.name);
       setAccType(userInfo.data.accountType);
-      setEmail(userInfo.data.email);
-      setAccountID(userInfo.data.id);
-      setDateCreated(userInfo.data.createdAt);
+      setEmail(userInfo.email);
+      setAccountID(userInfo.accountID);
+      setDateCreated(userInfo.dateCreated);
     } catch (error) {
       console.error("Failed to fetch user info:", error);
     }
@@ -124,25 +124,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FA",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: hp(10),
   },
   header: {
-    fontSize: 22,
+    fontSize: wp(5),
     fontFamily: "klavika-bold",
     color: "#204A69",
-    marginBottom: 20,
+    marginBottom: hp(1.5),
   },
   profileContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: hp(2),
   },
   name: {
-    fontSize: 18,
+    fontSize: wp(5),
     fontFamily: "klavika-bold",
     color: "#1E3A5F",
   },
   role: {
-    fontSize: 14,
+    fontSize: wp(3),
     fontFamily: "klavika-bold",
     color: "#8E8E93",
   },
@@ -150,33 +150,33 @@ const styles = StyleSheet.create({
     width: "95%",
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: 20,
+    padding: wp(5),
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginBottom: hp(25),
+    marginBottom: hp(10),
   },
   detailItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: hp(1),
     borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",
-    marginBottom: wp(4),
+    marginBottom: hp(2),
   },
   detailLabel: {
-    fontSize: 14,
+    fontSize: wp(3.5),
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
   detailValue: {
-    fontSize: 14,
+    fontSize: wp(3.5),
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
   aboutApp: {
-    marginTop: 30,
+    marginTop: hp(4),
     width: "90%",
     backgroundColor: "#E0E0E0",
     padding: 12,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   aboutAppText: {
-    fontSize: 14,
+    fontSize: wp(4),
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
@@ -192,19 +192,19 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 1,
     backgroundColor: "#D1D1D1",
-    marginVertical: 20,
+    marginVertical: hp(2),
   },
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
     width: "90%",
-    paddingVertical: 12,
+    paddingVertical: hp(1),
     borderRadius: 10,
   },
   logoutText: {
-    fontSize: 17,
+    fontSize: wp(4),
     fontFamily: "klavika-bold",
     color: "#204A69",
-    marginLeft: 20,
+    marginLeft: hp(2),
   },
 });

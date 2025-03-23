@@ -3,7 +3,15 @@ import { Divider, Checkbox } from "react-native-paper";
 import { MainStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import React from "react";
+
+import { getUserBalance, getUserInfo } from "../../api/auth";
+import React, { useEffect, useState } from "react";
+
+import { useMutation } from "@tanstack/react-query";
+import api from "../../api/axiosInstance";
+import { print as graphqlPrint } from "graphql";
+import { PAY } from "../../api/graphql/mutation";
+import Toast from "react-native-toast-message";
 
 type DetailsScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -16,17 +24,31 @@ type Props = {
   route: RouteProp<MainStackParamList, "DetailsScreen">;
 };
 
-type QRInfo = {
-  amount: Number;
-  type: String;
+type qrDataType = {
+  receiverName: string;
+  receiver: string;
+  amount: string;
+  type: string;
+};
+
+type transactionDataType = {
+  receiver: String;
   sender: String;
+  amount: String;
+  date: String;
+  type: String;
 };
 
 const DetailsScreen = ({ route, navigation }: Props) => {
-  const transactionData: QRInfo = {
-    amount: 320.0,
-    type: "Payment",
-    sender: "9b8a5f0c",
+  const [userBalance, setUserBalance] = useState("");
+  const [userID, setUserID] = useState("");
+  const [sufficientBal, isBalSufficient] = useState(true);
+
+  const transactionData: qrDataType = {
+    receiverName: "...",
+    receiver: "...",
+    amount: "...",
+    type: "...",
   };
 
   try {
@@ -37,24 +59,95 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       const qrData = JSON.parse(data);
       transactionData.amount = qrData.amount;
       transactionData.type = qrData.type;
-      transactionData.sender = qrData.sender;
+      transactionData.receiver = qrData.receiver;
+      transactionData.receiverName = qrData.receiverName;
     }
   } catch (error) {
     console.log("No data passed to Details Screen");
   }
+
+  const [cashierId] = useState(transactionData.receiver);
+  const [amount] = useState(Number(transactionData.amount));
+
+  const payMutation = useMutation({
+    mutationFn: async () =>
+      await api({
+        data: {
+          operationName: "Pay",
+          query: `mutation Pay($cashierId: String!, $amount: Int!) {
+              pay(cashierId: $cashierId, amount: $amount) {
+                balance
+                id
+                updatedAt
+              }
+            }`,
+          variables: {
+            cashierId,
+            amount,
+          },
+        },
+      }),
+    onSuccess: async ({ data }) => {
+      const tdate = new Date(data.data.pay.updatedAt);
+      const localeDate = tdate.toLocaleString();
+
+      const transactData: transactionDataType = {
+        receiver: transactionData.receiver,
+        sender: userID,
+        amount: transactionData.amount,
+        date: localeDate,
+        type: transactionData.type,
+      };
+
+      navigation.navigate("ConfirmTransactionScreen", {
+        data: JSON.stringify(transactData),
+      });
+
+      console.log(JSON.stringify(data));
+      return;
+    },
+    onError: (error) => {
+      console.log(error);
+      throw error;
+    },
+  });
+
+  const transact = () => {
+    if (transactionData.type === "PAY") {
+      payMutation.mutate();
+    }
+  };
+
+  useEffect(() => {
+    const walletBalance = async () => {
+      const balance = await getUserBalance();
+      const user = await getUserInfo();
+      setUserBalance(balance);
+      setUserID(user.accountID);
+    };
+    walletBalance();
+
+    // check if balance is sufficient
+    isBalSufficient(Number(userBalance) >= Number(transactionData.amount));
+  }, [userBalance]);
 
   const [checked, setChecked] = React.useState(false);
 
   return (
     <View style={styles.container}>
       <View style={styles.containerColumn}>
-        <Text style={styles.textNormal}>Canteen 1</Text>
-        <Text style={styles.textBold}>9b8a5f0c</Text>
+        <Text style={styles.textNormal}>
+          {transactionData.type} to{" "}
+          {transactionData.type === "PAY" ? "cashier" : ""}
+        </Text>
+        <Text style={styles.textBold}>{transactionData.receiverName}</Text>
       </View>
 
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Balance</Text>
-        <Text style={styles.textBoldSmall}>₱967.14</Text>
+        <Text style={styles.textBoldSmall}>
+          ₱{Number(userBalance).toFixed(2)}
+        </Text>
       </View>
 
       <View style={styles.containerRow}>
@@ -64,7 +157,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Amount</Text>
         <Text style={styles.textBoldSmall}>
-          ₱{transactionData.amount.toString()}
+          ₱{Number(transactionData.amount).toFixed(2)}
         </Text>
       </View>
 
@@ -72,7 +165,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Total Amount:</Text>
         <Text style={styles.textBoldSmall}>
-          ₱{transactionData.amount.toString()}
+          ₱{Number(transactionData.amount).toFixed(2)}
         </Text>
       </View>
       <Divider style={styles.divider} />
@@ -84,21 +177,38 @@ const DetailsScreen = ({ route, navigation }: Props) => {
         </Text>
       </View>
 
-      <View style={styles.containerRow}>
-        <Checkbox
-          status={checked ? "checked" : "unchecked"}
-          onPress={() => {
-            setChecked(!checked);
-          }}
-          color="#204A69"
-        />
-        <Text>I verify that the information is accurate.</Text>
-      </View>
+      {sufficientBal && (
+        <View style={styles.containerRow}>
+          <Checkbox
+            status={checked ? "checked" : "unchecked"}
+            onPress={() => {
+              setChecked(!checked);
+            }}
+            color="#204A69"
+          />
+          <Text>I verify that the information is accurate.</Text>
+        </View>
+      )}
+      {!sufficientBal && (
+        <View style={styles.containerRow}>
+          <Text style={{ width: "100%", textAlign: "center", color: "red" }}>
+            Your account balance is too low to complete this transaction.
+          </Text>
+        </View>
+      )}
       <TouchableOpacity
         style={[styles.button, !checked && styles.buttonDisabled]}
         disabled={!checked}
+        onPress={() => transact()}
       >
         <Text style={styles.buttonText}>Proceed</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, { marginTop: 10 }]}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
     </View>
   );
@@ -155,7 +265,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#043E75",
-    height: 40,
+    height: 45,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",

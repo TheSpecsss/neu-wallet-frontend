@@ -96,7 +96,7 @@ export const QRScan = ({ navigation }: Props) => {
           </View>*/}
         </View>
       </View>
-      <Text style={styles.texttest}>DEBUG - Read: {QRData}</Text>
+      {false && <Text style={styles.texttest}>DEBUG - Read: {QRData}</Text>}
       <View style={styles.toppannel}>
         <TouchableOpacity
           style={styles.backButton}

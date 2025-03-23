@@ -127,9 +127,14 @@ export const getUserBalance = async () => {
     };
     try {
         const data = await fetchUserData();
-        return { data }; // Return the data in an object
+        return data.balance; // Return the data in an object
     } catch (error) {
-        console.error("Error fetching user data:", error);
-        throw error; // Rethrow the error for the caller to handle
+
+        const user = await getUserRole();
+        if(user === "USER") {
+            console.error("Error fetching user wallet:", error);
+        throw error; 
+        }
+        
     }
 };
