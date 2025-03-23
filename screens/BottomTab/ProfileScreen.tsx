@@ -124,25 +124,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FA",
     alignItems: "center",
-    paddingTop: hp(10),
+
+    paddingTop: hp(10),  
   },
   header: {
-    fontSize: wp(5),
+    fontSize: wp(5), 
     fontFamily: "klavika-bold",
     color: "#204A69",
-    marginBottom: hp(1.5),
+    marginBottom: hp(1.5), 
   },
   profileContainer: {
     alignItems: "center",
-    marginBottom: hp(2),
+    marginBottom: hp(2), 
   },
   name: {
-    fontSize: wp(5),
+    fontSize: wp(5), 
+
     fontFamily: "klavika-bold",
     color: "#1E3A5F",
   },
   role: {
-    fontSize: wp(3),
+
+    fontSize: wp(3), 
+
     fontFamily: "klavika-bold",
     color: "#8E8E93",
   },
@@ -150,41 +154,53 @@ const styles = StyleSheet.create({
     width: "95%",
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: wp(5),
+
+    padding: wp(5), 
+
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginBottom: hp(10),
+
+    marginBottom: hp(20), 
+
   },
   detailItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: hp(1),
-    borderBottomWidth: 1,
+
+    paddingVertical: hp(1), 
+    borderBottomWidth: 1, 
     borderBottomColor: "#E0E0E0",
-    marginBottom: hp(2),
+    marginBottom: hp(2), 
   },
   detailLabel: {
-    fontSize: wp(3.5),
+    fontSize: wp(3.5), 
+
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
   detailValue: {
-    fontSize: wp(3.5),
+
+    fontSize: wp(3.5), 
+
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
   aboutApp: {
-    marginTop: hp(4),
+
+    marginTop: hp(4), 
+
     width: "90%",
     backgroundColor: "#E0E0E0",
-    padding: 12,
+    padding: 12, 
     borderRadius: 10,
     alignItems: "center",
   },
   aboutAppText: {
-    fontSize: wp(4),
+
+    fontSize: wp(4), 
+
     fontFamily: "klavika-bold",
     color: "#4A4A4A",
   },
@@ -192,19 +208,23 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 1,
     backgroundColor: "#D1D1D1",
-    marginVertical: hp(2),
+
+    marginVertical: hp(2), 
+
   },
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
     width: "90%",
-    paddingVertical: hp(1),
-    borderRadius: 10,
+
+    paddingVertical: hp(1), 
+    borderRadius: 10, 
   },
   logoutText: {
-    fontSize: wp(4),
+    fontSize: wp(4), 
     fontFamily: "klavika-bold",
     color: "#204A69",
-    marginLeft: hp(2),
+    marginLeft: hp(2), 
+
   },
 });
