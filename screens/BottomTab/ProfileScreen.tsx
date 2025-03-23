@@ -1,121 +1,66 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { logoutLogo, personLogo } from "../../loadSVG";
+import { useNavigation, CommonActions } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import { useSession } from "../../context/Session";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../../types";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { CommonActions, useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainBottomTabParamlist } from "../../types";
-import { logout } from "../../api/auth";
-import { getUserInfo } from "../../api/auth";
-import Toast from "react-native-toast-message";
-
-type ProfileScreenNavigationProp = StackNavigationProp<
-  MainBottomTabParamlist,
-  "ProfileScreen"
->;
-
-type Props = {
-  navigation: ProfileScreenNavigationProp;
-};
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<MainStackParamList>>();
+  const { user, clearSession } = useSession();
 
-  const signOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
-      await logout();
-
+      await clearSession();
       navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "LoginScreen" }],
-        })
+        CommonActions.reset({ index: 0, routes: [{ name: "LoginScreen" }] })
       );
-      Toast.show({
-        type: "success",
-        text1: `User "${name}" logged out.`,
-      });
+      Toast.show({ type: "success", text1: "Successfully logged out" });
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error("Logout failed:", error);
     }
-  };
-
-  const [email, setEmail] = React.useState<string>("");
-  const [accType, setAccType] = React.useState<string>("");
-  const [accountID, setAccountID] = React.useState<string>("");
-  const [name, setName] = React.useState<string>("");
-  const [dateCreated, setDateCreated] = React.useState<string>("");
-
-  const handleUser = async () => {
-    try {
-      const userInfo = await getUserInfo();
-
-      setName(userInfo.name);
-      setAccType(userInfo.data.accountType);
-      setEmail(userInfo.email);
-      setAccountID(userInfo.accountID);
-      setDateCreated(userInfo.dateCreated);
-    } catch (error) {
-      console.error("Failed to fetch user info:", error);
-    }
-  };
-
-  handleUser();
-
-  const userInfo = {
-    name: name,
-    accountType: accType,
-    accountId: accountID,
-    email: email,
-    password: "*******",
-    createdAt: dateCreated,
-  };
+  }, [clearSession, navigation]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Profile</Text>
-      <View style={styles.profileContainer}>
+      <View style={styles.profile}>
         <SvgXml xml={personLogo} width={80} height={70} />
-        <Text style={styles.name}>{userInfo.name}</Text>
-        <Text style={styles.role}>{userInfo.accountType}</Text>
+        <Text style={styles.name}>{user?.name}</Text>
+        <Text style={styles.role}>{user?.accountType}</Text>
       </View>
 
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Account ID:</Text>
-          <Text style={styles.detailValue}>{userInfo.accountId}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Email:</Text>
-          <Text style={styles.detailValue}>{userInfo.email}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Change Password:</Text>
-          <Text style={styles.detailValue}>{userInfo.password}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Date Created:</Text>
-          <Text style={styles.detailValue}>{userInfo.createdAt}</Text>
-        </View>
+      <View style={styles.details}>
+        <ProfileDetail label="Account ID" value={user?.id} />
+        <ProfileDetail label="Email" value={user?.email} />
+        <ProfileDetail label="Date Created" value={user?.createdAt} />
       </View>
 
       <TouchableOpacity style={styles.aboutApp}>
         <Text style={styles.aboutAppText}>About Us</Text>
       </TouchableOpacity>
 
-      <View style={styles.divider} />
-      <TouchableOpacity style={styles.logoutButton} onPress={signOut}>
-        <SvgXml xml={logoutLogo} width={wp(5)} height={hp(5)} />
+      <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
+        <SvgXml xml={logoutLogo} width={20} height={20} />
         <Text style={styles.logoutText}>Log Out</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const ProfileDetail = ({ label, value }: { label: string; value?: string }) => (
+  <View style={styles.detailItem}>
+    <Text style={styles.detailLabel}>{label}:</Text>
+    <Text style={styles.detailValue}>{value}</Text>
+  </View>
+);
 
 export default ProfileScreen;
 
@@ -128,28 +73,15 @@ const styles = StyleSheet.create({
     paddingTop: hp(10),
   },
   header: {
-    fontSize: wp(5),
+    fontSize: 22,
     fontFamily: "klavika-bold",
     color: "#204A69",
     marginBottom: hp(1.5),
   },
-  profileContainer: {
-    alignItems: "center",
-    marginBottom: hp(2),
-  },
-  name: {
-    fontSize: wp(5),
-
-    fontFamily: "klavika-bold",
-    color: "#1E3A5F",
-  },
-  role: {
-    fontSize: wp(3),
-
-    fontFamily: "klavika-bold",
-    color: "#8E8E93",
-  },
-  detailsContainer: {
+  profile: { alignItems: "center", marginBottom: 20 },
+  name: { fontSize: 18, fontWeight: "bold", color: "#1E3A5F" },
+  role: { fontSize: 14, color: "#8E8E93" },
+  details: {
     width: "95%",
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -204,6 +136,7 @@ const styles = StyleSheet.create({
 
     paddingVertical: hp(1),
     borderRadius: 10,
+    marginTop: 20,
   },
   logoutText: {
     fontSize: wp(4),

@@ -15,10 +15,7 @@ import {
 import { BlurView } from "expo-blur";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
-
-import { getToken, isAuthenticated } from "./../../api/auth";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import api from "../../api/axiosInstance";
+import { useSession } from "../../context/Session";
 
 type LandingScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -31,6 +28,7 @@ type Props = {
 
 const LandingScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const { user } = useSession();
 
   useEffect(() => {
     if (!isFontLoaded) {
@@ -38,17 +36,13 @@ const LandingScreen = ({ navigation }: Props) => {
     }
   }, [isFontLoaded]);
 
-  const checkAuth = async () => {
-    const authenticated = await isAuthenticated();
-    if (authenticated) {
+  useEffect(() => {
+    if (!user) {
       navigation.replace("MainBottomTab");
     }
-  };
-  checkAuth();
+  }, [user, navigation]);
 
-  if (!isFontLoaded) {
-    return null;
-  }
+  if (!isFontLoaded) return null;
 
   return (
     <ImageBackground

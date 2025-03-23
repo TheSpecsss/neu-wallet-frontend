@@ -1,85 +1,50 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
-import { loadFont } from "../../loadFont";
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import { useRecentTransactions } from "../../hooks/useRecentTransactions";
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import React from "react";
+import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 
 const TransactionHistoryScreen = () => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [balance, setBalance] = useState(967.0);
-  const { data, data: transactions, isLoading, error } = useRecentTransactions(10, 1);
+  const { data: transactions, isLoading } = useGetRecentTransactions({
+    page: 1,
+    perPage: 5,
+  });
 
-  useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-  }, [isFontLoaded]);
-
-  if (!isFontLoaded) {
-    return null;
-  }
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Transaction History</Text>
-        <Text style={styles.transactionItem}>Loading transactions...</Text>
-      </View>
-    );
-  }
-  if (!data || data.length === 0) {
-    return( 
-      <View style={styles.container}>
-        <Text style={styles.header}>Transaction History</Text>
-        <Text style={styles.transactionItem}>No recent transactions found.</Text>
-      </View>
-  );
-  }
-  if (error) {
-    console.log(error);
-    return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Transaction History</Text>
-        <Text style={styles.transactionItem}>Error loading transactions.</Text>
-      </View>
-    );
-  }
-
-  const renderTransactionItem = ({
-    item,
-    index,
-  }: {
-    item: (typeof transactions)[0];
-    index: number;
-  }) => {
-    if (!transactions || transactions.length === 0) return null;
-
-    return (
-      <View style={styles.transactionItem}>
-        {index === 0 || item.date !== transactions[index - 1]?.date ? (
-          <Text style={styles.date}>{item.date}</Text>
-        ) : null}
-        <View style={styles.transactionRow}>
-          <View>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.time}>{item.time}</Text>
-          </View>
-          <Text style={styles.amount}>+₱{item.amount.toFixed(2)}</Text>
-        </View>
-      </View>
-    );
-  };
+  const transactionList =
+    transactions?.data?.getRecentTransactionsByUserId?.transactions || [];
+  const hasError = !!transactions?.errors?.length;
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
+
+      {isLoading && <ActivityIndicator size="large" color="#000" />}
+      {hasError && (
+        <Text style={styles.message}>Error loading transactions.</Text>
+      )}
+      {!isLoading && !hasError && transactionList.length === 0 && (
+        <Text style={styles.message}>No recent transactions found.</Text>
+      )}
+
       <FlatList
-        data={transactions || []} 
-        renderItem={renderTransactionItem}
+        data={transactionList}
         keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.transactionItem}>
+            <Text style={styles.date}>{item.createdAt}</Text>
+            <View style={styles.transactionRow}>
+              <View>
+                <Text style={styles.title}>{item.type}</Text>
+                <Text style={styles.time}>{item.createdAt}</Text>
+              </View>
+              <Text style={styles.amount}>+₱{item.amount.toFixed(2)}</Text>
+            </View>
+          </View>
+        )}
       />
     </View>
   );
@@ -97,15 +62,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "klavika-bold",
     textAlign: "center",
-    marginTop: hp(2),
+    marginTop: 20,
+  },
+  message: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#555",
+  },
+  transactionItem: {
+    marginTop: 20,
   },
   date: {
     fontSize: 22,
     fontFamily: "klavika-bold",
-    marginTop: wp(5),
-  },
-  transactionItem: {
-    marginTop: hp(2),
+    marginTop: 10,
   },
   transactionRow: {
     flexDirection: "row",

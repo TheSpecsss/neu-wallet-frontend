@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,26 +7,15 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { BlurView } from "expo-blur";
-
-import { getToken, storeToken } from "../../api/auth";
-
 import Toast from "react-native-toast-message";
-import api from "../../api/axiosInstance";
-import { useMutation } from "@tanstack/react-query";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
-import { jwtDecode } from "jwt-decode";
-import { getUserRole } from "../../api/auth";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-
-import { LOGIN } from "../../api/graphql/mutation";
-import { print as graphqlPrint } from "graphql";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import { z } from "zod";
+import { useLoginMutation } from "../../hooks/mutation/useLoginMutation";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -37,75 +26,30 @@ type Props = {
   navigation: LoginScreenNavigationProp;
 };
 
+const loginSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
 const LoginScreen = ({ navigation }: Props) => {
-  const [email, setEmail] = React.useState<string>("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function isEmailNotVerifiedMessage(message: string): boolean {
-    // Regular expression to match the message pattern
-    const regex =
-      /^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,} is not yet verified\. Please verify your account$/;
-    return regex.test(message);
-  }
+  const { mutate: login, isPending } = useLoginMutation();
 
-  const loginMutation = useMutation({
-    mutationFn: async () =>
-      await api({
-        data: {
-          operationName: "Login",
-          query: graphqlPrint(LOGIN),
-          variables: {
-            email,
-            password,
-          },
-        },
-      }),
-    onSuccess: async ({ data }) => {
-      if (data.errors) {
-        if (isEmailNotVerifiedMessage(data.errors[0].message.toString())) {
-          navigation.navigate("EmailConfirmationScreen", {
-            emailadd: email,
-          });
-          return Toast.show({
-            type: "error",
-            text1: "Email needs to be verified.",
-          });
-        } else {
-          return Toast.show({
-            type: "error",
-            text1: data.errors[0].message,
-          });
-        }
-      } else {
-        Toast.show({
-          type: "success",
-          text1: "Login Successful",
-        });
+  const handleLogin = useCallback(() => {
+    const validation = loginSchema.safeParse({ email, password });
 
-        const token: string = data.data.login.token;
-        await AsyncStorage.setItem("userToken", token);
-
-        console.log("Token: " + token);
-        storeToken(token);
-        console.log(getToken);
-
-        const role = await getUserRole();
-
-        if (role === "SUPER_ADMIN") {
-          navigation.replace("AdminTopTab");
-        } else {
-          navigation.replace("MainBottomTab");
-        }
-      }
-    },
-    onError: (error) => {
+    if (!validation.success) {
       Toast.show({
         type: "error",
-        text1: "Login Failed",
-        text2: error.message || "An unexpected error occurred",
+        text1: validation.error.errors[0].message,
       });
-    },
-  });
+      return;
+    }
+
+    login({ email, password });
+  }, [email, password, login]);
 
   return (
     <ImageBackground
@@ -126,58 +70,38 @@ const LoginScreen = ({ navigation }: Props) => {
             Please login to access your account
           </Text>
 
-          <Text style={styles.inputLabel}>Email</Text>
-          <TextInput
-            style={styles.input}
+          <InputField
+            label="Email"
             placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
 
-          <Text style={styles.inputLabel}>Password</Text>
-          <TextInput
-            style={styles.input}
+          <InputField
+            label="Password"
             placeholder="Enter your password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
 
-          <Text style={styles.forgot}>Forgot Password?</Text>
+          <AuthLink text="Forgot Password?" />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              if (!email.trim() || !password.trim()) {
-                return Toast.show({
-                  type: "error",
-                  text1: "Email and password are required!",
-                });
-              }
-              loginMutation.mutate();
-            }}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+          <AuthButton
+            text="Login"
+            onPress={handleLogin}
+            isPending={isPending}
+          />
 
-          <Text
-            style={{
-              fontFamily: "klavika-light",
-              fontSize: 14,
-              marginTop: 20,
-              margin: 10,
-              color: "#FFF",
-            }}
-          >
-            Don't have an account?
-          </Text>
+          <AuthLink text="Don't have an account?" />
 
-          <TouchableOpacity
-            style={styles.buttonOutline}
+          <AuthButton
+            text="Register"
+            outline
             onPress={() => navigation.replace("RegisterScreen")}
-          >
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
+          />
         </BlurView>
       </View>
     </ImageBackground>
@@ -185,6 +109,55 @@ const LoginScreen = ({ navigation }: Props) => {
 };
 
 export default LoginScreen;
+
+const InputField = ({
+  label,
+  ...props
+}: {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  secureTextEntry?: boolean;
+  keyboardType?: "default" | "email-address";
+  autoCapitalize?: "none" | "sentences";
+}) => (
+  <>
+    <Text style={styles.inputLabel}>{label}</Text>
+    <TextInput style={styles.input} {...props} />
+  </>
+);
+
+const AuthButton = ({
+  text,
+  onPress,
+  isPending,
+  outline,
+}: {
+  text: string;
+  onPress: () => void;
+  isPending?: boolean;
+  outline?: boolean;
+}) => (
+  <TouchableOpacity
+    style={[
+      outline ? styles.buttonOutline : styles.button,
+      isPending && styles.disabledButton,
+    ]}
+    onPress={onPress}
+    disabled={isPending}
+  >
+    {isPending ? (
+      <ActivityIndicator color="#fff" />
+    ) : (
+      <Text style={styles.buttonText}>{text}</Text>
+    )}
+  </TouchableOpacity>
+);
+
+const AuthLink = ({ text }: { text: string }) => (
+  <Text style={styles.linkText}>{text}</Text>
+);
 
 const styles = StyleSheet.create({
   background: {
@@ -211,12 +184,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 20,
   },
-  cardTitle: {
-    fontSize: 16,
-    color: "#fff",
-    fontFamily: "klavika-bold",
-    marginBottom: 25,
-  },
   card: {
     width: wp(85),
     padding: 20,
@@ -224,6 +191,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 8,
     backgroundColor: "rgba(4, 62, 117, 0.30)",
+  },
+  cardTitle: {
+    fontSize: 16,
+    color: "#fff",
+    fontFamily: "klavika-bold",
+    marginBottom: 25,
   },
   input: {
     width: "90%",
@@ -243,7 +216,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingLeft: 20,
   },
-  forgot: {
+  linkText: {
     fontFamily: "klavika-light",
     fontSize: 14,
     color: "#fff",
@@ -269,7 +242,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "90%",
   },
-
+  disabledButton: {
+    opacity: 0.6,
+  },
   buttonText: {
     color: "#fff",
     fontSize: 15,

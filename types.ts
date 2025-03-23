@@ -1,5 +1,3 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
 export type MainStackParamList = {
   SplashScreen: undefined;
   LandingScreen: undefined;
@@ -7,19 +5,19 @@ export type MainStackParamList = {
   LoginScreen: undefined;
   MainBottomTab: undefined;
   QRScanScreen: undefined;
-  ConfirmTransactionScreen: {data: string};
-  DetailsScreen: {data: string};
+  ConfirmTransactionScreen: undefined;
+  DetailsScreen: { data: string };
   SendScreen: undefined;
   LoadScreen: undefined;
   CheckOutScreen: undefined;
   AdminTopTab: undefined;
-  QRGenerateScreen: {data: string};
+  QRGenerateScreen: { data: string };
   EditUserScreen: undefined;
-  EmailConfirmationScreen: {emailadd: string};
+  EmailConfirmationScreen: { email: string };
   QRGeneratorScreen: undefined;
 };
 
-export type MainBottomTabParamlist = {
+export type MainBottomTabParamList = {
   HomeScreen: undefined;
   TransactionHistoryScreen: undefined;
   ProfileScreen: undefined;
@@ -30,6 +28,6 @@ export type AdminTopTabParamList = {
   AuditLogScreen: undefined;
 };
 
-export type EmailVerificationParamlist = {
-    EmailConfirmationScreen: { emailadd: string };
-}
+export type EmailVerificationParamList = {
+  EmailConfirmationScreen: { email: string };
+};
