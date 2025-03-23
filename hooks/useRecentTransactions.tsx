@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../api/axiosInstance";
 
 export const useRecentTransactions = (perPage: number, page: number) => {
-  return useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["recentTransactions", perPage, page],
     queryFn: async () => {
       const response = await api({
@@ -32,8 +32,17 @@ export const useRecentTransactions = (perPage: number, page: number) => {
         throw new Error(response.data.errors[0].message);
       }
 
-      return response.data?.data?.getRecentTransactionByUserId?.transactions || [];
+      return (
+        response.data?.data?.getRecentTransactionByUserId?.transactions || []
+      );
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
+
+  return {
+    data,
+    isLoading,
+    error,
+    refetch, // Expose the refetch function
+  };
 };

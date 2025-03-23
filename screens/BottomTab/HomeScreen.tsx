@@ -45,7 +45,12 @@ const HomeScreen = ({ navigation }: Props) => {
     data: transactions,
     isLoading,
     error,
+    refetch,
   } = useRecentTransactions(5, 1);
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   const loadUserRole = async () => {
     const role = await getUserRole();
@@ -65,6 +70,7 @@ const HomeScreen = ({ navigation }: Props) => {
   useEffect(() => {
     loadUserRole();
     walletBalance();
+    handleRefresh();
 
     loadFont().then(() => setIsFontLoaded(true));
   }, []);
@@ -153,6 +159,7 @@ const HomeScreen = ({ navigation }: Props) => {
             onPress={() => {
               loadUserRole();
               walletBalance();
+              handleRefresh();
             }}
           >
             <Text style={styles.viewAll}>Refresh</Text>
