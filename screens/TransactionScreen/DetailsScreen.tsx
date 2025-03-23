@@ -3,15 +3,11 @@ import { Divider, Checkbox } from "react-native-paper";
 import { MainStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-
-import { getUserBalance, getUserInfo } from "../../api/auth";
+//import { getUserBalance, getUserInfo } from "../../api/auth";
 import React, { useEffect, useState } from "react";
-
 import { useMutation } from "@tanstack/react-query";
+import { useGetUserQuery } from "../../hooks/query/useGetUserQuery";
 import api from "../../api/axiosInstance";
-import { print as graphqlPrint } from "graphql";
-import { PAY } from "../../api/graphql/mutation";
-import Toast from "react-native-toast-message";
 
 type DetailsScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -120,10 +116,14 @@ const DetailsScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     const walletBalance = async () => {
-      const balance = await getUserBalance();
-      const user = await getUserInfo();
+      const balance = "await getUserBalance();";
+      const user = "await useGetUserQuery();";
+
+      const userQuery = await useGetUserQuery();
+      console.log(userQuery);
+
       setUserBalance(balance);
-      setUserID(user.accountID);
+      setUserID(user);
     };
     walletBalance();
 

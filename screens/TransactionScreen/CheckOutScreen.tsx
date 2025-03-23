@@ -14,7 +14,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { MainStackParamList } from "../../types";
-import { getUserBalance, getUserRole, getUserInfo } from "../../api/auth";
+//import { getUserBalance, getUserRole, getUserInfo } from "../../api/auth";
 import Toast from "react-native-toast-message";
 import { encryptString } from "../../api/cryptoUtils";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -45,12 +45,12 @@ const CheckOutScreen = ({ navigation }: Props) => {
 
     const userInfo = async () => {
       try {
-        const role = await getUserRole();
-        const userInfo = await getUserInfo();
-        const bal = await getUserBalance();
+        const role = "await getUserRole()";
+        const userInfo = "await getUserInfo()";
+        const bal = "await getUserBalance()";
         setRole(role);
-        setRUserID(userInfo.accountID);
-        setRName(userInfo.name);
+        setRUserID("userInfo.accountID");
+        setRName("userInfo.name");
         setBalance(bal);
       } catch (error) {
         console.log(error);

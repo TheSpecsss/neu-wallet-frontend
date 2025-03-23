@@ -8,7 +8,7 @@ import { print } from "graphql";
 import { GET_RECENT_TRANSACTIONS_BY_USER_ID } from "../../api/graphql/query";
 import type { GraphQLResponse } from "../../api/graphql/types";
 import type {
-  GetRecentTransactionsByUserIdQueryVariables,
+  GetRecentTransactionByUserIdQueryVariables,
   TransactionByUserIdWithPagination,
 } from "../../api/graphql/codegen/graphql";
 
@@ -17,7 +17,7 @@ type GetRecentTransactionsQueryGraphQLResponse = GraphQLResponse<{
 }>;
 
 export const useGetRecentTransactions = (
-  variables: GetRecentTransactionsByUserIdQueryVariables,
+  variables: GetRecentTransactionByUserIdQueryVariables,
   options?: Partial<
     UseQueryOptions<GetRecentTransactionsQueryGraphQLResponse, Error>
   >
@@ -27,7 +27,7 @@ export const useGetRecentTransactions = (
     queryFn: async ({ queryKey }: QueryFunctionContext) => {
       const [, variables] = queryKey as [
         string,
-        GetRecentTransactionsByUserIdQueryVariables
+        GetRecentTransactionByUserIdQueryVariables
       ];
 
       const { data } = await api<GetRecentTransactionsQueryGraphQLResponse>({

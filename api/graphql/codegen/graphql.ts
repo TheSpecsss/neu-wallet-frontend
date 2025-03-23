@@ -30,14 +30,14 @@ export type AuditLog = {
 
 export type AuditLogChange = {
   __typename?: 'AuditLogChange';
-  key: Scalars['String']['output'];
-  values: Array<AuditLogChangeValue>;
+  key?: Maybe<Scalars['String']['output']>;
+  values?: Maybe<Array<Maybe<AuditLogChangeValue>>>;
 };
 
 export type AuditLogChangeValue = {
   __typename?: 'AuditLogChangeValue';
-  from: Scalars['String']['output'];
-  to: Scalars['String']['output'];
+  from?: Maybe<Scalars['String']['output']>;
+  to?: Maybe<Scalars['String']['output']>;
 };
 
 export type AuditLogHydrateOption = {
@@ -47,8 +47,8 @@ export type AuditLogHydrateOption = {
 
 export type Login = {
   __typename?: 'Login';
-  expiresAt: Scalars['String']['output'];
-  token: Scalars['String']['output'];
+  expiresAt?: Maybe<Scalars['String']['output']>;
+  token?: Maybe<Scalars['String']['output']>;
 };
 
 export type Mutation = {
@@ -58,7 +58,6 @@ export type Mutation = {
   pay?: Maybe<Wallet>;
   register?: Maybe<User>;
   resendVerification?: Maybe<Verification>;
-  setBalance?: Maybe<Wallet>;
   topUp?: Maybe<Wallet>;
   updateUserAccountTypeByUserId?: Maybe<User>;
 };
@@ -95,12 +94,6 @@ export type MutationResendVerificationArgs = {
 };
 
 
-export type MutationSetBalanceArgs = {
-  balance: Scalars['Int']['input'];
-  userId: Scalars['String']['input'];
-};
-
-
 export type MutationTopUpArgs = {
   amount: Scalars['Int']['input'];
   receiverId: Scalars['String']['input'];
@@ -114,14 +107,14 @@ export type MutationUpdateUserAccountTypeByUserIdArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getRecentTransactionsByUserId?: Maybe<TransactionByUserIdWithPagination>;
+  getRecentTransactionByUserId?: Maybe<TransactionByUserIdWithPagination>;
   getUser?: Maybe<User>;
   getUserBalanceByUserId?: Maybe<UserBalance>;
   getUsersByPagination?: Maybe<UserPagination>;
 };
 
 
-export type QueryGetRecentTransactionsByUserIdArgs = {
+export type QueryGetRecentTransactionByUserIdArgs = {
   hydrate?: InputMaybe<TransactionHydrateOption>;
   page: Scalars['Int']['input'];
   perPage: Scalars['Int']['input'];
@@ -147,11 +140,11 @@ export type Transaction = {
 
 export type TransactionByUserIdWithPagination = {
   __typename?: 'TransactionByUserIdWithPagination';
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  page: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-  transactions: Array<Transaction>;
+  hasNextPage?: Maybe<Scalars['Boolean']['output']>;
+  hasPreviousPage?: Maybe<Scalars['Boolean']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  transactions?: Maybe<Array<Maybe<Transaction>>>;
 };
 
 export type TransactionHydrateOption = {
@@ -176,7 +169,7 @@ export type User = {
 
 export type UserBalance = {
   __typename?: 'UserBalance';
-  balance: Scalars['Float']['output'];
+  balance?: Maybe<Scalars['Float']['output']>;
 };
 
 export type UserHydrateOption = {
@@ -187,11 +180,11 @@ export type UserHydrateOption = {
 
 export type UserPagination = {
   __typename?: 'UserPagination';
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  page: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-  users: Array<User>;
+  hasNextPage?: Maybe<Scalars['Boolean']['output']>;
+  hasPreviousPage?: Maybe<Scalars['Boolean']['output']>;
+  page?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  users?: Maybe<Array<Maybe<User>>>;
 };
 
 export type Verification = {
@@ -228,7 +221,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'Login', token: string, expiresAt: string } | null };
+export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'Login', token?: string | null, expiresAt?: string | null } | null };
 
 export type RegisterMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -248,13 +241,21 @@ export type ConfirmVerificationMutationVariables = Exact<{
 
 export type ConfirmVerificationMutation = { __typename?: 'Mutation', confirmVerification?: { __typename?: 'Verification', id: string } | null };
 
-export type GetRecentTransactionsByUserIdQueryVariables = Exact<{
+export type PayMutationVariables = Exact<{
+  cashierId: Scalars['String']['input'];
+  amount: Scalars['Int']['input'];
+}>;
+
+
+export type PayMutation = { __typename?: 'Mutation', pay?: { __typename?: 'Wallet', balance: number, createdAt: string, id: string } | null };
+
+export type GetRecentTransactionByUserIdQueryVariables = Exact<{
   perPage: Scalars['Int']['input'];
   page: Scalars['Int']['input'];
 }>;
 
 
-export type GetRecentTransactionsByUserIdQuery = { __typename?: 'Query', getRecentTransactionsByUserId?: { __typename?: 'TransactionByUserIdWithPagination', page: number, totalPages: number, hasNextPage: boolean, hasPreviousPage: boolean, transactions: Array<{ __typename?: 'Transaction', id: string, amount: number, createdAt: string, receiver?: { __typename?: 'User', name: string } | null, sender?: { __typename?: 'User', name: string } | null }> } | null };
+export type GetRecentTransactionByUserIdQuery = { __typename?: 'Query', getRecentTransactionByUserId?: { __typename?: 'TransactionByUserIdWithPagination', page?: number | null, totalPages?: number | null, hasNextPage?: boolean | null, hasPreviousPage?: boolean | null, transactions?: Array<{ __typename?: 'Transaction', id: string, amount: number, createdAt: string, receiver?: { __typename?: 'User', name: string } | null, sender?: { __typename?: 'User', name: string } | null } | null> | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -264,12 +265,13 @@ export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Use
 export type GetUserBalanceByUserIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserBalanceByUserIdQuery = { __typename?: 'Query', getUserBalanceByUserId?: { __typename?: 'UserBalance', balance: number } | null };
+export type GetUserBalanceByUserIdQuery = { __typename?: 'Query', getUserBalanceByUserId?: { __typename?: 'UserBalance', balance?: number | null } | null };
 
 
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"confirmPassword"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}},{"kind":"Argument","name":{"kind":"Name","value":"confirmPassword"},"value":{"kind":"Variable","name":{"kind":"Name","value":"confirmPassword"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
 export const ConfirmVerificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ConfirmVerification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"confirmVerification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<ConfirmVerificationMutation, ConfirmVerificationMutationVariables>;
-export const GetRecentTransactionsByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRecentTransactionsByUserId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"perPage"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRecentTransactionsByUserId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"perPage"},"value":{"kind":"Variable","name":{"kind":"Name","value":"perPage"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"receiver"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}}]}}]} as unknown as DocumentNode<GetRecentTransactionsByUserIdQuery, GetRecentTransactionsByUserIdQueryVariables>;
+export const PayDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Pay"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cashierId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pay"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"cashierId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cashierId"}}},{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<PayMutation, PayMutationVariables>;
+export const GetRecentTransactionByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRecentTransactionByUserId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"perPage"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRecentTransactionByUserId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"perPage"},"value":{"kind":"Variable","name":{"kind":"Name","value":"perPage"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"receiver"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}}]}}]} as unknown as DocumentNode<GetRecentTransactionByUserIdQuery, GetRecentTransactionByUserIdQueryVariables>;
 export const GetUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"accountType"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;
 export const GetUserBalanceByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserBalanceByUserId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserBalanceByUserId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}}]}}]}}]} as unknown as DocumentNode<GetUserBalanceByUserIdQuery, GetUserBalanceByUserIdQueryVariables>;

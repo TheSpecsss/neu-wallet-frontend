@@ -12,7 +12,7 @@ import {
 
 import QRCode from "react-native-qrcode-svg";
 import { SvgXml } from "react-native-svg";
-import { getUserRole } from "../../../api/auth";
+//import { getUserRole } from "../../../api/auth";
 type QRGenerateScreenProps = StackNavigationProp<
   MainStackParamList,
   "QRGenerateScreen"
@@ -40,8 +40,8 @@ const QRGenerate = ({ route, navigation }: Props) => {
   useEffect(() => {
     loadFont().then(() => setIsFontLoaded(true));
     const loadUserRole = async () => {
-      const role = await getUserRole();
-      setRole(role);
+      //const role = await getUserRole();
+      setRole("USER");
     };
     loadUserRole();
   }, []);

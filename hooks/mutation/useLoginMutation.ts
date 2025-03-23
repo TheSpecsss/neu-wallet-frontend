@@ -42,7 +42,7 @@ export const useLoginMutation = (
           text1: errors[0].message,
         });
 
-        if (errors[0].message === `${email} is not yet verified`) {
+        if (errors[0].message === `${email} is not yet verified. Please verify your account`) {
           navigation.navigate("EmailConfirmationScreen", { email });
         }
       }

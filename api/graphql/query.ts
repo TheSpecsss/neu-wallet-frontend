@@ -1,8 +1,8 @@
 import { gql } from "./codegen";
 
 export const GET_RECENT_TRANSACTIONS_BY_USER_ID = gql(`
-  query GetRecentTransactionsByUserId($perPage: Int!, $page: Int!) {
-    getRecentTransactionsByUserId(perPage: $perPage, page: $page) {
+  query getRecentTransactionByUserId($perPage: Int!, $page: Int!) {
+    getRecentTransactionByUserId(perPage: $perPage, page: $page) {
       transactions {
         id
         amount
