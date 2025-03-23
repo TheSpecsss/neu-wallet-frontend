@@ -27,10 +27,9 @@ export const logout = async (): Promise<void> => {
 export const isAuthenticated = async (): Promise<boolean> => {
     try {
         const token = await getToken();
-        console.log('11 Token received:', token);
         return token !== null;
     } catch (error) {
-        console.error('Error checking authentication status', error);
+        console.log('[e]:Error checking authentication status', error);
         return false;
     }
 };
@@ -41,7 +40,7 @@ export const storeToken = async (token: string) => {
         await SecureStore.setItemAsync('userToken', token);
         console.log('Token stored');
     } catch (error) {
-        console.error('Error storing token', error);
+        console.log('[e]:Error storing token', error);
     }
 };
 
@@ -50,7 +49,7 @@ export const getToken = async (): Promise<string | null> => {
         let token = await SecureStore.getItemAsync('userToken');
         return token;
     } catch (error) {
-        console.error('Error retrieving token', error);
+        console.log('[e]:Error retrieving token', error);
         return null;
     }
 };
@@ -59,7 +58,7 @@ export const removeToken = async () => {
     try {
         await SecureStore.deleteItemAsync('userToken');
     } catch (error) {
-        console.error('Error removing token', error);
+        console.log('[e]:Error removing token', error);
     }
 };
 
@@ -72,7 +71,7 @@ export const getUserRole = async (): Promise<string | null> => {
         return userRole ;
 
       } catch (error) {
-        console.error("Failed to fetch user info:", error);
+        console.log("[e]:Failed to fetch user info:", error);
       }
 
       return null;
@@ -105,7 +104,7 @@ export const getUserInfo = async () => {
 
         return { data, name, email, accountID, dateCreated }; // Return the data in an object
     } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.log("[e]:Error fetching user data:", error);
         throw error; // Rethrow the error for the caller to handle
     }
 }
@@ -132,7 +131,7 @@ export const getUserBalance = async () => {
 
         const user = await getUserRole();
         if(user === "USER") {
-            console.error("Error fetching user wallet:", error);
+            console.log("[e]:Error fetching user wallet:", error);
         throw error; 
         }
         

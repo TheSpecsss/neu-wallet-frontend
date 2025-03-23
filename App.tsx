@@ -39,7 +39,9 @@ const App = () => {
       const role = await getUserRole();
       console.log("User Role:", role);
 
-      if (role === "SUPER_ADMIN") {
+      if (role === null) {
+        setInitialRoute("LandingScreen");
+      } else if (role === "SUPER_ADMIN") {
         // ADMIN SCREEN
         setInitialRoute("AdminTopTab" as keyof MainStackParamList);
       } else {
