@@ -1,152 +1,58 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Divider, Checkbox } from "react-native-paper";
-import { MainStackParamList } from "../../types";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp } from "@react-navigation/native";
-
-import { getUserBalance, getUserInfo } from "../../api/auth";
-import React, { useEffect, useState } from "react";
-
-import { useMutation } from "@tanstack/react-query";
-import api from "../../api/axiosInstance";
-import { print as graphqlPrint } from "graphql";
-import { PAY } from "../../api/graphql/mutation";
-import Toast from "react-native-toast-message";
+import type { MainStackParamList } from "../../types";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { RouteProp } from "@react-navigation/native";
+import React, { useCallback, useMemo } from "react";
+import { useSession } from "../../context/Session";
+import { usePayMutation } from "../../hooks/mutation/usePayMutation";
 
 type DetailsScreenProps = StackNavigationProp<
   MainStackParamList,
   "DetailsScreen"
 >;
 
-// Define the props type
 type Props = {
   navigation: DetailsScreenProps;
   route: RouteProp<MainStackParamList, "DetailsScreen">;
 };
 
-type qrDataType = {
-  receiverName: string;
-  receiver: string;
-  amount: string;
-  type: string;
-};
-
-type transactionDataType = {
-  receiver: String;
-  sender: String;
-  amount: String;
-  date: String;
-  type: String;
-};
-
 const DetailsScreen = ({ route, navigation }: Props) => {
-  const [userBalance, setUserBalance] = useState("");
-  const [userID, setUserID] = useState("");
-  const [sufficientBal, isBalSufficient] = useState(true);
+  const { amount, receiverId, receiverName, type } = useMemo(() => {
+    const parsedData = JSON.parse(route.params.data);
 
-  const transactionData: qrDataType = {
-    receiverName: "...",
-    receiver: "...",
-    amount: "...",
-    type: "...",
-  };
-
-  try {
-    const { data } = route.params;
-    console.log("Details Screen Data: " + data);
-
-    if (data) {
-      const qrData = JSON.parse(data);
-      transactionData.amount = qrData.amount;
-      transactionData.type = qrData.type;
-      transactionData.receiver = qrData.receiver;
-      transactionData.receiverName = qrData.receiverName;
-    }
-  } catch (error) {
-    console.log("No data passed to Details Screen");
-  }
-
-  const [cashierId] = useState(transactionData.receiver);
-  const [amount] = useState(Number(transactionData.amount));
-
-  const payMutation = useMutation({
-    mutationFn: async () =>
-      await api({
-        data: {
-          operationName: "Pay",
-          query: `mutation Pay($cashierId: String!, $amount: Int!) {
-              pay(cashierId: $cashierId, amount: $amount) {
-                balance
-                id
-                updatedAt
-              }
-            }`,
-          variables: {
-            cashierId,
-            amount,
-          },
-        },
-      }),
-    onSuccess: async ({ data }) => {
-      const tdate = new Date(data.data.pay.updatedAt);
-      const localeDate = tdate.toLocaleString();
-
-      const transactData: transactionDataType = {
-        receiver: transactionData.receiver,
-        sender: userID,
-        amount: transactionData.amount,
-        date: localeDate,
-        type: transactionData.type,
-      };
-
-      navigation.navigate("ConfirmTransactionScreen", {
-        data: JSON.stringify(transactData),
-      });
-
-      console.log(JSON.stringify(data));
-      return;
-    },
-    onError: (error) => {
-      console.log(error);
-      throw error;
-    },
-  });
-
-  const transact = () => {
-    if (transactionData.type === "PAY") {
-      payMutation.mutate();
-    }
-  };
-
-  useEffect(() => {
-    const walletBalance = async () => {
-      const balance = await getUserBalance();
-      const user = await getUserInfo();
-      setUserBalance(balance);
-      setUserID(user.accountID);
+    return {
+      receiverName: parsedData.receiverName,
+      receiverId: parsedData.receiverId,
+      amount: parsedData.amount,
+      type: parsedData.type,
     };
-    walletBalance();
+  }, [route.params.data]);
 
-    // check if balance is sufficient
-    isBalSufficient(Number(userBalance) >= Number(transactionData.amount));
-  }, [userBalance]);
-
+  const { user } = useSession();
   const [checked, setChecked] = React.useState(false);
+
+  const { mutate: pay } = usePayMutation(type);
+
+  const handleTransaction = useCallback(() => {
+    if (type === "PAY") {
+      pay({ cashierId: receiverId, amount });
+    }
+  }, [type, pay, receiverId, amount]);
 
   return (
     <View style={styles.container}>
       <View style={styles.containerColumn}>
         <Text style={styles.textNormal}>
-          {transactionData.type} to{" "}
-          {transactionData.type === "PAY" ? "cashier" : ""}
+          {type} to {type === "PAY" ? "cashier" : ""}
         </Text>
-        <Text style={styles.textBold}>{transactionData.receiverName}</Text>
+        <Text style={styles.textBold}>{receiverName}</Text>
       </View>
 
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Balance</Text>
         <Text style={styles.textBoldSmall}>
-          ₱{Number(userBalance).toFixed(2)}
+          ₱{Number(user?.wallet.balance).toFixed(2)}
         </Text>
       </View>
 
@@ -156,17 +62,13 @@ const DetailsScreen = ({ route, navigation }: Props) => {
 
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Amount</Text>
-        <Text style={styles.textBoldSmall}>
-          ₱{Number(transactionData.amount).toFixed(2)}
-        </Text>
+        <Text style={styles.textBoldSmall}>₱{amount.toFixed(2)}</Text>
       </View>
 
       <Divider style={styles.divider} />
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Total Amount:</Text>
-        <Text style={styles.textBoldSmall}>
-          ₱{Number(transactionData.amount).toFixed(2)}
-        </Text>
+        <Text style={styles.textBoldSmall}>₱{amount.toFixed(2)}</Text>
       </View>
       <Divider style={styles.divider} />
 
@@ -177,7 +79,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
         </Text>
       </View>
 
-      {sufficientBal && (
+      {user?.wallet.balance !== undefined && user.wallet.balance > amount ? (
         <View style={styles.containerRow}>
           <Checkbox
             status={checked ? "checked" : "unchecked"}
@@ -188,18 +90,18 @@ const DetailsScreen = ({ route, navigation }: Props) => {
           />
           <Text>I verify that the information is accurate.</Text>
         </View>
-      )}
-      {!sufficientBal && (
+      ) : (
         <View style={styles.containerRow}>
           <Text style={{ width: "100%", textAlign: "center", color: "red" }}>
             Your account balance is too low to complete this transaction.
           </Text>
         </View>
       )}
+
       <TouchableOpacity
         style={[styles.button, !checked && styles.buttonDisabled]}
         disabled={!checked}
-        onPress={() => transact()}
+        onPress={handleTransaction}
       >
         <Text style={styles.buttonText}>Proceed</Text>
       </TouchableOpacity>

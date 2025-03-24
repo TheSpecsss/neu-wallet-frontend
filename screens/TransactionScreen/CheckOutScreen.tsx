@@ -5,27 +5,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { walletLogo } from "../../loadSVG";
-import { loadFont } from "../../loadFont";
 import { SvgXml } from "react-native-svg";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { MainStackParamList } from "../../types";
-import { getUserBalance, getUserRole, getUserInfo } from "../../api/auth";
+import type { MainStackParamList } from "../../types";
 import Toast from "react-native-toast-message";
 import { encryptString } from "../../api/cryptoUtils";
-import { StackNavigationProp } from "@react-navigation/stack";
-import QRCode from "react-native-qrcode-svg";
-
-type qrDataType = {
-  receiverName: string;
-  receiver: string;
-  amount: string;
-  type: string;
-};
+import type { StackNavigationProp } from "@react-navigation/stack";
+import { useSession } from "../../context/Session";
 
 type NavigationProp = StackNavigationProp<MainStackParamList, "CheckOutScreen">;
 
@@ -33,75 +24,38 @@ type Props = {
   navigation: NavigationProp;
 };
 const CheckOutScreen = ({ navigation }: Props) => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [balance, setBalance] = useState("");
-  const [amountPay, setAmountPay] = useState("");
-  const [RUserID, setRUserID] = useState("");
-  const [RName, setRName] = useState("");
-  const [role, setRole] = useState<string | null>();
+  const { user } = useSession();
+  const [amount, setAmount] = useState("");
 
-  useEffect(() => {
-    loadFont().then(() => setIsFontLoaded(true));
+  const numericValue = useMemo(() => Number.parseFloat(amount), [amount]);
 
-    const userInfo = async () => {
-      try {
-        const role = await getUserRole();
-        const userInfo = await getUserInfo();
-        const bal = await getUserBalance();
-        setRole(role);
-        setRUserID(userInfo.accountID);
-        setRName(userInfo.name);
-        setBalance(bal);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    userInfo();
-  }, []);
-
-  const generateQRData = () => {
-    var qrDATA: qrDataType = {
-      receiverName: RName,
-      receiver: RUserID,
-      amount: amountPay,
-      type: role === "CASHIER" ? "PAY" : "TRANSFER",
-    };
-
-    console.log(qrDATA);
-    return qrDATA;
-  };
-
-  const generateButton = () => {
-    if (amountPay.length === 0 || amountPay === "0") {
-      Toast.show({
+  const handleGenerateQRCode = useCallback(() => {
+    if (!amount.trim() || Number.isNaN(numericValue) || numericValue <= 0) {
+      return Toast.show({
         type: "error",
-        text1: "input amount",
+        text1: "Please enter a valid amount",
       });
-      return;
     }
 
-    const eqrdata = encryptString(JSON.stringify(generateQRData()));
-
-    Toast.show({
-      type: "info",
-      text1: "Input: " + amountPay,
-      text2: eqrdata,
+    navigation.navigate("QRGenerateScreen", {
+      data: encryptString(
+        JSON.stringify({
+          receiverName: user?.name,
+          receiver: user?.id,
+          amount,
+          type: user?.accountType === "CASHIER" ? "PAY" : "TRANSFER",
+        })
+      ),
     });
-
-    navigation.navigate("QRGenerateScreen", { data: eqrdata });
-  };
-
-  if (!isFontLoaded) {
-    return null;
-  }
+  }, [amount, numericValue, user, navigation.navigate]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>
-        {role === "USER" ? "TOP UP" : "QR Generate"}
+        {user?.accountType === "USER" ? "TOP UP" : "QR Generate"}
       </Text>
 
-      {role && role === "USER" && false && (
+      {user?.accountType === "USER" && (
         <View style={styles.containerBalance}>
           <View style={styles.balanceCard}>
             <View style={styles.balanceHeader}>
@@ -109,7 +63,7 @@ const CheckOutScreen = ({ navigation }: Props) => {
               <View style={styles.balanceInfo}>
                 <Text style={styles.balanceText}>Available Balance:</Text>
                 <Text style={styles.balanceAmount}>
-                  ₱{Number(balance).toFixed(2)}
+                  ₱{Number(user?.wallet?.balance).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -122,8 +76,8 @@ const CheckOutScreen = ({ navigation }: Props) => {
         <TextInput
           style={styles.input}
           placeholder="₱0.00"
-          value={amountPay}
-          onChangeText={setAmountPay}
+          value={amount}
+          onChangeText={setAmount}
           keyboardType="numeric"
         />
       </View>
@@ -141,7 +95,7 @@ const CheckOutScreen = ({ navigation }: Props) => {
         </Text>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={generateButton}
+          onPress={handleGenerateQRCode}
         >
           <Text style={styles.buttonText}>Generate</Text>
         </TouchableOpacity>

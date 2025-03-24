@@ -1,24 +1,20 @@
 import React from "react";
-import { Pressable, Text, View } from "react-native";
-import { backLogo, topupLogo, cameraLogo } from "../../../loadSVG";
+import { Text, View } from "react-native";
+import { backLogo, cameraLogo } from "../../../loadSVG";
 import { useCameraPermissions, CameraView } from "expo-camera";
 import { SvgXml } from "react-native-svg";
 import {
   AppState,
-  Linking,
-  Platform,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainStackParamList } from "../../../types";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../../../types";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
 import { useEffect, useRef } from "react";
 import { decryptString } from "../../../api/cryptoUtils";
 
@@ -56,7 +52,7 @@ export const QRScan = ({ navigation }: Props) => {
     };
   }, []);
 
-  return isCamPermissionGranted == true ? (
+  return isCamPermissionGranted === true ? (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
       <CameraView
         style={StyleSheet.absoluteFillObject}
@@ -66,10 +62,8 @@ export const QRScan = ({ navigation }: Props) => {
             qrLock.current = true;
             const scanned = decryptString(data);
             if (scanned) {
-              setQRData("locked: " + scanned);
-              const send: string = scanned;
-
-              navigation.navigate("DetailsScreen", { data: send });
+              setQRData(`locked: ${scanned}`);
+              navigation.navigate("DetailsScreen", { data: scanned });
             } else {
               setQRData("Invalid QR Code");
             }
