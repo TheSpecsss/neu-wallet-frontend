@@ -1,17 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { successLogo } from "../../loadSVG";
-import { loadFont } from "../../loadFont";
 import { SvgXml } from "react-native-svg";
-import MainBottomTab from "../../navigation/MainBottomTab";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainStackParamList } from "../../types";
-import { RouteProp } from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../../types";
+import type { RouteProp } from "@react-navigation/native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
 import { CommonActions } from "@react-navigation/native";
 
 type ScreenProps = StackNavigationProp<
@@ -19,48 +16,13 @@ type ScreenProps = StackNavigationProp<
   "ConfirmTransactionScreen"
 >;
 
-// Define the props type
 type Props = {
   navigation: ScreenProps;
   route: RouteProp<MainStackParamList, "ConfirmTransactionScreen">;
 };
 
-type transactionDataType = {
-  receiver: String;
-  sender: String;
-  amount: String;
-  date: String;
-  type: String;
-};
-
 const ConfirmTransactionScreen = ({ route, navigation }: Props) => {
-  const { data } = route.params;
-
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-
-  const [receiver, setReceiver] = useState("");
-  const [sender, setSender] = useState("");
-  const [amount, setAmount] = useState("");
-  const [date, setDate] = useState("");
-  const [type, setType] = useState("");
-
-  useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-
-    const transactData = JSON.parse(data);
-
-    setReceiver(transactData.receiver);
-    setSender(transactData.sender);
-    setAmount(transactData.amount);
-    setDate(transactData.date);
-    setType(transactData.type);
-  }, []);
-
-  if (!isFontLoaded) {
-    return null;
-  }
+  const { receiverId, senderId, amount, date, type } = route.params;
 
   return (
     <View style={styles.container}>
@@ -71,15 +33,15 @@ const ConfirmTransactionScreen = ({ route, navigation }: Props) => {
       <View style={styles.detailsContainer}>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Receiver ID:</Text>
-          <Text style={styles.detailValue}>{receiver}</Text>
+          <Text style={styles.detailValue}>{receiverId}</Text>
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Sender ID:</Text>
-          <Text style={styles.detailValue}>{sender}</Text>
+          <Text style={styles.detailValue}>{senderId}</Text>
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Amount:</Text>
-          <Text style={styles.detailValue}>₱{Number(amount).toFixed(2)}</Text>
+          <Text style={styles.detailValue}>₱{amount.toFixed(2)}</Text>
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Date & Time:</Text>

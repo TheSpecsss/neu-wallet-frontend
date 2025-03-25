@@ -12,10 +12,11 @@ import {
 import React, { useState } from "react";
 import { SvgXml } from "react-native-svg";
 import { walletLogo } from "../../loadSVG";
+import { useSession } from "../../context/Session";
 
 const SendScreen = () => {
-  const [balance, setBalance] = useState(967.0);
-  const [selected, setSelected] = useState("ID");
+  const { user } = useSession();
+  const [type, setType] = useState<"ID" | "EMAIL">("ID");
   const [id, setId] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -27,35 +28,34 @@ const SendScreen = () => {
             <SvgXml xml={walletLogo} width={100} height={90} />
             <View style={styles.balanceInfo}>
               <Text style={styles.balanceText}>Available Balance:</Text>
-              <Text style={styles.balanceAmount}>₱{balance.toFixed(2)}</Text>
+              <Text style={styles.balanceAmount}>
+                ₱{user?.wallet.balance.toFixed(2)}
+              </Text>
             </View>
           </View>
         </View>
         <View style={styles.toggleContainer}>
           <TouchableOpacity
-            style={[styles.button, selected === "ID" && styles.buttonSelected]}
-            onPress={() => setSelected("ID")}
+            style={[styles.button, type === "ID" && styles.buttonSelected]}
+            onPress={() => setType("ID")}
           >
             <Text
               style={[
                 styles.buttonText,
-                selected === "ID" && styles.buttonTextSelected,
+                type === "ID" && styles.buttonTextSelected,
               ]}
             >
               ID
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.button,
-              selected === "Email" && styles.buttonSelected,
-            ]}
-            onPress={() => setSelected("Email")}
+            style={[styles.button, type === "EMAIL" && styles.buttonSelected]}
+            onPress={() => setType("EMAIL")}
           >
             <Text
               style={[
                 styles.buttonText,
-                selected === "Email" && styles.buttonTextSelected,
+                type === "EMAIL" && styles.buttonTextSelected,
               ]}
             >
               Email
@@ -66,14 +66,14 @@ const SendScreen = () => {
       <View style={styles.containerInput}>
         <View>
           <Text style={styles.label}>
-            {selected === "ID" ? "Enter ID:" : "Enter Email:"}
+            {type === "ID" ? "Enter ID:" : "Enter Email:"}
           </Text>
           <TextInput
             style={styles.input}
-            placeholder={selected === "ID" ? "Enter ID" : "Enter Email"}
+            placeholder={type === "ID" ? "Enter ID" : "Enter Email"}
             value={id}
             onChangeText={setId}
-            keyboardType={selected === "ID" ? "numeric" : "email-address"}
+            keyboardType={type === "ID" ? "numeric" : "email-address"}
           />
         </View>
         <View>

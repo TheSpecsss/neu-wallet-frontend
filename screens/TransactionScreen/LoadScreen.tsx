@@ -1,14 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { walletLogo, expressSendLogo, qrcodeLogo } from "../../loadSVG";
-import { loadFont } from "../../loadFont";
 import { SvgXml } from "react-native-svg";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainStackParamList } from "../../types";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../../types";
+import { useSession } from "../../context/Session";
+import { encryptString } from "../../api/cryptoUtils";
 
 type LoadScreenProp = StackNavigationProp<MainStackParamList, "LoadScreen">;
 
@@ -17,18 +18,7 @@ type Props = {
 };
 
 export const LoadScreen = ({ navigation }: Props) => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [balance, setBalance] = useState(967.0);
-
-  useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-  }, [isFontLoaded]);
-
-  if (!isFontLoaded) {
-    return null;
-  }
+  const { user } = useSession();
 
   return (
     <View style={styles.container}>
@@ -39,7 +29,9 @@ export const LoadScreen = ({ navigation }: Props) => {
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Available Balance:</Text>
-          <Text style={styles.balanceAmount}>₱{balance.toFixed(2)}</Text>
+          <Text style={styles.balanceAmount}>
+            ₱{user?.wallet.balance.toFixed(2)}
+          </Text>
         </View>
       </View>
 
@@ -53,7 +45,17 @@ export const LoadScreen = ({ navigation }: Props) => {
 
       <TouchableOpacity
         style={styles.optionButton}
-        onPress={() => navigation.navigate("QRGeneratorScreen")}
+        onPress={() =>
+          navigation.navigate("QRGenerateScreen", {
+            data: encryptString(
+              JSON.stringify({
+                receiverId: user?.id ?? "",
+                receiverName: user?.name ?? "",
+                type: "PAY",
+              })
+            ),
+          })
+        }
       >
         <SvgXml xml={qrcodeLogo("#000")} width={24} height={24} />
         <Text style={styles.optionText}>QR Generator</Text>

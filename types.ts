@@ -1,3 +1,5 @@
+export type TransactionTypeKind = "PAY" | "TRANSFER" | "DEPOSIT" | "WITHDRAW";
+
 export type MainStackParamList = {
   SplashScreen: undefined;
   LandingScreen: undefined;
@@ -5,7 +7,13 @@ export type MainStackParamList = {
   LoginScreen: undefined;
   MainBottomTab: undefined;
   QRScanScreen: undefined;
-  ConfirmTransactionScreen: undefined;
+  ConfirmTransactionScreen: {
+    receiverId: string;
+    senderId: string;
+    amount: number;
+    date: string;
+    type: TransactionTypeKind;
+  };
   DetailsScreen: { data: string };
   SendScreen: undefined;
   LoadScreen: undefined;
@@ -14,7 +22,6 @@ export type MainStackParamList = {
   QRGenerateScreen: { data: string };
   EditUserScreen: undefined;
   EmailConfirmationScreen: { email: string };
-  QRGeneratorScreen: undefined;
 };
 
 export type MainBottomTabParamList = {
