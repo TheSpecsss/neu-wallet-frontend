@@ -1,32 +1,32 @@
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import type {
-  MutationPayArgs,
+  MutationTopUpArgs,
   Wallet,
 } from "../../api/graphql/codegen/graphql";
 import api from "../../api/axiosInstance";
 import { print } from "graphql";
-import { PAY } from "../../api/graphql/mutation";
+import {  TOP_UP } from "../../api/graphql/mutation";
 import type { GraphQLResponse } from "../../api/graphql/types";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList, TransactionTypeKind } from "../../types";
 
-type PayMutationGraphQLResponse = GraphQLResponse<{ pay?: Wallet }>;
+type TopUpMutationGraphQLResponse = GraphQLResponse<{ topUp?: Wallet }>;
 
-export const usePayMutation = (
+export const useTopUpMutation = (
   type: TransactionTypeKind,
   options?: Partial<
-    UseMutationOptions<PayMutationGraphQLResponse, Error, MutationPayArgs>
+    UseMutationOptions<TopUpMutationGraphQLResponse, Error, MutationTopUpArgs>
   >
 ) => {
   const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
 
   return useMutation({
-    mutationFn: async (args: MutationPayArgs) => {
-      const { data } = await api<PayMutationGraphQLResponse>({
+    mutationFn: async (args: MutationTopUpArgs) => {
+      const { data } = await api<TopUpMutationGraphQLResponse>({
         data: {
-          query: print(PAY),
+          query: print(TOP_UP),
           variables: args,
         },
       });
@@ -42,8 +42,8 @@ export const usePayMutation = (
       }
 
       navigate("ConfirmTransactionScreen", {
-        receiverId: variables.cashierId,
-        senderId: data?.pay?.user?.id ?? "",
+        receiverId: variables.receiverId,
+        senderId: data?.topUp?.user?.id ?? "",
         amount: variables.amount,
         date: new Date().toLocaleString(),
         type,

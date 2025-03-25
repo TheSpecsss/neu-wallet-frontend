@@ -88,9 +88,9 @@ const HomeScreen = ({ navigation }: Props) => {
           <Text style={styles.historyTitle}>Recent Transactions</Text>
           <TouchableOpacity
             onPress={() => {
-              loadUserRole();
+              /*loadUserRole();
               walletBalance();
-              handleRefresh();
+              handleRefresh();*/
             }}
           >
             <Text style={styles.viewAll}>Refresh</Text>
