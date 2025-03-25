@@ -19,8 +19,7 @@ import QRGenerateScreen from "./screens/TransactionScreen/QRScreen/QRGenerateScr
 import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
 import type { MainStackParamList } from "./types";
-import EditUserScreen from "./screens/Admin/optionScreens/EditUserScreen";
-import QRGeneratorScreen from "./screens/TransactionScreen/QRGeneratorScreen";
+import EditUserScreen from "./screens/Admin/options/EditUserScreen";
 import { SessionProvider, useSession } from "./context/Session";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -124,11 +123,6 @@ const App = () => {
             <MainStack.Screen
               name="EmailConfirmationScreen"
               component={EmailConfirmationScreen}
-              options={{ headerShown: false }}
-            />
-            <MainStack.Screen
-              name="QRGeneratorScreen"
-              component={QRGeneratorScreen}
               options={{ headerShown: false }}
             />
           </MainStack.Navigator>
