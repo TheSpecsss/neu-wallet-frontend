@@ -15,6 +15,7 @@ import {
   loadBalanceLogo,
 } from "../../loadSVG";
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
+import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
 import { useSession } from "../../context/Session";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
@@ -32,6 +33,8 @@ const HomeScreen = ({ navigation }: Props) => {
     page: 1,
     perPage: 5,
   });
+
+  const balance = useGetUserBalanceQuery().data?.balance;
 
   useEffect(() => {
     if (!user) navigation.navigate("LoginScreen");
@@ -61,10 +64,12 @@ const HomeScreen = ({ navigation }: Props) => {
       <Text style={styles.header}>NEU Wallet</Text>
       <View style={styles.balanceCard}>
         <SvgXml xml={walletLogo} width={100} height={90} />
-        {/* <View style={styles.balanceInfo}>
+        <View style={styles.balanceInfo}>
           <Text style={styles.balanceText}>Available Balance:</Text>
-          <Text style={styles.balanceAmount}>₱{balance.toFixed(2)}</Text>
-        </View> */}
+          <Text style={styles.balanceAmount}>
+            ₱{Number(balance).toFixed(2)}
+          </Text>
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         {buttons.map(
@@ -88,9 +93,9 @@ const HomeScreen = ({ navigation }: Props) => {
           <Text style={styles.historyTitle}>Recent Transactions</Text>
           <TouchableOpacity
             onPress={() => {
-              loadUserRole();
+              /*loadUserRole();
               walletBalance();
-              handleRefresh();
+              handleRefresh();*/
             }}
           >
             <Text style={styles.viewAll}>Refresh</Text>

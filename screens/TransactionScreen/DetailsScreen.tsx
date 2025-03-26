@@ -52,7 +52,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Balance</Text>
         <Text style={styles.textBoldSmall}>
-          ₱{Number(user?.wallet.balance).toFixed(2)}
+          ₱{"{Number(user?.wallet.balance).toFixed(2)}"}
         </Text>
       </View>
 

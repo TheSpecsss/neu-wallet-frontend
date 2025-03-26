@@ -34,3 +34,13 @@ export const PAY = gql(`
     }
   } 
 `);
+
+export const TOP_UP = gql(`
+  mutation TopUp($receiverId: String!, $amount: Int!) {
+  topUp(receiverId: $receiverId, amount: $amount) {
+    balance
+    id
+    updatedAt
+  }
+}
+  `);
