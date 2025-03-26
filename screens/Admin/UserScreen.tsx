@@ -92,7 +92,7 @@ const UserScreen = ({ navigation }: Props) => {
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{item.name}</Text>
               <Text style={styles.userRole}>
-                Role: {item.accountType.replace(/_/g, " ")}
+                Account Type: {item.accountType.replace(/_/g, " ")}
               </Text>
             </View>
             <View style={styles.actions}>
