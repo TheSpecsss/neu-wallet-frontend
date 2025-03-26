@@ -6,6 +6,7 @@ import type { RouteProp } from "@react-navigation/native";
 import React, { useCallback, useMemo } from "react";
 import { useSession } from "../../context/Session";
 import { usePayMutation } from "../../hooks/mutation/usePayMutation";
+import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
 
 type DetailsScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -31,8 +32,8 @@ const DetailsScreen = ({ route, navigation }: Props) => {
 
   const { user } = useSession();
   const [checked, setChecked] = React.useState(false);
-
   const { mutate: pay } = usePayMutation(type);
+  const balance = useGetUserBalanceQuery().data?.balance;
 
   const handleTransaction = useCallback(() => {
     if (type === "PAY") {
@@ -51,9 +52,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
 
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Balance</Text>
-        <Text style={styles.textBoldSmall}>
-          ₱{"{Number(user?.wallet.balance).toFixed(2)}"}
-        </Text>
+        <Text style={styles.textBoldSmall}>₱{Number(balance).toFixed(2)}</Text>
       </View>
 
       <View style={styles.containerRow}>
@@ -79,7 +78,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
         </Text>
       </View>
 
-      {user?.wallet.balance !== undefined && user.wallet.balance > amount ? (
+      {balance !== undefined && balance > amount ? (
         <View style={styles.containerRow}>
           <Checkbox
             status={checked ? "checked" : "unchecked"}
