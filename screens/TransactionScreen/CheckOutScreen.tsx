@@ -17,6 +17,7 @@ import Toast from "react-native-toast-message";
 import { encryptString } from "../../api/cryptoUtils";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { useSession } from "../../context/Session";
+import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
 
 type NavigationProp = StackNavigationProp<MainStackParamList, "CheckOutScreen">;
 
@@ -26,6 +27,7 @@ type Props = {
 const CheckOutScreen = ({ navigation }: Props) => {
   const { user } = useSession();
   const [amount, setAmount] = useState("");
+  const balance = useGetUserBalanceQuery().data?.balance;
 
   const numericValue = useMemo(() => Number.parseFloat(amount), [amount]);
 
@@ -63,7 +65,7 @@ const CheckOutScreen = ({ navigation }: Props) => {
               <View style={styles.balanceInfo}>
                 <Text style={styles.balanceText}>Available Balance:</Text>
                 <Text style={styles.balanceAmount}>
-                  ₱{Number(user?.wallet?.balance).toFixed(2)}
+                  ₱{Number(balance).toFixed(2)}
                 </Text>
               </View>
             </View>

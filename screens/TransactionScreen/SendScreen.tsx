@@ -13,12 +13,15 @@ import React, { useState } from "react";
 import { SvgXml } from "react-native-svg";
 import { walletLogo } from "../../loadSVG";
 import { useSession } from "../../context/Session";
+import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
 
 const SendScreen = () => {
   const { user } = useSession();
   const [type, setType] = useState<"ID" | "EMAIL">("ID");
   const [id, setId] = useState("");
   const [amount, setAmount] = useState("");
+
+  const balance = useGetUserBalanceQuery().data?.balance;
 
   return (
     <View style={styles.container}>
@@ -29,7 +32,7 @@ const SendScreen = () => {
             <View style={styles.balanceInfo}>
               <Text style={styles.balanceText}>Available Balance:</Text>
               <Text style={styles.balanceAmount}>
-                ₱{user?.wallet.balance.toFixed(2)}
+                ₱{Number(balance).toFixed(2)}
               </Text>
             </View>
           </View>
