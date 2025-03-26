@@ -1,4 +1,5 @@
 export type TransactionTypeKind = "PAY" | "TRANSFER" | "DEPOSIT" | "WITHDRAW";
+export type AccountTypeKind = "USER" | "CASHIER" | "CASH_TOP_UP" | "ADMIN" | "SUPER_ADMIN";
 
 export type MainStackParamList = {
   SplashScreen: undefined;
@@ -20,7 +21,12 @@ export type MainStackParamList = {
   CheckOutScreen: undefined;
   AdminTopTab: undefined;
   QRGenerateScreen: { data: string };
-  EditUserScreen: undefined;
+  EditUserScreen: { 
+    id: string,
+    name: string, 
+    accountType: AccountTypeKind,
+    balance: number, 
+    };
   EmailConfirmationScreen: { email: string };
 };
 
