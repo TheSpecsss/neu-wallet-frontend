@@ -41,3 +41,22 @@ export const GET_USER_BALANCE = gql(`
     }
   }  
 `);
+
+export const GET_USERS_BY_PAGINATION = gql(`
+  query GetUsersByPagination($perPage: Int!, $page: Int!) {
+    getUsersByPagination(perPage: $perPage, page: $page) {
+      users {
+        id
+        name
+        accountType
+        wallet {
+          balance
+        }
+      }
+      page
+      totalPages
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+`);

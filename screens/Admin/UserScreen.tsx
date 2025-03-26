@@ -1,43 +1,67 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import type {  MainStackParamList } from "../../types";
+import { useGetUsersByPagination } from "../../hooks/query/useGetUsersByPagination";
+import type { AccountTypeKind, MainStackParamList } from "../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 
 type EditUserScreenNavigationProp = StackNavigationProp<
-  MainStackParamList, "EditUserScreen">
+  MainStackParamList,
+  "EditUserScreen"
+>;
 
 type Props = {
-    navigation: EditUserScreenNavigationProp;
-  };
+  navigation: EditUserScreenNavigationProp;
+};
 
-const users = [
-  { id: "1", name: "Daniel Joshua Saberon", role: "Cashier" },
-  { id: "2", name: "John Victor Gonzales", role: "Admin" },
-  { id: "3", name: "Luis Joshua Bulatao", role: "User" },
-  { id: "4", name: "User 1", role: "User" },
-  { id: "5", name: "User 2", role: "Cashier" },
-  { id: "6", name: "User 3", role: "Cashier" },
-  { id: "7", name: "User 4", role: "User" },
-  { id: "8", name: "User 5", role: "User" },
-];
-
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 
 const UserScreen = ({ navigation }: Props) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data: users, isLoading } = useGetUsersByPagination({
+    page: currentPage,
+    perPage: ITEMS_PER_PAGE,
+  });
 
-  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
-  const paginatedUsers = filteredUsers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const fetchedUsers = users?.data?.getUsersByPagination?.users ?? [];
+  const hasNextPage = users?.data?.getUsersByPagination?.hasNextPage ?? false;
+  const hasPreviousPage =
+    users?.data?.getUsersByPagination?.hasPreviousPage ?? false;
+  const totalPages = users?.data?.getUsersByPagination?.totalPages ?? 1;
+  const page = users?.data?.getUsersByPagination?.page ?? 1;
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (hasPreviousPage) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#204A69" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.largeText}>Users</Text>
+      <Text style={styles.header}>Users</Text>
 
       <View style={styles.searchFilterContainer}>
         <View style={styles.searchContainer}>
@@ -45,55 +69,79 @@ const UserScreen = ({ navigation }: Props) => {
             style={styles.searchBar}
             placeholder="Search users"
             placeholderTextColor="#aaa"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
           />
           <FontAwesome name="search" size={20} color="#204A69" />
         </View>
-        <TouchableOpacity style={{marginHorizontal:"5%"}}>
+
+        <TouchableOpacity style={styles.filterButton}>
           <FontAwesome name="filter" size={30} color="#204A69" />
         </TouchableOpacity>
       </View>
- 
+
       <FlatList
-        data={paginatedUsers}
+        data={fetchedUsers}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.userCard}>
-            <FontAwesome name="user-circle" size={40} color="#204A69" style={{marginRight:"3%"}} />
-            <View style={styles.rowContainer}>
-              <View>
-                <Text style={styles.userName}>{item.name}</Text>
-                <Text style={styles.userRole}>Role: {item.role}</Text>
-              </View> 
-              <View style={styles.iconRow}>
-                <TouchableOpacity onPress={() => navigation.navigate("EditUserScreen")}>
-                  <FontAwesome name="pencil" size={18} color="#204A69" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <FontAwesome name="trash" size={18} color="red" />
-                </TouchableOpacity>
-              </View>
+            <FontAwesome
+              name="user-circle"
+              size={40}
+              color="#204A69"
+              style={styles.userIcon}
+            />
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>{item.name}</Text>
+              <Text style={styles.userRole}>
+                Role: {item.accountType.replace(/_/g, " ")}
+              </Text>
+            </View>
+            <View style={styles.actions}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("EditUserScreen", {
+                    id: item.id,
+                    name: item.name,
+                    accountType: item.accountType as AccountTypeKind,
+                    balance: item.wallet?.balance ?? 0,
+                  })
+                }
+              >
+                <FontAwesome name="pencil" size={22} color="#204A69" />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <FontAwesome name="trash" size={18} color="red" />
+              </TouchableOpacity>
             </View>
           </View>
         )}
+        ListEmptyComponent={
+          <Text style={styles.noUsersText}>No users found</Text>
+        }
       />
 
       <View style={styles.paginationContainer}>
         <TouchableOpacity
-          style={[styles.paginationButton, currentPage === 1 && styles.disabledButton]}
-          onPress={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+          style={[
+            styles.paginationButton,
+            !hasPreviousPage && styles.disabledButton,
+          ]}
+          onPress={handlePreviousPage}
+          disabled={!hasPreviousPage}
         >
           <FontAwesome name="arrow-left" size={20} color="#fff" />
         </TouchableOpacity>
 
-        <Text style={styles.smallText}>Page {currentPage} of {totalPages}</Text>
+        <Text style={styles.pageText}>
+          Page {page} of {totalPages}
+        </Text>
 
         <TouchableOpacity
-          style={[styles.paginationButton, currentPage === totalPages && styles.disabledButton]}
-          onPress={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
+          style={[
+            styles.paginationButton,
+            !hasNextPage && styles.disabledButton,
+          ]}
+          onPress={handleNextPage}
+          disabled={!hasNextPage}
         >
           <FontAwesome name="arrow-right" size={20} color="#fff" />
         </TouchableOpacity>
@@ -107,28 +155,12 @@ export default UserScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: "5%",
-    paddingHorizontal: "5%",
     backgroundColor: "#fff",
+    paddingHorizontal: 15,
+    paddingBottom: "5%",
   },
-  rowContainer:{ 
-    flex:1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  iconRow: { 
-    flexDirection: 'row', 
-    justifyContent: 'flex-end', 
-    alignItems: 'center',
-    gap: "25%"
-  },
-  smallText:{
-    fontSize: 16,
-    fontFamily: "klavika-bold",
-    color: "#204A69",
-  },
-  largeText: {
-    fontSize: 36  ,
+  header: {
+    fontSize: 36,
     fontFamily: "klavika-bold",
     color: "#204A69",
     marginBottom: 15,
@@ -136,54 +168,84 @@ const styles = StyleSheet.create({
   searchFilterContainer: {
     flexDirection: "row",
     alignItems: "center",
-    width: "100%",
-    marginBottom: "5%",
+    justifyContent: "space-between",
+    marginBottom: 20,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 1,
     borderWidth: 1,
     borderColor: "#204A69",
     borderRadius: 8,
     paddingHorizontal: 10,
     backgroundColor: "#f9f9f9",
+    flex: 1,
+    marginRight: 10,
   },
   searchBar: {
     flex: 1,
     height: 40,
     fontSize: 16,
   },
+  filterButton: {
+    paddingHorizontal: 10,
+  },
   userCard: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
-    padding: 10,
+    padding: 15,
     borderRadius: 10,
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  userIcon: {
+    marginRight: 15,
+  },
+  userInfo: {
+    flex: 1,
   },
   userName: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "klavika-bold",
     color: "#204A69",
   },
   userRole: {
-    fontSize: 12,
-    fontFamily: "klavika-regular",
+    fontSize: 14,
     color: "#666",
+  },
+  actions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
   },
   paginationContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop: 20,
   },
   paginationButton: {
     padding: 10,
     backgroundColor: "#204A69",
     borderRadius: 8,
-    marginTop: "3%",
   },
   disabledButton: {
     backgroundColor: "#aaa",
+  },
+  pageText: {
+    fontSize: 16,
+    fontFamily: "klavika-bold",
+    color: "#204A69",
+  },
+  noUsersText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#555",
+    marginTop: 20,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
