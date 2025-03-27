@@ -41,6 +41,6 @@ export const TOP_UP = gql(`
     balance
     id
     updatedAt
+    }
   }
-}
-  `);
+`);

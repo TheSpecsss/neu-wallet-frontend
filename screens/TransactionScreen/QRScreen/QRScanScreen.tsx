@@ -17,6 +17,7 @@ import {
 } from "react-native-responsive-screen";
 import { useEffect, useRef } from "react";
 import { decryptString } from "../../../api/cryptoUtils";
+import { useSession } from "../../../context/Session";
 
 type QRScanScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -30,6 +31,8 @@ type Props = {
 export const QRScan = ({ navigation }: Props) => {
   const [camPermission, requestCamPermission] = useCameraPermissions();
   const isCamPermissionGranted = Boolean(camPermission?.granted);
+  const { user } = useSession();
+  
 
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
@@ -61,9 +64,14 @@ export const QRScan = ({ navigation }: Props) => {
           if (data && !qrLock.current) {
             qrLock.current = true;
             const scanned = decryptString(data);
+
             if (scanned) {
               setQRData(`locked: ${scanned}`);
-              navigation.navigate("DetailsScreen", { data: scanned });
+              if (user?.accountType === "CASH_TOP_UP") {
+                navigation.navigate("TopUpCheckoutScreen");
+              } else {
+                navigation.navigate("DetailsScreen", { data: scanned });
+              }
             } else {
               setQRData("Invalid QR Code");
             }

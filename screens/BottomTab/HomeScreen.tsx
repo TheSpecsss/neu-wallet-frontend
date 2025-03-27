@@ -29,11 +29,12 @@ type Props = { navigation: StackNavigationProp<MainStackParamList> };
 const HomeScreen = ({ navigation }: Props) => {
   const { user } = useSession();
   // TODO: Implement getWalletByUserId
-  const { data: transactions, isLoading } = useGetRecentTransactions({
+  const { data: transactions, isLoading, refetch } = useGetRecentTransactions({
     page: 1,
-    perPage: 5,
+    perPage: 10,
   });
 
+  
   const balance = useGetUserBalanceQuery().data?.balance;
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const HomeScreen = ({ navigation }: Props) => {
   if (!user) return null;
 
   const buttons = [
-    { type: "USER", label: "Scan", icon: scanQrLogo, screen: "QRScanScreen" },
+    { type: "USER", label: "Scan", icon: scanQrLogo("#204A69"), screen: "QRScanScreen" },
     { type: "USER", label: "Send", icon: sendLogo, screen: "SendScreen" },
     {
       type: ["USER", "CASH_TOP_UP", "CASHIER"],
@@ -67,9 +68,11 @@ const HomeScreen = ({ navigation }: Props) => {
         <View style={styles.balanceInfo}>
           <Text style={styles.balanceText}>Available Balance:</Text>
           <Text style={styles.balanceAmount}>
-            ₱{Number(balance).toFixed(2)}
-          </Text>
-        </View>
+            {user.accountType === "CASHIER" || user.accountType === "CASH_TOP_UP"
+              ? "₱******"
+              : `₱${Number(balance).toFixed(2)}`}
+            </Text>
+          </View>
       </View>
       <View style={styles.buttonContainer}>
         {buttons.map(
@@ -93,9 +96,7 @@ const HomeScreen = ({ navigation }: Props) => {
           <Text style={styles.historyTitle}>Recent Transactions</Text>
           <TouchableOpacity
             onPress={() => {
-              /*loadUserRole();
-              walletBalance();
-              handleRefresh();*/
+              refetch();
             }}
           >
             <Text style={styles.viewAll}>Refresh</Text>

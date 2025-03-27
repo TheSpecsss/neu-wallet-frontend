@@ -21,6 +21,8 @@ import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmati
 import type { MainStackParamList } from "./types";
 import EditUserScreen from "./screens/Admin/options/EditUserScreen";
 import { SessionProvider, useSession } from "./context/Session";
+import TopUpDetailsScreen from "./screens/TransactionScreen/TopUp/TopUpDetailsScreen";
+import TopUpCheckoutScreen from "./screens/TransactionScreen/TopUp/TopUpCheckoutScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const queryClient = new QueryClient();
@@ -123,6 +125,16 @@ const App = () => {
             <MainStack.Screen
               name="EmailConfirmationScreen"
               component={EmailConfirmationScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="TopUpDetailsScreen"
+              component={TopUpDetailsScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="TopUpCheckoutScreen"
+              component={TopUpCheckoutScreen}
               options={{ headerShown: false }}
             />
           </MainStack.Navigator>

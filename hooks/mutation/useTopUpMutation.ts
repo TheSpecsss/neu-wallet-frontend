@@ -41,18 +41,29 @@ export const useTopUpMutation = (
         });
       }
 
+      // navigate("DetailsScreen", {
+      //   data: {
+      //     receiverId: variables.receiverId ?? "",
+      //     senderId: data?.topUp?.user?.id ?? "",
+      //     amount: variables.amount,
+      //     date: new Date().toLocaleString(),
+      //     type,
+      //   },
+      // });
+
       navigate("ConfirmTransactionScreen", {
-        receiverId: variables.receiverId,
-        senderId: data?.topUp?.user?.id ?? "",
-        amount: variables.amount,
-        date: new Date().toLocaleString(),
-        type,
-      });
+          receiverId: variables.receiverId ?? "",
+          senderId: data?.topUp?.user?.id ?? "",
+          amount: variables.amount,
+          date: new Date().toLocaleString(),
+          type,
+        },
+      );
     },
     onError: (error) => {
       Toast.show({
         type: "error",
-        text1: "Pay Failed",
+        text1: "TopUop Failed",
         text2: error.message || "An unexpected error occurred",
       });
     },

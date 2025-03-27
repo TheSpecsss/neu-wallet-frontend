@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { walletLogo, expressSendLogo, qrcodeLogo } from "../../loadSVG";
+import { walletLogo, expressSendLogo, qrcodeLogo, scanQrLogo } from "../../loadSVG";
 import { SvgXml } from "react-native-svg";
 import {
   widthPercentageToDP as wp,
@@ -10,6 +10,8 @@ import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
 import { useSession } from "../../context/Session";
 import { encryptString } from "../../api/cryptoUtils";
+import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
+
 
 type LoadScreenProp = StackNavigationProp<MainStackParamList, "LoadScreen">;
 
@@ -19,18 +21,20 @@ type Props = {
 
 export const LoadScreen = ({ navigation }: Props) => {
   const { user } = useSession();
+  const balance = useGetUserBalanceQuery().data?.balance;
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Load Balance</Text>
-
-      <View style={styles.balanceCard}>
-        <SvgXml xml={walletLogo} width={wp(20)} height={hp(10)} />
-
-        <View style={styles.balanceContainer}>
-          <Text style={styles.balanceLabel}>Available Balance:</Text>
-          <Text style={styles.balanceAmount}>
-            ₱{user?.wallet.balance.toFixed(2)}
+    <Text style={styles.header}>Load</Text>
+    <View style={styles.balanceCard}>
+      <SvgXml xml={walletLogo} width={100} height={90} />
+      <View style={styles.balanceInfo}>
+        <Text style={styles.balanceText}>Available Balance:</Text>
+        <Text style={styles.balanceAmount}>
+          {user?.accountType === "CASHIER" || user?.accountType === "CASH_TOP_UP"
+            ? "₱******"
+            : `₱${Number(balance).toFixed(2)}`}
           </Text>
         </View>
       </View>
@@ -43,22 +47,15 @@ export const LoadScreen = ({ navigation }: Props) => {
         <Text style={styles.optionText}>Express Send</Text>
       </TouchableOpacity>
 
+
+
       <TouchableOpacity
         style={styles.optionButton}
-        onPress={() =>
-          navigation.navigate("QRGenerateScreen", {
-            data: encryptString(
-              JSON.stringify({
-                receiverId: user?.id ?? "",
-                receiverName: user?.name ?? "",
-                type: "PAY",
-              })
-            ),
-          })
-        }
-      >
-        <SvgXml xml={qrcodeLogo("#000")} width={24} height={24} />
-        <Text style={styles.optionText}>QR Generator</Text>
+          onPress={() =>
+          navigation.navigate("QRScanScreen")}
+        >
+        <SvgXml xml={scanQrLogo("#000")} width={24} height={24} />
+        <Text style={styles.optionText}>Scan</Text>
       </TouchableOpacity>
     </View>
   );
@@ -87,11 +84,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-  balanceContainer: {
-    marginLeft: 30,
-    alignItems: "flex-start",
+  balanceInfo: {
+    alignItems: "flex-end",
   },
-  balanceLabel: {
+  balanceText: {
     color: "#FFFFFF",
     fontSize: wp(5),
     fontFamily: "klavika-regular-italic",

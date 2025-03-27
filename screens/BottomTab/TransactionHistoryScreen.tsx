@@ -11,7 +11,7 @@ import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransact
 const TransactionHistoryScreen = () => {
   const { data: transactions, isLoading } = useGetRecentTransactions({
     page: 1,
-    perPage: 5,
+    perPage: 10,
   });
 
   const transactionList =

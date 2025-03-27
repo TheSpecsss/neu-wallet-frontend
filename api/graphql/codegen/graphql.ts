@@ -19,7 +19,7 @@ export type Scalars = {
 export type AuditLog = {
   __typename?: 'AuditLog';
   actionType: Scalars['String']['output'];
-  changes?: Maybe<Array<AuditLogChange>>;
+  changes?: Maybe<Array<Maybe<AuditLogChange>>>;
   createdAt: Scalars['String']['output'];
   executor?: Maybe<User>;
   executorId: Scalars['ID']['output'];
@@ -58,7 +58,6 @@ export type Mutation = {
   pay?: Maybe<Wallet>;
   register?: Maybe<User>;
   resendVerification?: Maybe<Verification>;
-  setBalance?: Maybe<Wallet>;
   topUp?: Maybe<Wallet>;
   updateUserAccountTypeByUserId?: Maybe<User>;
 };
@@ -92,12 +91,6 @@ export type MutationRegisterArgs = {
 
 export type MutationResendVerificationArgs = {
   email: Scalars['String']['input'];
-};
-
-
-export type MutationSetBalanceArgs = {
-  balance: Scalars['Int']['input'];
-  userId: Scalars['String']['input'];
 };
 
 
@@ -168,8 +161,8 @@ export type User = {
   id: Scalars['String']['output'];
   isDeleted: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
-  receivedTransactions?: Maybe<Array<Transaction>>;
-  sentTransactions?: Maybe<Array<Transaction>>;
+  receivedTransactions?: Maybe<Array<Maybe<Transaction>>>;
+  sentTransactions?: Maybe<Array<Maybe<Transaction>>>;
   updatedAt: Scalars['String']['output'];
   wallet?: Maybe<Wallet>;
 };
