@@ -20,19 +20,21 @@ type Props = {
 };
 
 const TopUpDetailsScreen = ({ route, navigation }: Props) => {
-  const { amount, receiverId, receiverName, type } = useMemo(() => {
+  const { amount, receiverId, senderId, receiverName, type } = useMemo(() => {
     try {
       const decryptedData = decryptString(route.params.data);
       const parsedData = decryptedData ? JSON.parse(decryptedData) : {};
+      console.log("Decrypted Data:", parsedData);
       return {
         receiverName: parsedData.receiverName,
         receiverId: parsedData.receiverId,
+        senderId: parsedData.senderId,
         amount: parsedData.amount,
         type: parsedData.type,
       };
     } catch (error) {
       console.error("Error", error);
-      return { receiverName: "", receiverId: "", amount: 0, type: "" };
+      return { receiverName: "", receiverId: "", senderId: "", amount: 0, type: "" };
     }
   }, [route.params.data]);
   const { user } = useSession();
@@ -44,9 +46,9 @@ const TopUpDetailsScreen = ({ route, navigation }: Props) => {
 
   const handleTopUpTransaction = useCallback(() => {
     if (type === "DEPOSIT") {
-      topUp({ receiverId, amount });
+      topUp({ receiverId: senderId, amount });
     }
-  }, [type, topUp, receiverId, amount]);
+  }, [type, topUp, senderId,  amount]);
 
 
   return (

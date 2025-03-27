@@ -47,12 +47,15 @@ const TopUpCheckoutScreen = ({ navigation }: Props) => {
         JSON.stringify({
           receiverName: user?.name,
           receiverId: user?.id,
+          senderId: user?.id,
           amount: Number(numericValue),
           type: user?.accountType === "CASH_TOP_UP" ? "DEPOSIT" : "",
         })
       ),
     });
   }, [amount, numericValue, user, navigation.navigate]);
+  
+  console.log("User ID:", user?.id);
 
   return (
     <View style={styles.container}>
