@@ -44,3 +44,13 @@ export const TOP_UP = gql(`
   }
 }
   `);
+
+export const UPDATE_USER_ACCOUNT_TYPE = gql(`
+  mutation UpdateUserAccountTypeByUserId($userId: String!, $accountType: String!) {
+  updateUserAccountTypeByUserId(userId: $userId, accountType: $accountType) {
+    accountType
+    updatedAt
+    name
+  }
+}
+`);

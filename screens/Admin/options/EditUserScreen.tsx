@@ -1,10 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import type { MainStackParamList } from "../../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RouteProp } from "@react-navigation/native";
+import UpdateNameModal from "./modals/UpdateNameModal";
+import UpdateAccountTypeModal from "./modals/UpdateAccountTypeModal";
+import SetBalanceModal from "./modals/SetBalanceModal";
 
 type AdminTopTabProps = StackNavigationProp<MainStackParamList, "AdminTopTab">;
 type EditUserScreenRouteProp = RouteProp<MainStackParamList, "EditUserScreen">;
@@ -17,61 +26,99 @@ type Props = {
 const EditUserScreen = ({ navigation, route }: Props) => {
   const { id, name, accountType, balance } = route.params;
 
+  const [isNameModalVisible, setNameModalVisible] = useState(false);
+  const [isTypeModalVisible, setTypeModalVisible] = useState(false);
+  const [isBalanceModalVisible, setBalanceModallVisible] = useState(false);
+
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.navigate("AdminTopTab")}
-        >
-          <MaterialIcons name="chevron-left" size={40} color="#204A69" />
-        </TouchableOpacity>
+    <>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.navigate("AdminTopTab")}
+          >
+            <MaterialIcons name="chevron-left" size={40} color="#204A69" />
+          </TouchableOpacity>
 
-        <View style={styles.profileContainer}>
-          <FontAwesome name="user-circle" size={100} color="#204A69" />
-          <Text style={styles.userName}>{name}</Text>
-          <Text style={styles.userInfo}>
-            ID: {id} • Role: {accountType.replace(/_/g, " ")}
-          </Text>
-        </View>
-
-        <Text style={styles.sectionTitle}>Manage User</Text>
-
-        <View style={styles.optionContainer}>
-          <Text style={styles.optionLabel}>Update Name</Text>
-          <View style={styles.optionRow}>
-            <Text style={styles.optionValue}>{name}</Text>
-            <TouchableOpacity style={styles.updateButton}>
-              <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
+          <View style={styles.profileContainer}>
+            <FontAwesome name="user-circle" size={100} color="#204A69" />
+            <Text style={styles.userName}>{name}</Text>
+            <Text style={styles.userInfo}>
+              ID: {id} • Role: {accountType.replace(/_/g, " ")}
+            </Text>
           </View>
-        </View>
 
-        <View style={styles.optionContainer}>
-          <Text style={styles.optionLabel}>Update Role</Text>
-          <View style={styles.optionRow}>
-            <Text style={styles.optionValue}>{accountType}</Text>
-            <TouchableOpacity style={styles.updateButton}>
-              <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
+          <Text style={styles.sectionTitle}>Manage User</Text>
+
+          <View style={styles.optionContainer}>
+            <Text style={styles.optionLabel}>Update Name</Text>
+            <View style={styles.optionRow}>
+              <Text style={styles.optionValue}>{name}</Text>
+              <TouchableOpacity
+                style={styles.updateButton}
+                onPress={() => setNameModalVisible(true)}
+              >
+                <Text style={styles.buttonText}>Update</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.optionContainer}>
-          <Text style={styles.optionLabel}>Set Balance</Text>
-          <View style={styles.optionRow}>
-            <Text style={styles.optionValue}>₱ {balance.toFixed(2)}</Text>
-            <TouchableOpacity style={styles.updateButton}>
-              <Text style={styles.buttonText}>Input</Text>
-            </TouchableOpacity>
+          <View style={styles.optionContainer}>
+            <Text style={styles.optionLabel}>Update Role</Text>
+            <View style={styles.optionRow}>
+              <Text style={styles.optionValue}>{accountType}</Text>
+              <TouchableOpacity
+                style={styles.updateButton}
+                onPress={() => setTypeModalVisible(true)}
+              >
+                <Text style={styles.buttonText}>Update</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        <TouchableOpacity style={styles.deleteButton}>
-          <Text style={styles.deleteButtonText}>Delete User</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <View style={styles.optionContainer}>
+            <Text style={styles.optionLabel}>Set Balance</Text>
+            <View style={styles.optionRow}>
+              <Text style={styles.optionValue}>₱ {balance.toFixed(2)}</Text>
+              <TouchableOpacity 
+              style={styles.updateButton}
+              onPress={() => setBalanceModallVisible(true)}
+              >
+                <Text style={styles.buttonText}>Input</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.deleteButton}>
+            <Text style={styles.deleteButtonText}>Delete User</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      <UpdateNameModal
+        visible={isNameModalVisible}
+        onClose={() => setNameModalVisible(false)}
+        field="name"
+        id={id}
+      />
+
+      <UpdateAccountTypeModal
+        visible={isTypeModalVisible}
+        onClose={() => setTypeModalVisible(false)}
+        field="role"
+        id={id}
+        accountType={accountType} 
+      />
+
+      <SetBalanceModal 
+      visible={isBalanceModalVisible}
+      onClose={() => setBalanceModallVisible(false)}
+      field="balance"
+      id={id}
+      balance={balance} 
+      />
+    </>
   );
 };
 
