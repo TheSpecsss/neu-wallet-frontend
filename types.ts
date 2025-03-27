@@ -16,17 +16,7 @@ export type MainStackParamList = {
     type: TransactionTypeKind;
   };
   
-  // DetailsScreen: {
-  //   data: {
-  //   receiverId: string;
-  //   senderId: string;
-  //   amount: number;
-  //   date: string;
-  //   type: TransactionTypeKind;
-  // }};  
-
   DetailsScreen: { data: string };
-
   TopUpDetailsScreen: { data: string };
   TopUpCheckoutScreen: undefined;
   SendScreen: undefined;

@@ -41,16 +41,6 @@ export const useTopUpMutation = (
         });
       }
 
-      // navigate("DetailsScreen", {
-      //   data: {
-      //     receiverId: variables.receiverId ?? "",
-      //     senderId: data?.topUp?.user?.id ?? "",
-      //     amount: variables.amount,
-      //     date: new Date().toLocaleString(),
-      //     type,
-      //   },
-      // });
-
       navigate("ConfirmTransactionScreen", {
           receiverId: variables.receiverId ?? "",
           senderId: data?.topUp?.user?.id ?? "",
