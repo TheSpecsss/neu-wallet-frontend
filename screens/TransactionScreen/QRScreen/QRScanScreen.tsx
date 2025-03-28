@@ -17,6 +17,8 @@ import {
 } from "react-native-responsive-screen";
 import { useEffect, useRef } from "react";
 import { decryptString } from "../../../api/cryptoUtils";
+import { useSession } from "../../../context/Session";
+
 
 type QRScanScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -28,12 +30,11 @@ type Props = {
 };
 
 export const QRScan = ({ navigation }: Props) => {
+  const { user } = useSession();
   const [camPermission, requestCamPermission] = useCameraPermissions();
   const isCamPermissionGranted = Boolean(camPermission?.granted);
-
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
-
   const [QRData, setQRData] = React.useState("");
 
   useEffect(() => {
@@ -63,7 +64,11 @@ export const QRScan = ({ navigation }: Props) => {
             const scanned = decryptString(data);
             if (scanned) {
               setQRData(`locked: ${scanned}`);
-              navigation.navigate("DetailsScreen", { data: scanned });
+              if (user?.accountType === "CASH_TOP_UP") {
+                navigation.navigate("TopUpDetailsScreen", { data: scanned });
+              } else {
+                navigation.navigate("DetailsScreen", { data: scanned });
+              }
             } else {
               setQRData("Invalid QR Code");
             }
@@ -73,7 +78,7 @@ export const QRScan = ({ navigation }: Props) => {
       />
       <View style={styles.OverlayContainer}>
         <View style={styles.Top}>
-          <Text style={styles.textTop}>Please Scan QR to Pay</Text>
+          <Text style={styles.textTop}>Please Scan QR</Text>
         </View>
         <View style={styles.Middle} />
         <View style={styles.Bottom}>

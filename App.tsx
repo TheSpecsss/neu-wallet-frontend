@@ -20,6 +20,8 @@ import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
 import type { MainStackParamList } from "./types";
 import EditUserScreen from "./screens/Admin/options/EditUserScreen";
+import TopUpDetailsScreen from "./screens/TransactionScreen/TopUp/TopUpDetailsScreen";
+import TopUpCheckOutScreen from "./screens/TransactionScreen/TopUp/TopUpCheckOutScreen";
 import { SessionProvider, useSession } from "./context/Session";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -123,6 +125,16 @@ const App = () => {
             <MainStack.Screen
               name="EmailConfirmationScreen"
               component={EmailConfirmationScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="TopUpDetailsScreen"
+              component={TopUpDetailsScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="TopUpCheckoutScreen"
+              component={TopUpCheckOutScreen}
               options={{ headerShown: false }}
             />
           </MainStack.Navigator>

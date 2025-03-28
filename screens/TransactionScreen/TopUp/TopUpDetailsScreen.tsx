@@ -1,30 +1,30 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Divider, Checkbox } from "react-native-paper";
-import type { MainStackParamList } from "../../types";
+import type { MainStackParamList } from  "../../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RouteProp } from "@react-navigation/native";
 import React, { useCallback, useMemo } from "react";
-import { useSession } from "../../context/Session";
-import { usePayMutation } from "../../hooks/mutation/usePayMutation";
-import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
-import { decryptString } from "../../api/cryptoUtils";
+import { useSession } from "../../../context/Session";
+import { useTopUpMutation } from "../../../hooks/mutation/useTopUpMutation";
+import { useGetUserBalanceQuery } from "../../../hooks/query/useGetBalanceQuery";
+import { decryptString } from "../../../api/cryptoUtils";
 
-type DetailsScreenProps = StackNavigationProp<
+type TopUpDetailsScreenProps = StackNavigationProp<
   MainStackParamList,
-  "DetailsScreen"
+  "TopUpDetailsScreen"
 >;
 
 type Props = {
-  navigation: DetailsScreenProps;
-  route: RouteProp<MainStackParamList, "DetailsScreen">;
+  navigation: TopUpDetailsScreenProps;
+  route: RouteProp<MainStackParamList, "TopUpDetailsScreen">;
 };
 
-const DetailsScreen = ({ route, navigation }: Props) => {
+const TopUpDetailsScreen = ({ route, navigation }: Props) => {
   const { amount, receiverId, receiverName, type } = useMemo(() => {
+    
     const parsedData = JSON.parse(route.params.data);
     const decrypedData = JSON.parse(decryptString(parsedData.data) || "");
 
-    console.log(JSON.stringify(decrypedData));
 
     return {
       receiverName: decrypedData.receiverName,
@@ -33,24 +33,23 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       type: decrypedData.type,
     };
   }, [route.params.data]);
+  
 
   const { user } = useSession();
   const [checked, setChecked] = React.useState(false);
-  const { mutate: pay } = usePayMutation(type);
+  const { mutate: topUp } = useTopUpMutation(type);
   const balance = useGetUserBalanceQuery().data?.balance;
 
   const handleTransaction = useCallback(() => {
-    if (type === "PAY") {
-      pay({ cashierId: receiverId, amount });
+    if (type === "DEPOSIT") {
+        topUp({ receiverId: receiverId, amount });
     }
-  }, [type, pay, receiverId, amount]);
+  }, [type, topUp, receiverId, amount]);
 
   return (
     <View style={styles.container}>
       <View style={styles.containerColumn}>
-        <Text style={styles.textNormal}>
-          {type} to {type === "PAY" ? "cashier" : ""}
-        </Text>
+        <Text style={styles.textNormal}> {type} to </Text>
         <Text style={styles.textBold}>{receiverName}</Text>
       </View>
 
@@ -60,7 +59,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       </View>
 
       <View style={styles.containerRow}>
-        <Text style={styles.textBold}>You're Paying</Text>
+        <Text style={styles.textBold}>Deposit</Text>
       </View>
 
       <View style={styles.containerRow}>
@@ -106,7 +105,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
         disabled={!checked}
         onPress={handleTransaction}
       >
-        <Text style={styles.buttonText}>Proceed</Text>
+        <Text style={styles.buttonText}>Load</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -119,7 +118,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
   );
 };
 
-export default DetailsScreen;
+export default TopUpDetailsScreen;
 
 const styles = StyleSheet.create({
   container: {
