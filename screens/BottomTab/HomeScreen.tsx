@@ -28,8 +28,11 @@ type Props = { navigation: StackNavigationProp<MainStackParamList> };
 
 const HomeScreen = ({ navigation }: Props) => {
   const { user } = useSession();
-  // TODO: Implement getWalletByUserId
-  const { data: transactions, isLoading } = useGetRecentTransactions({
+  const {
+    data: transactions,
+    isLoading,
+    refetch,
+  } = useGetRecentTransactions({
     page: 1,
     perPage: 5,
   });
@@ -93,9 +96,7 @@ const HomeScreen = ({ navigation }: Props) => {
           <Text style={styles.historyTitle}>Recent Transactions</Text>
           <TouchableOpacity
             onPress={() => {
-              /*loadUserRole();
-              walletBalance();
-              handleRefresh();*/
+              refetch;
             }}
           >
             <Text style={styles.viewAll}>Refresh</Text>

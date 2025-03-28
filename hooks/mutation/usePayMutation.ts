@@ -12,6 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList, TransactionTypeKind } from "../../types";
 
+import { useSession } from "../../context/Session";
+
 type PayMutationGraphQLResponse = GraphQLResponse<{ pay?: Wallet }>;
 
 export const usePayMutation = (
@@ -21,6 +23,7 @@ export const usePayMutation = (
   >
 ) => {
   const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
+  const { user } = useSession();
 
   return useMutation({
     mutationFn: async (args: MutationPayArgs) => {
@@ -43,7 +46,7 @@ export const usePayMutation = (
 
       navigate("ConfirmTransactionScreen", {
         receiverId: variables.cashierId,
-        senderId: data?.pay?.user?.id ?? "",
+        senderId: user?.id || "",
         amount: variables.amount,
         date: new Date().toLocaleString(),
         type,

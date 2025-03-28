@@ -7,6 +7,7 @@ import React, { useCallback, useMemo } from "react";
 import { useSession } from "../../context/Session";
 import { usePayMutation } from "../../hooks/mutation/usePayMutation";
 import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
+import { decryptString } from "../../api/cryptoUtils";
 
 type DetailsScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -21,12 +22,15 @@ type Props = {
 const DetailsScreen = ({ route, navigation }: Props) => {
   const { amount, receiverId, receiverName, type } = useMemo(() => {
     const parsedData = JSON.parse(route.params.data);
+    const decrypedData = JSON.parse(decryptString(parsedData.data) || "");
+
+    console.log(JSON.stringify(decrypedData));
 
     return {
-      receiverName: parsedData.receiverName,
-      receiverId: parsedData.receiverId,
-      amount: parsedData.amount,
-      type: parsedData.type,
+      receiverName: decrypedData.receiverName,
+      receiverId: decrypedData.receiver,
+      amount: Number(decrypedData.amount),
+      type: decrypedData.type,
     };
   }, [route.params.data]);
 
@@ -52,7 +56,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
 
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Balance</Text>
-        <Text style={styles.textBoldSmall}>₱{Number(balance).toFixed(2)}</Text>
+        <Text style={styles.textBoldSmall}>₱{amount.toFixed(2)}</Text>
       </View>
 
       <View style={styles.containerRow}>
