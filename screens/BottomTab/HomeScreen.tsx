@@ -46,7 +46,8 @@ const HomeScreen = ({ navigation }: Props) => {
   if (!user) return null;
 
   const buttons = [
-    { type: "USER", label: "Scan", icon: scanQrLogo, screen: "QRScanScreen" },
+
+    { type: "USER", label: "Scan", icon: scanQrLogo("#204A69"), screen: "QRScanScreen" },
     { type: "USER", label: "Send", icon: sendLogo, screen: "SendScreen" },
     {
       type: ["USER", "CASH_TOP_UP", "CASHIER"],

@@ -28,6 +28,8 @@ export type MainStackParamList = {
     balance: number, 
     };
   EmailConfirmationScreen: { email: string };
+  TopUpCheckoutScreen: undefined;
+  TopUpDetailsScreen: { data: string };
 };
 
 export type MainBottomTabParamList = {

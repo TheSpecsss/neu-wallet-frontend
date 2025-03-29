@@ -11,6 +11,7 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList, TransactionTypeKind } from "../../types";
+import { useSession } from "../../context/Session";
 
 type TopUpMutationGraphQLResponse = GraphQLResponse<{ topUp?: Wallet }>;
 
@@ -21,6 +22,7 @@ export const useTopUpMutation = (
   >
 ) => {
   const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
+  const { user } = useSession();
 
   return useMutation({
     mutationFn: async (args: MutationTopUpArgs) => {
@@ -43,7 +45,7 @@ export const useTopUpMutation = (
 
       navigate("ConfirmTransactionScreen", {
         receiverId: variables.receiverId,
-        senderId: data?.topUp?.user?.id ?? "",
+        senderId: user?.id || "",
         amount: variables.amount,
         date: new Date().toLocaleString(),
         type,
@@ -52,7 +54,7 @@ export const useTopUpMutation = (
     onError: (error) => {
       Toast.show({
         type: "error",
-        text1: "Pay Failed",
+        text1: "Top Up Failed",
         text2: error.message || "An unexpected error occurred",
       });
     },

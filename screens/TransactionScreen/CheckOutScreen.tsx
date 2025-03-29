@@ -45,7 +45,7 @@ const CheckOutScreen = ({ navigation }: Props) => {
           receiverName: user?.name,
           receiver: user?.id,
           amount,
-          type: user?.accountType === "CASHIER" ? "PAY" : "TRANSFER",
+          type: user?.accountType === "CASHIER" ? "PAY" : "DEPOSIT",
         })
       ),
     });

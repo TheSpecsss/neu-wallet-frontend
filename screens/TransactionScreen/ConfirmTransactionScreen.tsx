@@ -10,6 +10,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { CommonActions } from "@react-navigation/native";
+import { useSession } from "../../context/Session";
 
 type ScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -23,6 +24,8 @@ type Props = {
 
 const ConfirmTransactionScreen = ({ route, navigation }: Props) => {
   const { receiverId, senderId, amount, date, type } = route.params;
+
+  const { user }  = useSession();
 
   return (
     <View style={styles.container}>
