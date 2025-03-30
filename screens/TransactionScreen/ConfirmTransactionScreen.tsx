@@ -48,7 +48,7 @@ const ConfirmTransactionScreen = ({ route, navigation }: Props) => {
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Date & Time:</Text>
-          <Text style={styles.detailValue}>{date}</Text>
+          <Text style={styles.detailValueTime}>{date}</Text>
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Remarks:</Text>
@@ -86,10 +86,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
-    padding: wp(9),
+    padding: wp(5),
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontFamily: "klavika",
     color: "#1E3A5F",
     marginBottom: 11,
@@ -97,17 +97,15 @@ const styles = StyleSheet.create({
 
   detailsContainer: {
     width: "100%",
-    marginBottom: 20,
+    marginBottom: "10%",
   },
-
   detailItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 20,
+    paddingVertical: "5%",
   },
   detailLabel: {
     color: "#1E3A5F",
-    fontWeight: "600",
     fontSize: 20,
     fontFamily: "klavika",
   },
@@ -116,7 +114,14 @@ const styles = StyleSheet.create({
     fontFamily: "klavika-bold",
     fontSize: 20,
   },
-
+  detailValueTime :{
+    color: "#1E3A5F",
+    fontFamily: "klavika-bold",
+    fontSize: 20,
+    flexWrap: "wrap",     
+    width: "35%",
+    textAlign: "right",      
+  },
   buttonContainer: {
     backgroundColor: "#043E75",
     height: 45,
