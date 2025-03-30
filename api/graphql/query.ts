@@ -7,6 +7,7 @@ export const GET_RECENT_TRANSACTIONS_BY_USER_ID = gql(`
         id
         amount
         createdAt
+        type
         receiver {
           name
         }

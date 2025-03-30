@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: hp(2.5),
+    marginTop: hp(2.5),
   },
   background: {
     flex: 1,
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: wp(100),
-    height: hp(67),
+    height: hp(70),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
@@ -196,7 +197,6 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 6,
     borderWidth: 1,
-    padding: 10,
     backgroundColor: "#fff",
     borderRadius: 8,
     borderColor: "gray",
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   subButton: {
     color: "#fff",
     fontSize: wp(3.4),
-    marginBottom: hp(1),
+    marginBottom: hp(0.5),
   },
   solidButton: {
     backgroundColor: "#043E75", // **Darker blue for contrast**

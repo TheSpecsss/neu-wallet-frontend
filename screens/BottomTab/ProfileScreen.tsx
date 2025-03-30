@@ -40,7 +40,7 @@ const ProfileScreen = () => {
       <View style={styles.details}>
         <ProfileDetail label="Account ID" value={user?.id} />
         <ProfileDetail label="Email" value={user?.email} />
-        <ProfileDetail label="Date Created" value={user?.createdAt} />
+        <ProfileDetail label="Date Created" value={user?.createdAt ? new Date(user.createdAt).toLocaleString() : " "} />
       </View>
 
       <TouchableOpacity style={styles.aboutApp}>
@@ -67,7 +67,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#F2F5F9",
     alignItems: "center",
 
     paddingTop: hp(10),
