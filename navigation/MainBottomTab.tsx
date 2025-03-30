@@ -11,12 +11,6 @@ import type { MainBottomTabParamList } from "../types";
 const BottomNavigator = createBottomTabNavigator<MainBottomTabParamList>();
 
 const MainBottomTab = () => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  useEffect(() => {
-    if (!isFontLoaded) {
-      loadFont().then(() => setIsFontLoaded(true));
-    }
-  }, [isFontLoaded]);
 
   return (
     <BottomNavigator.Navigator

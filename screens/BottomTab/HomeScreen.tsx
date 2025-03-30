@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
 import {
@@ -28,14 +29,19 @@ type Props = { navigation: StackNavigationProp<MainStackParamList> };
 
 const HomeScreen = ({ navigation }: Props) => {
   const { user } = useSession();
+  
   const {
     data: transactions,
     isLoading,
     refetch,
   } = useGetRecentTransactions({
     page: 1,
-    perPage: 5,
+    perPage: 5, 
   });
+  
+  const transactionList = (
+    transactions?.data?.getRecentTransactionsByUserId?.transactions || [])
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); 
 
   const balance = useGetUserBalanceQuery().data?.balance;
 
@@ -46,7 +52,6 @@ const HomeScreen = ({ navigation }: Props) => {
   if (!user) return null;
 
   const buttons = [
-
     { type: "USER", label: "Scan", icon: scanQrLogo("#204A69"), screen: "QRScanScreen" },
     { type: "USER", label: "Send", icon: sendLogo, screen: "SendScreen" },
     {
@@ -63,9 +68,44 @@ const HomeScreen = ({ navigation }: Props) => {
     },
   ];
 
+  const getTransactionLabel = (type: string) => {
+    switch (type) {
+      case "DEPOSIT":
+        return "Top Up";
+      case "PAYMENT":
+        return "Payment";
+      case "TRANSFER":
+        return "Send";
+      case "WITHDRAW":
+        return "Cashout";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getAmountDisplay = (type: string, amount: number) => {
+    const isCashier = user?.accountType === "CASHIER";
+    const isTopUpCashier = user?.accountType === "CASH_TOP_UP";
+
+    if (isCashier && type === "PAYMENT") {
+      return { display: `+₱${amount.toFixed(2)}`, color: "green" };
+    }
+
+    if (isTopUpCashier) {
+      return { display: `-₱${amount.toFixed(2)}`, color: "red" };
+    }
+
+    const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
+    const sign = isOutgoing ? "-" : "+";
+    const color = isOutgoing ? "red" : "green";
+
+    return { display: `${sign}₱${amount.toFixed(2)}`, color };
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>NEU Wallet</Text>
+
       <View style={styles.balanceCard}>
         <SvgXml xml={walletLogo} width={100} height={90} />
         <View style={styles.balanceInfo}>
@@ -75,6 +115,7 @@ const HomeScreen = ({ navigation }: Props) => {
           </Text>
         </View>
       </View>
+
       <View style={styles.buttonContainer}>
         {buttons.map(
           ({ type, label, icon, screen }) =>
@@ -92,36 +133,46 @@ const HomeScreen = ({ navigation }: Props) => {
             )
         )}
       </View>
+
       <View style={styles.historyContainer}>
         <View style={styles.historyHeader}>
           <Text style={styles.historyTitle}>Recent Transactions</Text>
-          <TouchableOpacity
-            onPress={() => {
-              refetch;
-            }}
-          >
+          <TouchableOpacity onPress={() => refetch()}>
             <Text style={styles.viewAll}>Refresh</Text>
           </TouchableOpacity>
         </View>
+
         {isLoading ? (
-          <Text>Loading...</Text>
-        ) : transactions?.data?.getRecentTransactionsByUserId?.transactions
-            ?.length ? (
-          <FlatList
-            data={transactions.data.getRecentTransactionsByUserId.transactions}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.transactionItem}>
-                <Text style={styles.transactionTitle}>Transaction</Text>
-                <Text style={styles.transactionAmount}>
-                  {item.type === "received" ? "+" : "-"}₱
-                  {item.amount.toFixed(2)}
-                </Text>
-              </View>
-            )}
-          />
+          <ActivityIndicator size="large" color="#204A69" />
         ) : (
-          <Text>No recent transactions</Text>
+          
+          <FlatList
+            data={transactionList}
+            keyExtractor={(item) => item.id}
+            ListEmptyComponent={<Text>No recent transactions</Text>}
+            renderItem={({ item }) => {
+              const label = getTransactionLabel(item.type);
+              const { display, color } = getAmountDisplay(
+                item.type,
+                item.amount
+              );
+
+              return (
+                <View style={styles.transactionItem}>
+                  <View>
+                    <Text style={styles.transactionTitle}>{label}</Text>
+                    <Text style={styles.transactionDate}>
+                      {new Date(item.createdAt).toLocaleString()}
+                    </Text>
+                  </View>
+                  <Text style={[styles.transactionAmount, { color }]}>
+                    {display}
+                  </Text>
+                </View>
+                
+              );
+            }}
+          />
         )}
       </View>
     </View>
@@ -131,8 +182,16 @@ const HomeScreen = ({ navigation }: Props) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  header: { fontSize: 24, fontWeight: "bold", marginTop: 20 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#F2F5F9",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
   balanceCard: {
     backgroundColor: "#204A69",
     padding: 20,
@@ -155,40 +214,64 @@ const styles = StyleSheet.create({
     marginTop: heightPercentageToDP(0.9),
     marginRight: widthPercentageToDP(6.5),
   },
-  headerText: {
-    color: "#FFFFFF",
-    fontSize: widthPercentageToDP(5),
-    fontFamily: "klavika-regular-italic",
-  },
-  header2Text: {
-    fontFamily: "klavika-medium-italic",
-    color: "#FFFFFF",
-    fontSize: widthPercentageToDP(7),
-    marginTop: widthPercentageToDP(0.9),
-    marginRight: widthPercentageToDP(6.5),
-  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     marginTop: 20,
   },
-  button: { alignItems: "center" },
-  buttonText: { marginTop: 5, fontSize: 14, fontWeight: "bold" },
-  historyContainer: { marginTop: 20 },
+  button: {
+    alignItems: "center",
+  },
+  buttonText: {
+    marginTop: 5,
+    fontSize: 14,
+    fontFamily: "klavika-bold",
+    color: "#204A69",
+  },
+  historyContainer: {
+    marginTop: 20,
+    flex: 1,
+  },
   historyHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
   },
-  historyTitle: { fontSize: 18, fontWeight: "bold" },
-  viewAll: { fontSize: 14, color: "#007AFF" },
-  transactionItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+  historyTitle: {
+    fontSize: 18,
+    fontFamily: "klavika-bold",
+    color: "#204A69",
   },
-  transactionTitle: { fontSize: 16 },
-  transactionAmount: { fontSize: 16, fontWeight: "bold" },
+  viewAll: {
+    fontSize: 14,
+    color: "#007AFF",
+  },
+  transactionItem: {
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  transactionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#204A69",
+  },
+  transactionAmount: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  transactionDate: {
+    fontSize: 12,
+    color: "#555",
+    marginTop: 5,
+  },
 });
