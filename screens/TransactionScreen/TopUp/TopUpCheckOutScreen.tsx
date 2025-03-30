@@ -24,7 +24,7 @@ import {
   type Props = {
     navigation: TopUpCheckoutScreenProp;
   }; 
-  const TopUpCheckOutScreen = ({ navigation }: Props) => {
+  const TopUpCheckoutScreen = ({ navigation }: Props) => {
     const { user } = useSession();
     const [amount, setAmount] = useState("");
     const balance = useGetUserBalanceQuery().data?.balance;
@@ -39,13 +39,13 @@ import {
         });
       }
   
-      navigation.navigate("TopUpDetailsScreen", {
+      navigation.navigate("QRGenerateScreen", {
         data: encryptString(
           JSON.stringify({
             receiverName: user?.name,
             receiver: user?.id,
             amount,
-            type: user?.accountType === "CASH_TOP_UP" ? "DEPOSIT" : "TOP UP",
+            type: user?.accountType === "CASH_TOP_UP" ? "WITHDRAW" : " ",
           })
         ),
       });
@@ -54,24 +54,8 @@ import {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>
-          {user?.accountType === "CASH_TOP_UP" ? "DEPOSIT": " "}
+          {user?.accountType === "CASH_TOP_UP" ? "WITHRAW/CASHOUT": " "}
         </Text> 
-
-        {/* {user?.accountType !== "CASH_TOP_UP" && (
-          <View style={styles.containerBalance}>
-            <View style={styles.balanceCard}>
-              <View style={styles.balanceHeader}>
-                <SvgXml xml={walletLogo} width={100} height={90} />
-                <View style={styles.balanceInfo}>
-                  <Text style={styles.balanceText}>Available Balance:</Text>
-                  <Text style={styles.balanceAmount}>
-                    ₱{Number(balance).toFixed(2)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        )} */}
 
     {(user?.accountType === "CASH_TOP_UP") && (
         <View style={styles.containerAmount}>
@@ -109,7 +93,7 @@ import {
     );
   };
   
-  export default TopUpCheckOutScreen;
+  export default TopUpCheckoutScreen;
   
   const styles = StyleSheet.create({
     container: {

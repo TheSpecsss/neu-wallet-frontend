@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -29,21 +29,30 @@ type Props = { navigation: StackNavigationProp<MainStackParamList> };
 
 const HomeScreen = ({ navigation }: Props) => {
   const { user } = useSession();
+  const [page, setPage] = useState(1);
   
   const {
     data: transactions,
     isLoading,
     refetch,
   } = useGetRecentTransactions({
-    page: 1,
-    perPage: 5, 
+    page,
+    perPage: 6, 
   });
   
+  const totalPage = transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
   const transactionList = (
     transactions?.data?.getRecentTransactionsByUserId?.transactions || [])
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); 
 
   const balance = useGetUserBalanceQuery().data?.balance;
+  
+  //To always show the last page of transactions - sab 
+  useEffect(() => {
+    if (totalPage > 0) {
+      setPage(totalPage);
+    }
+  }, [totalPage]);
 
   useEffect(() => {
     if (!user) navigation.navigate("LoginScreen");
@@ -58,7 +67,7 @@ const HomeScreen = ({ navigation }: Props) => {
       type: ["USER", "CASH_TOP_UP", "CASHIER"],
       label: "Checkout",
       icon: checkoutLogo,
-      screen: "CheckOutScreen",
+      screen: user?.accountType === "CASH_TOP_UP" ? "TopUpCheckoutScreen" : "CheckOutScreen", 
     },
     {
       type: "CASH_TOP_UP",
@@ -92,7 +101,10 @@ const HomeScreen = ({ navigation }: Props) => {
     }
 
     if (isTopUpCashier) {
-      return { display: `-₱${amount.toFixed(2)}`, color: "red" };
+      if (type === "WITHDRAW") {
+        return { display: `+₱${amount.toFixed(2)}`, color: "green" }; 
+      }
+      return { display: `-₱${amount.toFixed(2)}`, color: "red" };      
     }
 
     const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";

@@ -54,3 +54,9 @@ export const UPDATE_USER_ACCOUNT_TYPE = gql(`
   }
 }
 `);
+
+export const WITHDRAW = gql(`mutation WithdrawBalance($topUpCashierId: String!, $amount: Int!){
+  withdrawBalance(topUpCashierId: $topUpCashierId, amount: $amount) {
+    balance
+  }
+}`);

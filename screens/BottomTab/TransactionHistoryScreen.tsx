@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 import { useSession } from "../../context/Session";
 
@@ -37,7 +37,7 @@ const TransactionHistoryScreen = () => {
       case "TRANSFER":
         return "Send";
       case "WITHDRAW":
-        return "Cashout";
+        return "Withdrawal";
       default:
         return "Unknown";
     }
@@ -52,7 +52,10 @@ const TransactionHistoryScreen = () => {
     }
 
     if (isTopUpCashier) {
-      return { display: `-₱${amount.toFixed(2)}`, color: "red" };
+      if (type === "WITHDRAW") {
+        return { display: `+₱${amount.toFixed(2)}`, color: "green" }; 
+      }
+      return { display: `-₱${amount.toFixed(2)}`, color: "red" };      
     }
 
     const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
@@ -75,6 +78,9 @@ const TransactionHistoryScreen = () => {
     }
 
     if (isTopUpCashier) {
+      if (type === "WITHDRAW") {
+        return `From ${senderName || "Unknown"}`; 
+      }
       return `To ${receiverName || "Unknown"}`;
     }
 
@@ -125,7 +131,6 @@ const TransactionHistoryScreen = () => {
         }}
       />
 
-      {/* ✅ Pagination Controls */}
       <View style={styles.paginationContainer}>
         <TouchableOpacity
           style={[styles.pageButton, !hasPreviousPage && styles.disabledButton]}

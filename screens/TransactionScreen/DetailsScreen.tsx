@@ -3,11 +3,11 @@ import { Divider, Checkbox } from "react-native-paper";
 import type { MainStackParamList } from "../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RouteProp } from "@react-navigation/native";
-import React, { useCallback, useMemo } from "react";
-import { useSession } from "../../context/Session";
+import React, { useCallback, useMemo, useState } from "react";
 import { usePayMutation } from "../../hooks/mutation/usePayMutation";
 import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
 import { decryptString } from "../../api/cryptoUtils";
+import { useWithdrawBalanceMutation } from "../../hooks/mutation/useWithdrawBalance";
 
 type DetailsScreenProps = StackNavigationProp<
   MainStackParamList,
@@ -22,45 +22,50 @@ type Props = {
 const DetailsScreen = ({ route, navigation }: Props) => {
   const { amount, receiverId, receiverName, type } = useMemo(() => {
     const parsedData = JSON.parse(route.params.data);
-    const decrypedData = JSON.parse(decryptString(parsedData.data) || "");
-
-    console.log(JSON.stringify(decrypedData));
+    const decryptedData = JSON.parse(decryptString(parsedData.data) || "");
 
     return {
-      receiverName: decrypedData.receiverName,
-      receiverId: decrypedData.receiver,
-      amount: Number(decrypedData.amount),
-      type: decrypedData.type,
+      receiverName: decryptedData.receiverName,
+      receiverId: decryptedData.receiver,
+      amount: Number(decryptedData.amount),
+      type: decryptedData.type,
     };
   }, [route.params.data]);
 
-  const { user } = useSession();
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = useState(false);
+
   const { mutate: pay } = usePayMutation(type);
+  const { mutate: withdraw } = useWithdrawBalanceMutation(type);  
   const balance = useGetUserBalanceQuery().data?.balance;
 
   const handleTransaction = useCallback(() => {
     if (type === "PAY") {
       pay({ cashierId: receiverId, amount });
+    } else if (type === "WITHDRAW") {
+      withdraw({ topUpCashierId: receiverId, amount });
     }
-  }, [type, pay, receiverId, amount]);
+  }, [type, pay, withdraw, receiverId, amount]);
 
   return (
     <View style={styles.container}>
       <View style={styles.containerColumn}>
         <Text style={styles.textNormal}>
-          {type} to {type === "PAY" ? "cashier" : ""}
+          {type} to cashier
         </Text>
         <Text style={styles.textBold}>{receiverName}</Text>
       </View>
 
       <View style={styles.containerRow}>
         <Text style={styles.textSmall}>Balance</Text>
-        <Text style={styles.textBoldSmall}>₱{Number(balance).toFixed(2)}</Text>
+        <Text style={styles.textBoldSmall}>
+          ₱{(balance ?? 0).toFixed(2)}
+        </Text>
       </View>
 
       <View style={styles.containerRow}>
-        <Text style={styles.textBold}>You're Paying</Text>
+        <Text style={styles.textBold}>
+          {type === "PAY" ? "You're Paying" : "You're Withdrawing"}
+        </Text>
       </View>
 
       <View style={styles.containerRow}>
@@ -78,17 +83,15 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       <View style={styles.containerColumn}>
         <Text style={styles.textXSmall}>
           Once a transaction is confirmed, it cannot be refunded. Please ensure
-          the mobile number and the amount are accurate before proceeding.
+          the details are accurate before proceeding.
         </Text>
       </View>
 
-      {balance !== undefined && balance > amount ? (
+      {balance !== undefined && balance >= amount ? (
         <View style={styles.containerRow}>
           <Checkbox
             status={checked ? "checked" : "unchecked"}
-            onPress={() => {
-              setChecked(!checked);
-            }}
+            onPress={() => setChecked(!checked)}
             color="#204A69"
           />
           <Text>I verify that the information is accurate.</Text>
@@ -102,7 +105,10 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       )}
 
       <TouchableOpacity
-        style={[styles.button, !checked && styles.buttonDisabled]}
+        style={[
+          styles.button,
+          !checked && styles.buttonDisabled,
+        ]}
         disabled={!checked}
         onPress={handleTransaction}
       >
