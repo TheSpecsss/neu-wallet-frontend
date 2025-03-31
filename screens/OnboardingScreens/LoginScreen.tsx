@@ -16,6 +16,7 @@ import type { MainStackParamList } from "../../types";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { z } from "zod";
 import { useLoginMutation } from "../../hooks/mutation/useLoginMutation";
+import ForgotPasswordModal from "./modals/ForgotPasswordModal";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -34,6 +35,8 @@ const loginSchema = z.object({
 const LoginScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isForgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
+
 
   const { mutate: login, isPending } = useLoginMutation();
 
@@ -87,7 +90,15 @@ const LoginScreen = ({ navigation }: Props) => {
             secureTextEntry
           />
 
-          <AuthLink text="Forgot Password?" />
+        <AuthLink 
+          text="Forgot Password?" 
+          onPress={() => setForgotPasswordModalVisible(true)} 
+          />
+
+        <ForgotPasswordModal
+          visible={isForgotPasswordModalVisible}
+          onClose={() => setForgotPasswordModalVisible(false)}
+        />
 
           <AuthButton
             text="Login"
@@ -155,8 +166,8 @@ const AuthButton = ({
   </TouchableOpacity>
 );
 
-const AuthLink = ({ text }: { text: string }) => (
-  <Text style={styles.linkText}>{text}</Text>
+const AuthLink = ({ text, onPress }: { text: string; onPress?: () => void }) => (
+    <Text style={styles.linkText} onPress={onPress}>{text}</Text>
 );
 
 const styles = StyleSheet.create({
