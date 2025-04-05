@@ -61,3 +61,32 @@ export const GET_USERS_BY_PAGINATION = gql(`
     }
   }
 `);
+
+export const GET_AUDIT_LOGS_BY_PAGINATION = gql(`
+  query GetAuditLogsByPagination($perPage: Int!, $page: Int!) {
+  getAuditLogsByPagination(perPage: $perPage, page: $page) {
+    auditLogs {
+      actionType
+      createdAt
+      executor {
+        name
+        accountType
+      }
+      target {
+        name
+        accountType
+      }
+      changes {
+        key
+        values {
+          from
+          to
+        }
+      }
+    }
+    page
+    totalPages
+    hasNextPage
+    hasPreviousPage
+  }
+}`)

@@ -8,12 +8,12 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import type { MainStackParamList } from "../../../types";
+import type { MainStackParamList } from "../../../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RouteProp } from "@react-navigation/native";
-import UpdateNameModal from "./modals/UpdateNameModal";
-import UpdateAccountTypeModal from "./modals/UpdateAccountTypeModal";
-import SetBalanceModal from "./modals/SetBalanceModal";
+import UpdateNameModal from "../modals/UpdateNameModal";
+import UpdateAccountTypeModal from "../modals/UpdateAccountTypeModal";
+import SetBalanceModal from "../modals/SetBalanceModal";
 
 type AdminTopTabProps = StackNavigationProp<MainStackParamList, "AdminTopTab">;
 type EditUserScreenRouteProp = RouteProp<MainStackParamList, "EditUserScreen">;
@@ -45,7 +45,7 @@ const EditUserScreen = ({ navigation, route }: Props) => {
             <FontAwesome name="user-circle" size={100} color="#204A69" />
             <Text style={styles.userName}>{name}</Text>
             <Text style={styles.userInfo}>
-              ID: {id} • Role: {accountType.replace(/_/g, " ")}
+              ID: {id} • Type: {accountType.replace(/_/g, " ")}
             </Text>
           </View>
 
@@ -65,7 +65,7 @@ const EditUserScreen = ({ navigation, route }: Props) => {
           </View>
 
           <View style={styles.optionContainer}>
-            <Text style={styles.optionLabel}>Update Role</Text>
+            <Text style={styles.optionLabel}>Update Account Type</Text>
             <View style={styles.optionRow}>
               <Text style={styles.optionValue}>{accountType}</Text>
               <TouchableOpacity

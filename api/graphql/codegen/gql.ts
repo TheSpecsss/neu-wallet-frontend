@@ -25,6 +25,7 @@ type Documents = {
     "\n  query GetUser  {\n    getUser  {\n        id\n        name\n        email\n        accountType\n        createdAt\n    }\n  }\n": typeof types.GetUserDocument,
     "\n  query GetUserBalanceByUserId {\n    getUserBalanceByUserId {\n      balance\n    }\n  }  \n": typeof types.GetUserBalanceByUserIdDocument,
     "\n  query GetUsersByPagination($perPage: Int!, $page: Int!) {\n    getUsersByPagination(perPage: $perPage, page: $page) {\n      users {\n        id\n        name\n        accountType\n        wallet {\n          balance\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n": typeof types.GetUsersByPaginationDocument,
+    "\n  query GetAuditLogsByPagination($perPage: Int!, $page: Int!) {\n  getAuditLogsByPagination(perPage: $perPage, page: $page) {\n    auditLogs {\n      actionType\n      createdAt\n      executor {\n        name\n        accountType\n      }\n      target {\n        name\n        accountType\n      }\n      changes {\n        key\n        values {\n          from\n          to\n        }\n      }\n    }\n    page\n    totalPages\n    hasNextPage\n    hasPreviousPage\n  }\n}": typeof types.GetAuditLogsByPaginationDocument,
 };
 const documents: Documents = {
     "\n  mutation Login($email: String!, $password: String!) {\n    login(email: $email, password: $password) {\n      token\n      expiresAt\n    }\n  }\n": types.LoginDocument,
@@ -38,6 +39,7 @@ const documents: Documents = {
     "\n  query GetUser  {\n    getUser  {\n        id\n        name\n        email\n        accountType\n        createdAt\n    }\n  }\n": types.GetUserDocument,
     "\n  query GetUserBalanceByUserId {\n    getUserBalanceByUserId {\n      balance\n    }\n  }  \n": types.GetUserBalanceByUserIdDocument,
     "\n  query GetUsersByPagination($perPage: Int!, $page: Int!) {\n    getUsersByPagination(perPage: $perPage, page: $page) {\n      users {\n        id\n        name\n        accountType\n        wallet {\n          balance\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n": types.GetUsersByPaginationDocument,
+    "\n  query GetAuditLogsByPagination($perPage: Int!, $page: Int!) {\n  getAuditLogsByPagination(perPage: $perPage, page: $page) {\n    auditLogs {\n      actionType\n      createdAt\n      executor {\n        name\n        accountType\n      }\n      target {\n        name\n        accountType\n      }\n      changes {\n        key\n        values {\n          from\n          to\n        }\n      }\n    }\n    page\n    totalPages\n    hasNextPage\n    hasPreviousPage\n  }\n}": types.GetAuditLogsByPaginationDocument,
 };
 
 /**
@@ -98,6 +100,10 @@ export function gql(source: "\n  query GetUserBalanceByUserId {\n    getUserBala
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query GetUsersByPagination($perPage: Int!, $page: Int!) {\n    getUsersByPagination(perPage: $perPage, page: $page) {\n      users {\n        id\n        name\n        accountType\n        wallet {\n          balance\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n"): (typeof documents)["\n  query GetUsersByPagination($perPage: Int!, $page: Int!) {\n    getUsersByPagination(perPage: $perPage, page: $page) {\n      users {\n        id\n        name\n        accountType\n        wallet {\n          balance\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetAuditLogsByPagination($perPage: Int!, $page: Int!) {\n  getAuditLogsByPagination(perPage: $perPage, page: $page) {\n    auditLogs {\n      actionType\n      createdAt\n      executor {\n        name\n        accountType\n      }\n      target {\n        name\n        accountType\n      }\n      changes {\n        key\n        values {\n          from\n          to\n        }\n      }\n    }\n    page\n    totalPages\n    hasNextPage\n    hasPreviousPage\n  }\n}"): (typeof documents)["\n  query GetAuditLogsByPagination($perPage: Int!, $page: Int!) {\n  getAuditLogsByPagination(perPage: $perPage, page: $page) {\n    auditLogs {\n      actionType\n      createdAt\n      executor {\n        name\n        accountType\n      }\n      target {\n        name\n        accountType\n      }\n      changes {\n        key\n        values {\n          from\n          to\n        }\n      }\n    }\n    page\n    totalPages\n    hasNextPage\n    hasPreviousPage\n  }\n}"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
