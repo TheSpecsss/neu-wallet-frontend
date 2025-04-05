@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import UserScreen from "../screens/Admin/UserScreen";
-import AuditLogScreen from "../screens/Admin/AuditLogScreen";
+import UserScreen from "../screens/Admin/UserManagement/UserScreen";
+import AuditLogScreen from "../screens/Admin/AuditLogs/AuditLogScreen";
 import type { AdminTopTabParamList } from "../types";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { CommonActions, useNavigation } from "@react-navigation/native";

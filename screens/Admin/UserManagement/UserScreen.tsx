@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useGetUsersByPagination } from "../../hooks/query/useGetUsersByPagination";
-import type { AccountTypeKind, MainStackParamList } from "../../types";
+import { useGetUsersByPagination } from "../../../hooks/query/useGetUsersByPagination";
+import type { AccountTypeKind, MainStackParamList } from "../../../types";
 import type { StackNavigationProp } from "@react-navigation/stack";
 
 type EditUserScreenNavigationProp = StackNavigationProp<
