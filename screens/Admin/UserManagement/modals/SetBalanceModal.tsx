@@ -8,22 +8,44 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import { useSetBalance } from "../../../../hooks/mutation/useSetBalance";
 
 interface ModalProps {
   visible: boolean;
   onClose: () => void;
   field: string;
-  id: string;   
-  balance: number; 
+  id: string;
+  balance: number;
 }
 
-const SetBalanceModal: FC<ModalProps> = ({ visible, onClose, field, id, balance }) => {
+const SetBalanceModal: FC<ModalProps> = ({
+  visible,
+  onClose,
+  field,
+  id,
+  balance,
+}) => {
   const [selectedBalance, setSelectedBalance] = useState(balance.toString());
+  const { mutate: setBalance } = useSetBalance();
+
+  const handleSetBalance = () => {
+    const parsed = Number.parseFloat(selectedBalance);
+    if (Number.isNaN(parsed)) return;
+
+    setBalance(
+      { userId: id, balance: parsed },
+      {
+        onSuccess: () => {
+          onClose();
+        },
+      }
+    );
+  };
 
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={visible}
       onRequestClose={onClose}
     >
@@ -46,7 +68,7 @@ const SetBalanceModal: FC<ModalProps> = ({ visible, onClose, field, id, balance 
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton} onPress={onClose}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSetBalance}>
               <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>
           </View>

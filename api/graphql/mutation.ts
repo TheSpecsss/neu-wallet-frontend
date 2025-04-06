@@ -1,3 +1,4 @@
+import { G } from "react-native-svg";
 import { gql } from "./codegen";
 
 export const LOGIN = gql(`
@@ -61,6 +62,14 @@ export const WITHDRAW = gql(`mutation WithdrawBalance($topUpCashierId: String!, 
   }
 }`);
 
+export const SET_BALANCE = gql(`
+  mutation SetBalance($userId: String!, $balance: Int!) {
+  setBalance(userId: $userId, balance: $balance) {
+    balance
+    id
+    updatedAt
+  }
+}`);
 export const TRANSFER_BY_UID = gql(`
   mutation TransferBalance($receiverId: String!, $amount: Int!) {
   transferBalance(receiverId: $receiverId, amount: $amount) {
