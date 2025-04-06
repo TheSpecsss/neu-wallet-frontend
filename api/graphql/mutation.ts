@@ -69,4 +69,12 @@ export const SET_BALANCE = gql(`
     id
     updatedAt
   }
-}`)
+}`);
+export const TRANSFER_BY_UID = gql(`
+  mutation TransferBalance($receiverId: String!, $amount: Int!) {
+  transferBalance(receiverId: $receiverId, amount: $amount) {
+    user {
+      updatedAt
+    }
+  }
+}`);
