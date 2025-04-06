@@ -30,24 +30,29 @@ type Props = { navigation: StackNavigationProp<MainStackParamList> };
 const HomeScreen = ({ navigation }: Props) => {
   const { user } = useSession();
   const [page, setPage] = useState(1);
-  
+
   const {
     data: transactions,
     isLoading,
     refetch,
   } = useGetRecentTransactions({
     page,
-    perPage: 6, 
+    perPage: 6,
   });
-  
-  const totalPage = transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
-  const transactionList = (
-    transactions?.data?.getRecentTransactionsByUserId?.transactions || [])
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); 
 
-  const balance = useGetUserBalanceQuery().data?.balance;
-  
-  //To always show the last page of transactions - sab 
+  const totalPage =
+    transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
+  const transactionList = (
+    transactions?.data?.getRecentTransactionsByUserId?.transactions || []
+  ).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  const { data: balquery, refetch: balrefetch } = useGetUserBalanceQuery();
+
+  //data?.balance
+
+  //To always show the last page of transactions - sab
   useEffect(() => {
     if (totalPage > 0) {
       setPage(totalPage);
@@ -61,13 +66,21 @@ const HomeScreen = ({ navigation }: Props) => {
   if (!user) return null;
 
   const buttons = [
-    { type: "USER", label: "Scan", icon: scanQrLogo("#204A69"), screen: "QRScanScreen" },
+    {
+      type: "USER",
+      label: "Scan",
+      icon: scanQrLogo("#204A69"),
+      screen: "QRScanScreen",
+    },
     { type: "USER", label: "Send", icon: sendLogo, screen: "SendScreen" },
     {
       type: ["USER", "CASH_TOP_UP", "CASHIER"],
       label: "Checkout",
       icon: checkoutLogo,
-      screen: user?.accountType === "CASH_TOP_UP" ? "TopUpCheckoutScreen" : "CheckOutScreen", 
+      screen:
+        user?.accountType === "CASH_TOP_UP"
+          ? "TopUpCheckoutScreen"
+          : "CheckOutScreen",
     },
     {
       type: "CASH_TOP_UP",
@@ -102,9 +115,9 @@ const HomeScreen = ({ navigation }: Props) => {
 
     if (isTopUpCashier) {
       if (type === "WITHDRAW") {
-        return { display: `+₱${amount.toFixed(2)}`, color: "green" }; 
+        return { display: `+₱${amount.toFixed(2)}`, color: "green" };
       }
-      return { display: `-₱${amount.toFixed(2)}`, color: "red" };      
+      return { display: `-₱${amount.toFixed(2)}`, color: "red" };
     }
 
     const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
@@ -123,7 +136,7 @@ const HomeScreen = ({ navigation }: Props) => {
         <View style={styles.balanceInfo}>
           <Text style={styles.balanceText}>Available Balance:</Text>
           <Text style={styles.balanceAmount}>
-            ₱{Number(balance).toFixed(2)}
+            ₱{Number(balquery?.balance).toFixed(2)}
           </Text>
         </View>
       </View>
@@ -149,7 +162,12 @@ const HomeScreen = ({ navigation }: Props) => {
       <View style={styles.historyContainer}>
         <View style={styles.historyHeader}>
           <Text style={styles.historyTitle}>Recent Transactions</Text>
-          <TouchableOpacity onPress={() => refetch()}>
+          <TouchableOpacity
+            onPress={() => {
+              refetch();
+              balrefetch();
+            }}
+          >
             <Text style={styles.viewAll}>Refresh</Text>
           </TouchableOpacity>
         </View>
@@ -157,7 +175,6 @@ const HomeScreen = ({ navigation }: Props) => {
         {isLoading ? (
           <ActivityIndicator size="large" color="#204A69" />
         ) : (
-          
           <FlatList
             data={transactionList}
             keyExtractor={(item) => item.id}
@@ -181,7 +198,6 @@ const HomeScreen = ({ navigation }: Props) => {
                     {display}
                   </Text>
                 </View>
-                
               );
             }}
           />

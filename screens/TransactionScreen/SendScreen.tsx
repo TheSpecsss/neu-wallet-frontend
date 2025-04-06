@@ -9,19 +9,67 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { SvgXml } from "react-native-svg";
 import { walletLogo } from "../../loadSVG";
-import { useSession } from "../../context/Session";
 import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
+import Toast from "react-native-toast-message";
+import { useTransferUIDMutation } from "../../hooks/mutation/useTransferByUIDMutation";
 
 const SendScreen = () => {
-  const { user } = useSession();
   const [type, setType] = useState<"ID" | "EMAIL">("ID");
   const [id, setId] = useState("");
   const [amount, setAmount] = useState("");
 
   const balance = useGetUserBalanceQuery().data?.balance;
+
+  const { mutate: transfer } = useTransferUIDMutation();
+
+  const handleTransfer = useCallback(() => {
+    transfer({
+      receiverId: id,
+      amount: Number(amount),
+    });
+  }, [transfer, id, amount]);
+
+  const handleSendMoney = () => {
+    if (id.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter a valid ID or email",
+      });
+      return;
+    }
+    if (amount.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter a valid amount",
+      });
+      return;
+    }
+    if (Number(amount) <= 0) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter a valid amount",
+      });
+      return;
+    }
+    if (Number(amount) > Number(balance)) {
+      Toast.show({
+        type: "error",
+        text1: "Insufficient balance",
+      });
+      return;
+    }
+
+    handleTransfer();
+
+    Toast.show({
+      type: "info",
+      text1: "Info",
+      text2: `₱${Number(amount).toFixed(2)} sent to ${id}`,
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -53,6 +101,7 @@ const SendScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, type === "EMAIL" && styles.buttonSelected]}
+            disabled={true}
             onPress={() => setType("EMAIL")}
           >
             <Text
@@ -90,7 +139,7 @@ const SendScreen = () => {
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.button2}>
+      <TouchableOpacity style={styles.button2} onPress={handleSendMoney}>
         <Text style={styles.buttonText2}>Send Money</Text>
       </TouchableOpacity>
     </View>
