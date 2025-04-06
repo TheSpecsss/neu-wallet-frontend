@@ -21,6 +21,7 @@ type Documents = {
     "\n  mutation TopUp($receiverId: String!, $amount: Int!) {\n  topUp(receiverId: $receiverId, amount: $amount) {\n    balance\n    id\n    updatedAt\n  }\n}\n  ": typeof types.TopUpDocument,
     "\n  mutation UpdateUserAccountTypeByUserId($userId: String!, $accountType: String!) {\n  updateUserAccountTypeByUserId(userId: $userId, accountType: $accountType) {\n    accountType\n    updatedAt\n    name\n  }\n}\n": typeof types.UpdateUserAccountTypeByUserIdDocument,
     "mutation WithdrawBalance($topUpCashierId: String!, $amount: Int!){\n  withdrawBalance(topUpCashierId: $topUpCashierId, amount: $amount) {\n    balance\n  }\n}": typeof types.WithdrawBalanceDocument,
+    "\n  mutation SetBalance($userId: String!, $balance: Int!) {\n  setBalance(userId: $userId, balance: $balance) {\n    balance\n    id\n    updatedAt\n  }\n}": typeof types.SetBalanceDocument,
     "\n  query GetRecentTransactionsByUserId($perPage: Int!, $page: Int!) {\n    getRecentTransactionsByUserId(perPage: $perPage, page: $page) {\n      transactions {\n        id\n        amount\n        createdAt\n        type\n        receiver {\n          name\n        }\n        sender {\n          name\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n": typeof types.GetRecentTransactionsByUserIdDocument,
     "\n  query GetUser  {\n    getUser  {\n        id\n        name\n        email\n        accountType\n        createdAt\n    }\n  }\n": typeof types.GetUserDocument,
     "\n  query GetUserBalanceByUserId {\n    getUserBalanceByUserId {\n      balance\n    }\n  }  \n": typeof types.GetUserBalanceByUserIdDocument,
@@ -35,6 +36,7 @@ const documents: Documents = {
     "\n  mutation TopUp($receiverId: String!, $amount: Int!) {\n  topUp(receiverId: $receiverId, amount: $amount) {\n    balance\n    id\n    updatedAt\n  }\n}\n  ": types.TopUpDocument,
     "\n  mutation UpdateUserAccountTypeByUserId($userId: String!, $accountType: String!) {\n  updateUserAccountTypeByUserId(userId: $userId, accountType: $accountType) {\n    accountType\n    updatedAt\n    name\n  }\n}\n": types.UpdateUserAccountTypeByUserIdDocument,
     "mutation WithdrawBalance($topUpCashierId: String!, $amount: Int!){\n  withdrawBalance(topUpCashierId: $topUpCashierId, amount: $amount) {\n    balance\n  }\n}": types.WithdrawBalanceDocument,
+    "\n  mutation SetBalance($userId: String!, $balance: Int!) {\n  setBalance(userId: $userId, balance: $balance) {\n    balance\n    id\n    updatedAt\n  }\n}": types.SetBalanceDocument,
     "\n  query GetRecentTransactionsByUserId($perPage: Int!, $page: Int!) {\n    getRecentTransactionsByUserId(perPage: $perPage, page: $page) {\n      transactions {\n        id\n        amount\n        createdAt\n        type\n        receiver {\n          name\n        }\n        sender {\n          name\n        }\n      }\n      page\n      totalPages\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n": types.GetRecentTransactionsByUserIdDocument,
     "\n  query GetUser  {\n    getUser  {\n        id\n        name\n        email\n        accountType\n        createdAt\n    }\n  }\n": types.GetUserDocument,
     "\n  query GetUserBalanceByUserId {\n    getUserBalanceByUserId {\n      balance\n    }\n  }  \n": types.GetUserBalanceByUserIdDocument,
@@ -84,6 +86,10 @@ export function gql(source: "\n  mutation UpdateUserAccountTypeByUserId($userId:
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "mutation WithdrawBalance($topUpCashierId: String!, $amount: Int!){\n  withdrawBalance(topUpCashierId: $topUpCashierId, amount: $amount) {\n    balance\n  }\n}"): (typeof documents)["mutation WithdrawBalance($topUpCashierId: String!, $amount: Int!){\n  withdrawBalance(topUpCashierId: $topUpCashierId, amount: $amount) {\n    balance\n  }\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation SetBalance($userId: String!, $balance: Int!) {\n  setBalance(userId: $userId, balance: $balance) {\n    balance\n    id\n    updatedAt\n  }\n}"): (typeof documents)["\n  mutation SetBalance($userId: String!, $balance: Int!) {\n  setBalance(userId: $userId, balance: $balance) {\n    balance\n    id\n    updatedAt\n  }\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
