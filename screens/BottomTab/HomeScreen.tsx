@@ -105,7 +105,7 @@ const HomeScreen = ({ navigation }: Props) => {
     }
   };
 
-  const getAmountDisplay = (type: string, amount: number) => {
+  const getAmountDisplay = (type: string, amount: number, senderID: string) => {
     const isCashier = user?.accountType === "CASHIER";
     const isTopUpCashier = user?.accountType === "CASH_TOP_UP";
 
@@ -120,7 +120,10 @@ const HomeScreen = ({ navigation }: Props) => {
       return { display: `-₱${amount.toFixed(2)}`, color: "red" };
     }
 
-    const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
+    const isOutgoing =
+      type === "PAYMENT" ||
+      type === "WITHDRAW" ||
+      (type === "TRANSFER" && senderID === user?.id);
     const sign = isOutgoing ? "-" : "+";
     const color = isOutgoing ? "red" : "green";
 
@@ -183,7 +186,8 @@ const HomeScreen = ({ navigation }: Props) => {
               const label = getTransactionLabel(item.type);
               const { display, color } = getAmountDisplay(
                 item.type,
-                item.amount
+                item.amount,
+                item.senderId
               );
 
               return (

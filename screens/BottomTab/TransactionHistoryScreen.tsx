@@ -6,26 +6,31 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 import { useSession } from "../../context/Session";
 
 const TransactionHistoryScreen = () => {
   const { user } = useSession();
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
 
   const { data: transactions, isLoading } = useGetRecentTransactions({
     page,
     perPage: 10,
   });
 
-  const totalPage = transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
-  const hasNextPage = transactions?.data?.getRecentTransactionsByUserId?.hasNextPage || false;
-  const hasPreviousPage = transactions?.data?.getRecentTransactionsByUserId?.hasPreviousPage || false;
+  const totalPage =
+    transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
+  const hasNextPage =
+    transactions?.data?.getRecentTransactionsByUserId?.hasNextPage || false;
+  const hasPreviousPage =
+    transactions?.data?.getRecentTransactionsByUserId?.hasPreviousPage || false;
   const transactionList = (
-    transactions?.data?.getRecentTransactionsByUserId?.transactions || [])
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); 
-  
+    transactions?.data?.getRecentTransactionsByUserId?.transactions || []
+  ).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   const hasError = !!transactions?.errors?.length;
 
   const getTransactionLabel = (type: string) => {
@@ -43,7 +48,7 @@ const TransactionHistoryScreen = () => {
     }
   };
 
-  const getAmountDisplay = (type: string, amount: number) => {
+  const getAmountDisplay = (type: string, amount: number, senderID: string) => {
     const isCashier = user?.accountType === "CASHIER";
     const isTopUpCashier = user?.accountType === "CASH_TOP_UP";
 
@@ -53,12 +58,16 @@ const TransactionHistoryScreen = () => {
 
     if (isTopUpCashier) {
       if (type === "WITHDRAW") {
-        return { display: `+₱${amount.toFixed(2)}`, color: "green" }; 
+        return { display: `+₱${amount.toFixed(2)}`, color: "green" };
       }
-      return { display: `-₱${amount.toFixed(2)}`, color: "red" };      
+      return { display: `-₱${amount.toFixed(2)}`, color: "red" };
     }
 
-    const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
+    // user
+    const isOutgoing =
+      type === "PAYMENT" ||
+      type === "WITHDRAW" ||
+      (type === "TRANSFER" && senderID === user?.id);
     const sign = isOutgoing ? "-" : "+";
     const color = isOutgoing ? "red" : "green";
 
@@ -79,7 +88,7 @@ const TransactionHistoryScreen = () => {
 
     if (isTopUpCashier) {
       if (type === "WITHDRAW") {
-        return `From ${senderName || "Unknown"}`; 
+        return `From ${senderName || "Unknown"}`;
       }
       return `To ${receiverName || "Unknown"}`;
     }
@@ -107,7 +116,11 @@ const TransactionHistoryScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           const label = getTransactionLabel(item.type);
-          const { display, color } = getAmountDisplay(item.type, item.amount);
+          const { display, color } = getAmountDisplay(
+            item.type,
+            item.amount,
+            item.senderId
+          );
           const direction = getDirectionLabel(
             item.type,
             item.sender?.name,
