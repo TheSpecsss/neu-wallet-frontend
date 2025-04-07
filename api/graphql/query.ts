@@ -4,9 +4,11 @@ export const GET_RECENT_TRANSACTIONS_BY_USER_ID = gql(`
   query GetRecentTransactionsByUserId($perPage: Int!, $page: Int!) {
     getRecentTransactionsByUserId(perPage: $perPage, page: $page) {
       transactions {
-        id
         amount
         createdAt
+        id
+        receiverId
+        senderId
         type
         receiver {
           name
@@ -14,7 +16,7 @@ export const GET_RECENT_TRANSACTIONS_BY_USER_ID = gql(`
         sender {
           name
         }
-      }
+    }
       page
       totalPages
       hasNextPage

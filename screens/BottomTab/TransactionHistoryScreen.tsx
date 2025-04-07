@@ -48,7 +48,7 @@ const TransactionHistoryScreen = () => {
     }
   };
 
-  const getAmountDisplay = (type: string, amount: number) => {
+  const getAmountDisplay = (type: string, amount: number, senderID: string) => {
     const isCashier = user?.accountType === "CASHIER";
     const isTopUpCashier = user?.accountType === "CASH_TOP_UP";
 
@@ -63,7 +63,11 @@ const TransactionHistoryScreen = () => {
       return { display: `-₱${amount.toFixed(2)}`, color: "red" };
     }
 
-    const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
+    // user
+    const isOutgoing =
+      type === "PAYMENT" ||
+      type === "WITHDRAW" ||
+      (type === "TRANSFER" && senderID === user?.id);
     const sign = isOutgoing ? "-" : "+";
     const color = isOutgoing ? "red" : "green";
 
@@ -112,7 +116,11 @@ const TransactionHistoryScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           const label = getTransactionLabel(item.type);
-          const { display, color } = getAmountDisplay(item.type, item.amount);
+          const { display, color } = getAmountDisplay(
+            item.type,
+            item.amount,
+            item.senderId
+          );
           const direction = getDirectionLabel(
             item.type,
             item.sender?.name,
