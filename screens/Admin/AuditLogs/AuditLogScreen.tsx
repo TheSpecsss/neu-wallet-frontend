@@ -16,7 +16,11 @@ const ITEMS_PER_PAGE = 10;
 const AuditLogScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: logs, isLoading } = useGetAuditLogsByPagination({
+  const {
+    data: logs,
+    isLoading,
+    refetch: refetchAudit,
+  } = useGetAuditLogsByPagination({
     page: currentPage,
     perPage: ITEMS_PER_PAGE,
   });
@@ -26,8 +30,10 @@ const AuditLogScreen = () => {
     log.actionType.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const hasNextPage = logs?.data?.getAuditLogsByPagination?.hasNextPage ?? false;
-  const hasPreviousPage = logs?.data?.getAuditLogsByPagination?.hasPreviousPage ?? false;
+  const hasNextPage =
+    logs?.data?.getAuditLogsByPagination?.hasNextPage ?? false;
+  const hasPreviousPage =
+    logs?.data?.getAuditLogsByPagination?.hasPreviousPage ?? false;
   const totalPages = logs?.data?.getAuditLogsByPagination?.totalPages ?? 1;
   const page = logs?.data?.getAuditLogsByPagination?.page ?? 1;
 
@@ -56,6 +62,10 @@ const AuditLogScreen = () => {
     <View style={styles.container}>
       <Text style={styles.largeText}>Audit Logs</Text>
 
+      <TouchableOpacity onPress={() => refetchAudit()}>
+        <Text style={styles.smallText}>Refresh Logs</Text>
+      </TouchableOpacity>
+
       <View style={styles.searchFilterContainer}>
         <View style={styles.searchContainer}>
           <TextInput
@@ -76,8 +86,16 @@ const AuditLogScreen = () => {
         data={filteredLogs}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity style={styles.userCard} onPress={() => toggleDropdown(index)}>
-            <FontAwesome name="history" size={40} color="#204A69" style={styles.logo} />
+          <TouchableOpacity
+            style={styles.userCard}
+            onPress={() => toggleDropdown(index)}
+          >
+            <FontAwesome
+              name="history"
+              size={40}
+              color="#204A69"
+              style={styles.logo}
+            />
             <View style={styles.rowContainer}>
               <View style={styles.textContainer}>
                 <Text style={styles.description}>{item.actionType}</Text>
@@ -96,7 +114,10 @@ const AuditLogScreen = () => {
                       <View key={change.key} style={styles.changeItem}>
                         <Text style={styles.changeKey}>{change.key}</Text>
                         {change.values?.map((value, idx2) => (
-                          <Text key={`${value.from}-${value.to}-${idx2}`} style={styles.changeValue}>
+                          <Text
+                            key={`${value.from}-${value.to}-${idx2}`}
+                            style={styles.changeValue}
+                          >
                             From:{" "}
                             <Text style={{ fontWeight: "bold" }}>
                               {value.from ?? "-"}
@@ -115,12 +136,17 @@ const AuditLogScreen = () => {
             </View>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={styles.noLogsText}>No logs found</Text>}
+        ListEmptyComponent={
+          <Text style={styles.noLogsText}>No logs found</Text>
+        }
       />
 
       <View style={styles.paginationContainer}>
         <TouchableOpacity
-          style={[styles.paginationButton, !hasPreviousPage && styles.disabledButton]}
+          style={[
+            styles.paginationButton,
+            !hasPreviousPage && styles.disabledButton,
+          ]}
           onPress={handlePreviousPage}
           disabled={!hasPreviousPage}
         >
@@ -130,7 +156,10 @@ const AuditLogScreen = () => {
           Page {page} of {totalPages}
         </Text>
         <TouchableOpacity
-          style={[styles.paginationButton, !hasNextPage && styles.disabledButton]}
+          style={[
+            styles.paginationButton,
+            !hasNextPage && styles.disabledButton,
+          ]}
           onPress={handleNextPage}
           disabled={!hasNextPage}
         >

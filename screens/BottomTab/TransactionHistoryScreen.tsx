@@ -6,26 +6,31 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 import { useSession } from "../../context/Session";
 
 const TransactionHistoryScreen = () => {
   const { user } = useSession();
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
 
   const { data: transactions, isLoading } = useGetRecentTransactions({
     page,
     perPage: 10,
   });
 
-  const totalPage = transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
-  const hasNextPage = transactions?.data?.getRecentTransactionsByUserId?.hasNextPage || false;
-  const hasPreviousPage = transactions?.data?.getRecentTransactionsByUserId?.hasPreviousPage || false;
+  const totalPage =
+    transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
+  const hasNextPage =
+    transactions?.data?.getRecentTransactionsByUserId?.hasNextPage || false;
+  const hasPreviousPage =
+    transactions?.data?.getRecentTransactionsByUserId?.hasPreviousPage || false;
   const transactionList = (
-    transactions?.data?.getRecentTransactionsByUserId?.transactions || [])
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); 
-  
+    transactions?.data?.getRecentTransactionsByUserId?.transactions || []
+  ).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   const hasError = !!transactions?.errors?.length;
 
   const getTransactionLabel = (type: string) => {
@@ -53,9 +58,9 @@ const TransactionHistoryScreen = () => {
 
     if (isTopUpCashier) {
       if (type === "WITHDRAW") {
-        return { display: `+₱${amount.toFixed(2)}`, color: "green" }; 
+        return { display: `+₱${amount.toFixed(2)}`, color: "green" };
       }
-      return { display: `-₱${amount.toFixed(2)}`, color: "red" };      
+      return { display: `-₱${amount.toFixed(2)}`, color: "red" };
     }
 
     const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
@@ -79,7 +84,7 @@ const TransactionHistoryScreen = () => {
 
     if (isTopUpCashier) {
       if (type === "WITHDRAW") {
-        return `From ${senderName || "Unknown"}`; 
+        return `From ${senderName || "Unknown"}`;
       }
       return `To ${receiverName || "Unknown"}`;
     }

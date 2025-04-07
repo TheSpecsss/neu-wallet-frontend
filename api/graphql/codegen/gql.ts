@@ -92,6 +92,9 @@ export function gql(source: "mutation WithdrawBalance($topUpCashierId: String!, 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation SetBalance($userId: String!, $balance: Int!) {\n  setBalance(userId: $userId, balance: $balance) {\n    balance\n    id\n    updatedAt\n  }\n}"): (typeof documents)["\n  mutation SetBalance($userId: String!, $balance: Int!) {\n  setBalance(userId: $userId, balance: $balance) {\n    balance\n    id\n    updatedAt\n  }\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation TransferBalance($receiverId: String!, $amount: Int!) {\n  transferBalance(receiverId: $receiverId, amount: $amount) {\n    user {\n      updatedAt\n    }\n  }\n}"): (typeof documents)["\n  mutation TransferBalance($receiverId: String!, $amount: Int!) {\n  transferBalance(receiverId: $receiverId, amount: $amount) {\n    user {\n      updatedAt\n    }\n  }\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
