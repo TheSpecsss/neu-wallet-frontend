@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,28 +7,24 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 import { useSession } from "../../context/Session";
+import ReportModal from "./modals/ReportModal";
 
 const TransactionHistoryScreen = () => {
   const { user } = useSession();
   const [page, setPage] = useState(1);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const { data: transactions, isLoading } = useGetRecentTransactions({
     page,
     perPage: 10,
   });
 
-  const totalPage =
-    transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
-  const hasNextPage =
-    transactions?.data?.getRecentTransactionsByUserId?.hasNextPage || false;
-  const hasPreviousPage =
-    transactions?.data?.getRecentTransactionsByUserId?.hasPreviousPage || false;
-  const transactionList = (
-    transactions?.data?.getRecentTransactionsByUserId?.transactions || []
-  ).sort(
+  const totalPage = transactions?.data?.getRecentTransactionsByUserId?.totalPages || 0;
+  const hasNextPage = transactions?.data?.getRecentTransactionsByUserId?.hasNextPage || false;
+  const hasPreviousPage = transactions?.data?.getRecentTransactionsByUserId?.hasPreviousPage || false;
+  const transactionList = (transactions?.data?.getRecentTransactionsByUserId?.transactions || []).sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
@@ -35,16 +32,11 @@ const TransactionHistoryScreen = () => {
 
   const getTransactionLabel = (type: string) => {
     switch (type) {
-      case "DEPOSIT":
-        return "Top Up";
-      case "PAYMENT":
-        return "Payment";
-      case "TRANSFER":
-        return "Send";
-      case "WITHDRAW":
-        return "Withdrawal";
-      default:
-        return "Unknown";
+      case "DEPOSIT": return "Top Up";
+      case "PAYMENT": return "Payment";
+      case "TRANSFER": return "Send";
+      case "WITHDRAW": return "Withdrawal";
+      default: return "Unknown";
     }
   };
 
@@ -52,51 +44,31 @@ const TransactionHistoryScreen = () => {
     const isCashier = user?.accountType === "CASHIER";
     const isTopUpCashier = user?.accountType === "CASH_TOP_UP";
 
-    if (isCashier && type === "PAYMENT") {
-      return { display: `+₱${amount.toFixed(2)}`, color: "green" };
-    }
-
+    if (isCashier && type === "PAYMENT") return { display: `+₱${amount.toFixed(2)}`, color: "green" };
     if (isTopUpCashier) {
-      if (type === "WITHDRAW") {
-        return { display: `+₱${amount.toFixed(2)}`, color: "green" };
-      }
+      if (type === "WITHDRAW") return { display: `+₱${amount.toFixed(2)}`, color: "green" };
       return { display: `-₱${amount.toFixed(2)}`, color: "red" };
     }
 
-    // user
-    const isOutgoing =
-      type === "PAYMENT" ||
-      type === "WITHDRAW" ||
-      (type === "TRANSFER" && senderID === user?.id);
+    const isOutgoing = type === "PAYMENT" || type === "WITHDRAW" || (type === "TRANSFER" && senderID === user?.id);
     const sign = isOutgoing ? "-" : "+";
     const color = isOutgoing ? "red" : "green";
 
     return { display: `${sign}₱${amount.toFixed(2)}`, color };
   };
 
-  const getDirectionLabel = (
-    type: string,
-    senderName?: string,
-    receiverName?: string
-  ) => {
+  const getDirectionLabel = (type: string, senderName?: string, receiverName?: string) => {
     const isCashier = user?.accountType === "CASHIER";
     const isTopUpCashier = user?.accountType === "CASH_TOP_UP";
 
-    if (isCashier && type === "PAYMENT") {
-      return `From ${senderName || "Unknown"}`;
-    }
-
+    if (isCashier && type === "PAYMENT") return `From ${senderName || "Unknown"}`;
     if (isTopUpCashier) {
-      if (type === "WITHDRAW") {
-        return `From ${senderName || "Unknown"}`;
-      }
+      if (type === "WITHDRAW") return `From ${senderName || "Unknown"}`;
       return `To ${receiverName || "Unknown"}`;
     }
 
     const isOutgoing = type === "PAYMENT" || type === "WITHDRAW";
-    return isOutgoing
-      ? `To ${receiverName || "Unknown"}`
-      : `From ${senderName || "Unknown"}`;
+    return isOutgoing ? `To ${receiverName || "Unknown"}` : `From ${senderName || "Unknown"}`;
   };
 
   return (
@@ -104,28 +76,16 @@ const TransactionHistoryScreen = () => {
       <Text style={styles.header}>Transaction History</Text>
 
       {isLoading && <ActivityIndicator size="large" color="#204A69" />}
-      {hasError && (
-        <Text style={styles.message}>Error loading transactions.</Text>
-      )}
-      {!isLoading && !hasError && transactionList.length === 0 && (
-        <Text style={styles.message}>No recent transactions found.</Text>
-      )}
+      {hasError && <Text style={styles.message}>Error loading transactions.</Text>}
+      {!isLoading && !hasError && transactionList.length === 0 && <Text style={styles.message}>No recent transactions found.</Text>}
 
       <FlatList
         data={transactionList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           const label = getTransactionLabel(item.type);
-          const { display, color } = getAmountDisplay(
-            item.type,
-            item.amount,
-            item.senderId
-          );
-          const direction = getDirectionLabel(
-            item.type,
-            item.sender?.name,
-            item.receiver?.name
-          );
+          const { display, color } = getAmountDisplay(item.type, item.amount, item.senderId);
+          const direction = getDirectionLabel(item.type, item.sender?.name, item.receiver?.name);
 
           return (
             <View style={styles.card}>
@@ -133,9 +93,7 @@ const TransactionHistoryScreen = () => {
               <View style={styles.transactionRow}>
                 <View>
                   <Text style={styles.label}>Transaction: {label}</Text>
-                  <Text style={styles.time}>
-                    {new Date(item.createdAt).toLocaleString()}
-                  </Text>
+                  <Text style={styles.time}>{new Date(item.createdAt).toLocaleString()}</Text>
                 </View>
                 <Text style={[styles.amount, { color }]}>{display}</Text>
               </View>
@@ -143,6 +101,10 @@ const TransactionHistoryScreen = () => {
           );
         }}
       />
+
+      <TouchableOpacity style={styles.reportButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.reportButtonText}>Generate Report</Text>
+      </TouchableOpacity>
 
       <View style={styles.paginationContainer}>
         <TouchableOpacity
@@ -153,9 +115,7 @@ const TransactionHistoryScreen = () => {
           <Text style={styles.pageButtonText}>Previous</Text>
         </TouchableOpacity>
 
-        <Text style={styles.pageIndicator}>
-          Page {page} of {totalPage}
-        </Text>
+        <Text style={styles.pageIndicator}>Page {page} of {totalPage}</Text>
 
         <TouchableOpacity
           style={[styles.pageButton, !hasNextPage && styles.disabledButton]}
@@ -165,6 +125,14 @@ const TransactionHistoryScreen = () => {
           <Text style={styles.pageButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
+
+      <ReportModal
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        transactions={transactionList}
+        accountType={user?.accountType || ""}
+        user={user || { name: "Unknown", id: "N/A" }}
+      />
     </View>
   );
 };
@@ -228,7 +196,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "klavika-bold",
   },
-
   paginationContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -258,5 +225,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#204A69",
     fontFamily: "klavika-medium",
+  },
+  reportButton: {
+    backgroundColor: "#204A69",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+    alignSelf: "center",
+  },
+  reportButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontFamily: "klavika-bold",
   },
 });
