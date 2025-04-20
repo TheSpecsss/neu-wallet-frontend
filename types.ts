@@ -8,6 +8,8 @@ export type MainStackParamList = {
   LoginScreen: undefined;
   MainBottomTab: undefined;
   QRScanScreen: undefined;
+  TopUpCashierReportScreen: undefined;
+  TransactionReportScreen: undefined;
   ConfirmTransactionScreen: {
     receiverId: string;
     senderId: string;
