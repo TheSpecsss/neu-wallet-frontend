@@ -22,6 +22,8 @@ import type { MainStackParamList } from "./types";
 import EditUserScreen from "./screens/Admin/UserManagement/options/EditUserScreen";
 import TopUpDetailsScreen from "./screens/TransactionScreen/TopUp/TopUpDetailsScreen";
 import TopUpCheckOutScreen from "./screens/TransactionScreen/TopUp/TopUpCheckOutScreen";
+import TransactionReportScreen from "./screens/Reports/TransactionReportScreen";
+import TopUpCashierReportScreen from "./screens/Reports/TopUpCashierReportScreen";
 import { SessionProvider, useSession } from "./context/Session";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -45,7 +47,7 @@ const App = () => {
     }
   }, [user]);
 
-  if (!initialRoute) return <SplashScreen />; // Show loading while checking role
+  if (!initialRoute) return <SplashScreen />;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -132,9 +134,19 @@ const App = () => {
               component={TopUpDetailsScreen}
               options={{ headerShown: false }}
             />
+           <MainStack.Screen
+              name="TopUpDetailsScreen"
+              component={TopUpDetailsScreen}
+              options={{ headerShown: false }}
+            />
             <MainStack.Screen
-              name="TopUpCheckoutScreen"
-              component={TopUpCheckOutScreen}
+              name="TransactionReportScreen"
+              component={TransactionReportScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="TopUpCashierReportScreen"
+              component={TopUpCashierReportScreen}
               options={{ headerShown: false }}
             />
           </MainStack.Navigator>

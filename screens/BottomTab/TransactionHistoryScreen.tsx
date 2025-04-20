@@ -10,8 +10,12 @@ import {
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 import { useSession } from "../../context/Session";
 import ReportModal from "./modals/ReportModal";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MainStackParamList } from "../../types";
 
-const TransactionHistoryScreen = () => {
+type Props ={ navigation: StackNavigationProp<MainStackParamList>};
+
+const TransactionHistoryScreen = ({navigation}: Props) => {
   const { user } = useSession();
   const [page, setPage] = useState(1);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -102,9 +106,15 @@ const TransactionHistoryScreen = () => {
         }}
       />
 
-      <TouchableOpacity style={styles.reportButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.reportButtonText}>Generate Report</Text>
-      </TouchableOpacity>
+      {user?.accountType !== 'USER' && (
+          <TouchableOpacity style={styles.reportButton} onPress={() => user?.accountType === "CASHIER" 
+              ? navigation.navigate('TransactionReportScreen')
+              : navigation.navigate('TopUpCashierReportScreen')
+            }>
+            <Text style={styles.reportButtonText}>Generate Report</Text>
+          </TouchableOpacity>
+      )}
+
 
       <View style={styles.paginationContainer}>
         <TouchableOpacity
@@ -125,14 +135,6 @@ const TransactionHistoryScreen = () => {
           <Text style={styles.pageButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
-
-      <ReportModal
-        isVisible={isModalVisible}
-        onClose={() => setModalVisible(false)}
-        transactions={transactionList}
-        accountType={user?.accountType || ""}
-        user={user || { name: "Unknown", id: "N/A" }}
-      />
     </View>
   );
 };
