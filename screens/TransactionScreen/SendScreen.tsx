@@ -15,6 +15,7 @@ import { walletLogo } from "../../loadSVG";
 import { useGetUserBalanceQuery } from "../../hooks/query/useGetBalanceQuery";
 import Toast from "react-native-toast-message";
 import { useTransferUIDMutation } from "../../hooks/mutation/useTransferByUIDMutation";
+import { useTransferEmailMutation } from "../../hooks/mutation/useTransferByEmailMutation";
 
 const SendScreen = () => {
   const [type, setType] = useState<"ID" | "EMAIL">("ID");
@@ -24,6 +25,7 @@ const SendScreen = () => {
   const balance = useGetUserBalanceQuery().data?.balance;
 
   const { mutate: transfer } = useTransferUIDMutation();
+  const { mutate: transferEmail } = useTransferEmailMutation();
 
   const handleTransfer = useCallback(() => {
     transfer({
@@ -31,6 +33,13 @@ const SendScreen = () => {
       amount: Number(amount),
     });
   }, [transfer, id, amount]);
+
+  const handleTransferEmail = useCallback(() => {
+    transferEmail({
+      receiverEmail: id,
+      amount: Number(amount),
+    });
+  }, [transferEmail, id, amount]);
 
   const handleSendMoney = () => {
     if (id.length === 0) {
@@ -62,6 +71,11 @@ const SendScreen = () => {
       return;
     }
 
+    if (type === "EMAIL") {
+      handleTransferEmail();
+      console.log("email blablabla");
+      return;
+    }
     handleTransfer();
 
     Toast.show({
@@ -101,7 +115,6 @@ const SendScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, type === "EMAIL" && styles.buttonSelected]}
-            disabled={true}
             onPress={() => setType("EMAIL")}
           >
             <Text

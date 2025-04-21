@@ -1,11 +1,11 @@
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import type {
-  MutationTransferBalanceByUserIdArgs,
+  MutationTransferBalanceByUserEmailArgs,
   User,
 } from "../../api/graphql/codegen/graphql";
 import api from "../../api/axiosInstance";
 import { print } from "graphql";
-import {  TRANSFER_BY_UID } from "../../api/graphql/mutation";
+import {  TRANSFER_BY_EMAIL } from "../../api/graphql/mutation";
 import type { GraphQLResponse } from "../../api/graphql/types";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
@@ -15,19 +15,19 @@ import { useSession } from "../../context/Session";
 
 type TransferMutationGraphQLResponse = GraphQLResponse<{ transfer?: User }>;
 
-export const useTransferUIDMutation = (
+export const useTransferEmailMutation = (
   options?: Partial<
-    UseMutationOptions<TransferMutationGraphQLResponse, Error, MutationTransferBalanceByUserIdArgs>
+    UseMutationOptions<TransferMutationGraphQLResponse, Error, MutationTransferBalanceByUserEmailArgs>
   >
 ) => {
   const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
   const { user } = useSession();
 
   return useMutation({
-    mutationFn: async (args: MutationTransferBalanceByUserIdArgs) => {
+    mutationFn: async (args: MutationTransferBalanceByUserEmailArgs) => {
       const { data } = await api<TransferMutationGraphQLResponse>({
         data: {
-          query: print(TRANSFER_BY_UID),
+          query: print(TRANSFER_BY_EMAIL),
           variables: args,
         },
       });
@@ -42,8 +42,10 @@ export const useTransferUIDMutation = (
         });
       }
 
+      console.log(data);
+
       navigate("ConfirmTransactionScreen", {
-        receiverId: variables.receiverId,
+        receiverId: variables.receiverEmail,
         senderId: user?.id || "",
         amount: variables.amount,
         date: new Date().toLocaleString(),
