@@ -134,11 +134,6 @@ const App = () => {
               component={TopUpDetailsScreen}
               options={{ headerShown: false }}
             />
-           <MainStack.Screen
-              name="TopUpDetailsScreen"
-              component={TopUpDetailsScreen}
-              options={{ headerShown: false }}
-            />
             <MainStack.Screen
               name="TransactionReportScreen"
               component={TransactionReportScreen}

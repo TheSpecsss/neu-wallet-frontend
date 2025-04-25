@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useGetRecentTransactions } from "../../hooks/query/useGetRecentTransactionsQuery";
 import { useSession } from "../../context/Session";
-import ReportModal from "./modals/ReportModal";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { MainStackParamList } from "../../types";
 
@@ -18,7 +17,6 @@ type Props ={ navigation: StackNavigationProp<MainStackParamList>};
 const TransactionHistoryScreen = ({navigation}: Props) => {
   const { user } = useSession();
   const [page, setPage] = useState(1);
-  const [isModalVisible, setModalVisible] = useState(false);
 
   const { data: transactions, isLoading } = useGetRecentTransactions({
     page,
@@ -114,7 +112,6 @@ const TransactionHistoryScreen = ({navigation}: Props) => {
             <Text style={styles.reportButtonText}>Generate Report</Text>
           </TouchableOpacity>
       )}
-
 
       <View style={styles.paginationContainer}>
         <TouchableOpacity
