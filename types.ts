@@ -21,7 +21,7 @@ export type MainStackParamList = {
   SendScreen: undefined;
   LoadScreen: undefined;
   CheckOutScreen: undefined;
-  AdminTopTab: undefined;
+  AdminBlockedScreen: undefined;
   QRGenerateScreen: { data: string };
   EditUserScreen: { 
     id: string,
@@ -40,10 +40,6 @@ export type MainBottomTabParamList = {
   ProfileScreen: undefined;
 };
 
-export type AdminTopTabParamList = {
-  UserScreen: undefined;
-  AuditLogScreen: undefined;
-};
 
 export type EmailVerificationParamList = {
   EmailConfirmationScreen: { email: string };

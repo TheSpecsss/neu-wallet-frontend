@@ -16,10 +16,9 @@ import SendScreen from "./screens/TransactionScreen/SendScreen";
 import LoadScreen from "./screens/TransactionScreen/LoadScreen";
 import CheckOutScreen from "./screens/TransactionScreen/CheckOutScreen";
 import QRGenerateScreen from "./screens/TransactionScreen/QRScreen/QRGenerateScreen";
-import AdminTopTab from "./navigation/AdminTopTab";
 import EmailConfirmationScreen from "./screens/OnboardingScreens/EmailConfirmationScreen";
 import type { MainStackParamList } from "./types";
-import EditUserScreen from "./screens/Admin/UserManagement/options/EditUserScreen";
+import AdminBlockedScreen from "./screens/OnboardingScreens/AdminBlockedScreen";
 import TopUpDetailsScreen from "./screens/TransactionScreen/TopUp/TopUpDetailsScreen";
 import TopUpCheckOutScreen from "./screens/TransactionScreen/TopUp/TopUpCheckOutScreen";
 import TransactionReportScreen from "./screens/Reports/TransactionReportScreen";
@@ -38,7 +37,7 @@ const App = () => {
   useEffect(() => {
     if (user) {
       if (user.accountType === "ADMIN" || user.accountType === "SUPER_ADMIN") {
-        setInitialRoute("AdminTopTab");
+        setInitialRoute("AdminBlockedScreen");
       } else {
         setInitialRoute("MainBottomTab");
       }
@@ -110,18 +109,13 @@ const App = () => {
               options={{ headerShown: false }}
             />
             <MainStack.Screen
-              name="AdminTopTab"
-              component={AdminTopTab}
-              options={{ headerShown: false }}
-            />
-            <MainStack.Screen
               name="QRGenerateScreen"
               component={QRGenerateScreen}
               options={{ headerShown: false }}
             />
             <MainStack.Screen
-              name="EditUserScreen"
-              component={EditUserScreen}
+              name="AdminBlockedScreen"
+              component={AdminBlockedScreen}
               options={{ headerShown: false }}
             />
             <MainStack.Screen
