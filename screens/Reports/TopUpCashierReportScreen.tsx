@@ -1,51 +1,47 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { useSession } from '../../context/Session';
-import type { StackNavigationProp } from "@react-navigation/stack";
-import type { MainStackParamList } from "../../types";
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { MainStackParamList } from '../../types';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+} from 'react-native-responsive-screen';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { format } from 'date-fns';
-import {
-  backLogo
-} from "../../loadSVG";
-import { SvgXml } from "react-native-svg";
+import { backLogo } from '../../loadSVG';
+import { SvgXml } from 'react-native-svg';
+import { useGetRecentTransactions } from '../../hooks/query/useGetRecentTransactionsQuery';
 
 type Props = { navigation: StackNavigationProp<MainStackParamList> };
-
-interface Transaction {
-  time: string;
-  id: string;
-  items: number;
-  method: string;
-  amount: number;
-  date: string; 
-}
-
-
-const transactions: Transaction[] = [
-  { time: '09:15 AM', id: '#0001', items: 3, method: 'TopUp', amount: 10000.00, date: '2025-04-25' },
-  { time: '10:30 AM', id: '#0002', items: 2, method: 'CashOut', amount: 75.25, date: '2025-04-25' },
-  { time: '11:45 AM', id: '#0003', items: 5, method: 'TopUp', amount: 200.0, date: '2025-04-24' },
-  { time: '01:20 PM', id: '#0004', items: 1, method: 'CashOut', amount: 45.75, date: '2025-04-23' },
-  { time: '02:35 PM', id: '#0005', items: 4, method: 'TopUp', amount: 150.25, date: '2025-04-25' },
-];
 
 const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
 const TopUpCashierReportScreen = ({ navigation }: Props) => {
+  const { user } = useSession();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const { data: transactionsData, isLoading, error } = useGetRecentTransactions({
+    page: 1,
+    perPage: 10,
+  });
+
+  const transactions = transactionsData?.data?.getRecentTransactionsByUserId?.transactions || [];
 
   const handleConfirm = (date: Date) => {
     const today = new Date();
     const isToday = formatDate(date) === formatDate(today);
 
     if (isToday) {
-      setSelectedDate(null); 
+      setSelectedDate(null); // Reset to null if the selected date is today
     } else {
       setSelectedDate(date);
     }
@@ -55,40 +51,67 @@ const TopUpCashierReportScreen = ({ navigation }: Props) => {
 
   const todayDate = formatDate(new Date());
   const filteredTransactions = selectedDate
-    ? transactions.filter((t) => t.date === formatDate(selectedDate))
-    : transactions.filter((t) => t.date === todayDate); 
+    ? transactions.filter((t) => formatDate(new Date(t.createdAt)) === formatDate(selectedDate))
+    : transactions.filter((t) => formatDate(new Date(t.createdAt)) === todayDate);
 
-  // Calculate Total Cash Outs
-  const totalCashOuts = filteredTransactions
-    .filter((t) => t.method === 'CashOut')
+  // Calculate Total Top Up (Deposit + Transfer)
+  const totalTopUp = filteredTransactions
+    .filter((t) => t.type === 'DEPOSIT' || t.type === 'TRANSFER')
     .reduce((acc, t) => acc + t.amount, 0);
 
-  // Calculate Total Top Up
-  const totalTopUp = filteredTransactions
-    .filter((t) => t.method === 'TopUp')
+  // Calculate Total Cash Outs (Withdraw)
+  const totalCashOuts = filteredTransactions
+    .filter((t) => t.type === 'WITHDRAW')
     .reduce((acc, t) => acc + t.amount, 0);
 
   // Calculate Net Cash Flow
   const netCashFlow = totalTopUp - totalCashOuts;
 
   // Count Transactions
-  const totalCashOutTransactions = filteredTransactions.filter((t) => t.method === 'CashOut').length;
-  const totalTopUpTransactions = filteredTransactions.filter((t) => t.method === 'TopUp').length;
-  const allTransactions = totalCashOutTransactions + totalTopUpTransactions;
+  const totalTopUpTransactions = filteredTransactions.filter(
+    (t) => t.type === 'DEPOSIT' || t.type === 'TRANSFER'
+  ).length;
+  const totalCashOutTransactions = filteredTransactions.filter((t) => t.type === 'WITHDRAW').length;
+  const allTransactions = totalTopUpTransactions + totalCashOutTransactions;
 
   const dynamicHeader = selectedDate
     ? `${format(selectedDate, 'MMMM d, yyyy')} Transactions`
-    : "Daily Transactions";
+    : 'Daily Transactions';
+
+  const getTransactionLabel = (type: string) => {
+    switch (type) {
+      case 'DEPOSIT':
+        return 'Top Up';
+      case 'WITHDRAW':
+        return 'Cash Out';
+      case 'TRANSFER':
+        return 'Top Up';
+      default:
+        return 'Unknown';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Failed to load transactions. Please try again later.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.summaryContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <SvgXml
-          xml={backLogo}
-          style={{ width: wp(7), height: hp(7) }}
-          fill="black"
-          />
+          <SvgXml xml={backLogo} style={{ width: wp(7), height: hp(7) }} fill="black" />
         </TouchableOpacity>
 
         <Text style={styles.header}>Daily Finance Report</Text>
@@ -114,7 +137,7 @@ const TopUpCashierReportScreen = ({ navigation }: Props) => {
           <Text style={styles.cardSub}>All Transactions: {allTransactions}</Text>
         </View>
         <View style={styles.summaryCard}>
-          <Text style={styles.label}>Total Cash outs</Text>
+          <Text style={styles.label}>Total Cash Outs</Text>
           <Text style={styles.value}>₱{totalCashOuts.toFixed(2)}</Text>
           <Text style={styles.cardSub}>Transactions: {totalCashOutTransactions}</Text>
         </View>
@@ -128,7 +151,7 @@ const TopUpCashierReportScreen = ({ navigation }: Props) => {
       <Text style={styles.subHeader}>{dynamicHeader}</Text>
       <View style={styles.tableHeader}>
         <Text style={styles.tableHeaderText}>Time</Text>
-        <Text style={styles.tableHeaderText}>Name</Text>
+        <Text style={styles.tableHeaderText}>Ref Id</Text>
         <Text style={styles.tableHeaderText}>Transaction Type</Text>
         <Text style={styles.tableHeaderText}>Status</Text>
         <Text style={styles.tableHeaderText}>Amount</Text>
@@ -144,9 +167,9 @@ const TopUpCashierReportScreen = ({ navigation }: Props) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.tableRow}>
-              <Text style={styles.cell}>{item.time}</Text>
+              <Text style={styles.cell}>{new Date(item.createdAt).toLocaleTimeString()}</Text>
               <Text style={styles.cell}>{item.id}</Text>
-              <Text style={styles.cell}>{item.method}</Text>
+              <Text style={styles.cell}>{getTransactionLabel(item.type)}</Text>
               <Text style={styles.cell}>Success</Text>
               <Text style={styles.cell}>₱ {item.amount.toFixed(2)}</Text>
             </View>
@@ -163,6 +186,20 @@ const styles = StyleSheet.create({
     paddingTop: hp(8),
     backgroundColor: '#fff',
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: wp(4),
   },
   headerCard: {
     width: wp(20),
@@ -241,7 +278,7 @@ const styles = StyleSheet.create({
     fontSize: wp(3),
   },
   cardSub: {
-    fontSize: wp(2  ),
+    fontSize: wp(2),
     color: '#999',
   },
 });

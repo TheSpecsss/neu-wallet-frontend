@@ -43,7 +43,7 @@ export const LoadScreen = ({ navigation }: Props) => {
       <Text style={styles.sectionTitle}>Load Options</Text>
       <View style={styles.divider} />
 
-      <TouchableOpacity style={styles.optionButton}>
+      <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate("SendScreen")}>
         <SvgXml xml={expressSendLogo} width={24} height={24} />
         <Text style={styles.optionText}>Express Send</Text>
       </TouchableOpacity>
