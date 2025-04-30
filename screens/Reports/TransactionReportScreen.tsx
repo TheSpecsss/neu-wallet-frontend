@@ -1,78 +1,67 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSession } from '../../context/Session';
-import type { StackNavigationProp } from "@react-navigation/stack";
-import type { MainStackParamList } from "../../types";
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { MainStackParamList } from '../../types';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import {
-  backLogo
-} from "../../loadSVG";
-import { SvgXml } from "react-native-svg";
+} from 'react-native-responsive-screen';
+import { backLogo } from '../../loadSVG';
+import { SvgXml } from 'react-native-svg';
 import { format } from 'date-fns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { useGetRecentTransactions } from '../../hooks/query/useGetRecentTransactionsQuery';
 
-type Props ={ navigation: StackNavigationProp<MainStackParamList>};
+type Props = { navigation: StackNavigationProp<MainStackParamList> };
 
-interface Transaction {
-  time: string;
-  id: string;
-  items: number;
-  method: string;
-  amount: number;
-  date: string;
-}
-
-const transactions: Transaction[] = [
-  { time: '09:15 AM', id: '#0001', items: 3, method: 'Payment', amount: 10000.00, date: '2025-04-25' },
-  { time: '10:30 AM', id: '#0002', items: 2, method: 'Payment', amount: 75.25, date: '2025-04-25' },
-  { time: '11:45 AM', id: '#0003', items: 5, method: 'Payment', amount: 200.0, date: '2025-04-24' },
-  { time: '01:20 PM', id: '#0004', items: 1, method: 'Payment', amount: 45.75, date: '2025-04-23' },
-  { time: '02:35 PM', id: '#0005', items: 4, method: 'Payment', amount: 150.25, date: '2025-04-25' },
-];
 const formatDate = (date: Date) => date.toISOString().split('T')[0];
-const totalSales = transactions.reduce((acc, t) => acc + t.amount, 0);
 
-const TransactionReportScreen = ({navigation}: Props) => {
+const TransactionReportScreen = ({ navigation }: Props) => {
+  const { user } = useSession();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const { user } = useSession();
+
+  const { data: transactionsData, isLoading, error } = useGetRecentTransactions({
+    page: 1,
+    perPage: 10,
+  });
+
+  const transactions = transactionsData?.data?.getRecentTransactionsByUserId?.transactions || [];
+
   const handleConfirm = (date: Date) => {
     const today = new Date();
     const isToday = formatDate(date) === formatDate(today);
 
     if (isToday) {
-      setSelectedDate(null); 
+      setSelectedDate(null); // Reset to null if the selected date is today
     } else {
       setSelectedDate(date);
     }
 
     setDatePickerVisibility(false);
   };
+
   const todayDate = formatDate(new Date());
   const filteredTransactions = selectedDate
-  ? transactions.filter((t) => t.date === formatDate(selectedDate))
-  : transactions.filter((t) => t.date === todayDate); 
-
+    ? transactions.filter((t) => formatDate(new Date(t.createdAt)) === formatDate(selectedDate))
+    : transactions.filter((t) => formatDate(new Date(t.createdAt)) === todayDate);
 
   const totalPayments = filteredTransactions
-    .filter((t) => t.method === 'Payment')
+    .filter((t) => t.type === 'Payment')
     .reduce((acc, t) => acc + t.amount, 0);
-  const totalTransactions = filteredTransactions.filter((t) => t.method === 'Payment').length;
+
+  const totalTransactions = filteredTransactions.filter((t) => t.type === 'Payment').length;
+
   const dynamicHeader = selectedDate
     ? `${format(selectedDate, 'MMMM d, yyyy')} Transactions`
-    : "Daily Transactions";
+    : 'Daily Transactions';
+
   return (
     <View style={styles.container}>
       <View style={styles.summaryContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <SvgXml
-          xml={backLogo}
-          style={{ width: wp(7), height: hp(7) }}
-          fill="black"
-          />
+          <SvgXml xml={backLogo} style={{ width: wp(7), height: hp(7) }} fill="black" />
         </TouchableOpacity>
 
         <Text style={styles.header}>Daily Finance Report</Text>
@@ -90,10 +79,11 @@ const TransactionReportScreen = ({navigation}: Props) => {
           onCancel={() => setDatePickerVisibility(false)}
         />
       </View>
+
       <View style={styles.summaryContainer}>
         <View style={styles.summaryCard}>
-          <Text style={styles.label}>Total Transactions</Text>
-          <Text style={styles.value}>${totalPayments.toFixed(2)}</Text>
+          <Text style={styles.label}>Total Sales</Text>
+          <Text style={styles.value}>₱{totalPayments.toFixed(2)}</Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={styles.label}>Total Transactions</Text>
@@ -120,9 +110,9 @@ const TransactionReportScreen = ({navigation}: Props) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.tableRow}>
-              <Text style={styles.cell}>{item.time}</Text>
+              <Text style={styles.cell}>{new Date(item.createdAt).toLocaleTimeString()}</Text>
               <Text style={styles.cell}>{item.id}</Text>
-              <Text style={styles.cell}>{item.method}</Text>
+              <Text style={styles.cell}>{item.type}</Text>
               <Text style={styles.cell}>Success</Text>
               <Text style={styles.cell}>₱ {item.amount.toFixed(2)}</Text>
             </View>
@@ -132,6 +122,7 @@ const TransactionReportScreen = ({navigation}: Props) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -214,10 +205,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: wp(3),
-  },
-  cardSub: {
-    fontSize: wp(2  ),
-    color: '#999',
   },
 });
 
