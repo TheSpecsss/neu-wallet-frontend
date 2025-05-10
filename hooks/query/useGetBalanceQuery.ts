@@ -5,18 +5,18 @@ import api from "../../api/axiosInstance";
 import { print } from "graphql";
 
 export const useGetUserBalanceQuery = (
-  options?: Partial<UseQueryOptions<UserBalance, Error>>
+	options?: Partial<UseQueryOptions<UserBalance, Error>>,
 ) => {
-  return useQuery<UserBalance, Error>({
-    queryKey: ["userBalance"],
-    queryFn: async () => {
-      const { data } = await api({
-        data: { query: print(GET_USER_BALANCE) },
-      });
+	return useQuery<UserBalance, Error>({
+		queryKey: ["userBalance"],
+		queryFn: async () => {
+			const { data } = await api({
+				data: { query: print(GET_USER_BALANCE) },
+			});
 
-      return data.data.getUserBalanceByUserId;
-    },
-    retry: false,
-    ...options,
-  });
+			return data.data.getUserBalanceByUserId;
+		},
+		retry: false,
+		...options,
+	});
 };

@@ -5,18 +5,18 @@ import api from "../../api/axiosInstance";
 import { print } from "graphql";
 
 export const useGetUserQuery = (
-  options?: Partial<UseQueryOptions<User, Error>>
+	options?: Partial<UseQueryOptions<User, Error>>,
 ) => {
-  return useQuery<User, Error>({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const { data } = await api({
-        data: { query: print(GET_USER) },
-      });
+	return useQuery<User, Error>({
+		queryKey: ["user"],
+		queryFn: async () => {
+			const { data } = await api({
+				data: { query: print(GET_USER) },
+			});
 
-      return data.data.getUser;
-    },
-    retry: false,
-    ...options,
-  });
+			return data.data.getUser;
+		},
+		retry: false,
+		...options,
+	});
 };

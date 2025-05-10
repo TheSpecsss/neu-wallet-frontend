@@ -1,6 +1,6 @@
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import type {
-  MutationTransferBalanceArgs,
+  MutationTransferBalanceByUserIdArgs,
   User,
 } from "../../api/graphql/codegen/graphql";
 import api from "../../api/axiosInstance";
@@ -17,14 +17,14 @@ type TransferMutationGraphQLResponse = GraphQLResponse<{ transfer?: User }>;
 
 export const useTransferUIDMutation = (
   options?: Partial<
-    UseMutationOptions<TransferMutationGraphQLResponse, Error, MutationTransferBalanceArgs>
+    UseMutationOptions<TransferMutationGraphQLResponse, Error, MutationTransferBalanceByUserIdArgs>
   >
 ) => {
   const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
   const { user } = useSession();
 
   return useMutation({
-    mutationFn: async (args: MutationTransferBalanceArgs) => {
+    mutationFn: async (args: MutationTransferBalanceByUserIdArgs) => {
       const { data } = await api<TransferMutationGraphQLResponse>({
         data: {
           query: print(TRANSFER_BY_UID),

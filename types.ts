@@ -30,7 +30,7 @@ export type MainStackParamList = {
     balance: number, 
     };
   EmailConfirmationScreen: { email: string };
-  TopUpCheckoutScreen: undefined;
+  TopUpCheckOutScreen: undefined;
   TopUpDetailsScreen: { data: string };
 };
 

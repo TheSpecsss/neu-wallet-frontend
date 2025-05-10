@@ -109,6 +109,11 @@ const App = () => {
               options={{ headerShown: false }}
             />
             <MainStack.Screen
+              name="TopUpCheckOutScreen"
+              component={TopUpCheckOutScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
               name="QRGenerateScreen"
               component={QRGenerateScreen}
               options={{ headerShown: false }}
