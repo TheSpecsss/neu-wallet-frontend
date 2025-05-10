@@ -64,6 +64,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   confirmVerification?: Maybe<Verification>;
   login?: Maybe<Login>;
+  loginAdmin?: Maybe<Login>;
   pay?: Maybe<Wallet>;
   register?: Maybe<User>;
   resendVerification?: Maybe<Verification>;
@@ -83,6 +84,12 @@ export type MutationConfirmVerificationArgs = {
 
 
 export type MutationLoginArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+
+export type MutationLoginAdminArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
@@ -145,7 +152,9 @@ export type MutationWithdrawBalanceArgs = {
 export type Query = {
   __typename?: 'Query';
   getAuditLogsByPagination?: Maybe<AuditLogPagination>;
-  getRecentTransactionsByUserId?: Maybe<TransactionByUserIdWithPagination>;
+  getCashierTopUpTransactionsByPagination?: Maybe<TransactionsWithPagination>;
+  getCashierTransactionsByPagination?: Maybe<TransactionsWithPagination>;
+  getRecentTransactionsByUserId?: Maybe<TransactionsWithPagination>;
   getUser?: Maybe<User>;
   getUserBalanceByUserId?: Maybe<UserBalance>;
   getUsersByPagination?: Maybe<UserPagination>;
@@ -153,6 +162,20 @@ export type Query = {
 
 
 export type QueryGetAuditLogsByPaginationArgs = {
+  page: Scalars['Int']['input'];
+  perPage: Scalars['Int']['input'];
+};
+
+
+export type QueryGetCashierTopUpTransactionsByPaginationArgs = {
+  hydrate?: InputMaybe<TransactionHydrateOption>;
+  page: Scalars['Int']['input'];
+  perPage: Scalars['Int']['input'];
+};
+
+
+export type QueryGetCashierTransactionsByPaginationArgs = {
+  hydrate?: InputMaybe<TransactionHydrateOption>;
   page: Scalars['Int']['input'];
   perPage: Scalars['Int']['input'];
 };
@@ -182,18 +205,18 @@ export type Transaction = {
   type: Scalars['String']['output'];
 };
 
-export type TransactionByUserIdWithPagination = {
-  __typename?: 'TransactionByUserIdWithPagination';
+export type TransactionHydrateOption = {
+  receiver: Scalars['Boolean']['input'];
+  sender: Scalars['Boolean']['input'];
+};
+
+export type TransactionsWithPagination = {
+  __typename?: 'TransactionsWithPagination';
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
   page: Scalars['Int']['output'];
   totalPages: Scalars['Int']['output'];
   transactions: Array<Transaction>;
-};
-
-export type TransactionHydrateOption = {
-  receiver: Scalars['Boolean']['input'];
-  sender: Scalars['Boolean']['input'];
 };
 
 export type User = {
@@ -337,9 +360,7 @@ export type TransferBalanceByUserIdMutationVariables = Exact<{
 }>;
 
 
-
 export type TransferBalanceByUserIdMutation = { __typename?: 'Mutation', transferBalanceByUserId?: { __typename?: 'WalletTransfer', receiverWallet: { __typename?: 'Wallet', balance: number, id: string }, senderWallet: { __typename?: 'Wallet', balance: number, id: string } } | null };
-
 
 export type TransferBalanceByUserEmailMutationVariables = Exact<{
   receiverEmail: Scalars['String']['input'];
@@ -347,9 +368,7 @@ export type TransferBalanceByUserEmailMutationVariables = Exact<{
 }>;
 
 
-
-export type TransferBalanceByUserEmailMutation = { __typename?: 'Mutation', transferBalanceByUserEmail?: { __typename?: 'WalletTransfer', receiverWallet: { __typename?: 'Wallet', balance: number, id: string }, senderWallet: { __typename?: 'Wallet', balance: number, id: string } } | null };
-
+export type TransferBalanceByUserEmailMutation = { __typename?: 'Mutation', transferBalanceByUserEmail?: { __typename?: 'WalletTransfer', receiverWallet: { __typename?: 'Wallet', balance: number, id: string }, senderWallet: { __typename?: 'Wallet', balance: number, id: string, updatedAt: string } } | null };
 
 export type GetRecentTransactionsByUserIdQueryVariables = Exact<{
   perPage: Scalars['Int']['input'];
@@ -357,7 +376,7 @@ export type GetRecentTransactionsByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetRecentTransactionsByUserIdQuery = { __typename?: 'Query', getRecentTransactionsByUserId?: { __typename?: 'TransactionByUserIdWithPagination', page: number, totalPages: number, hasNextPage: boolean, hasPreviousPage: boolean, transactions: Array<{ __typename?: 'Transaction', amount: number, createdAt: string, id: string, receiverId: string, senderId: string, type: string, receiver?: { __typename?: 'User', name: string } | null, sender?: { __typename?: 'User', name: string } | null }> } | null };
+export type GetRecentTransactionsByUserIdQuery = { __typename?: 'Query', getRecentTransactionsByUserId?: { __typename?: 'TransactionsWithPagination', page: number, totalPages: number, hasNextPage: boolean, hasPreviousPage: boolean, transactions: Array<{ __typename?: 'Transaction', amount: number, createdAt: string, id: string, receiverId: string, senderId: string, type: string, receiver?: { __typename?: 'User', name: string } | null, sender?: { __typename?: 'User', name: string } | null }> } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -394,10 +413,8 @@ export const TopUpDocument = {"kind":"Document","definitions":[{"kind":"Operatio
 export const UpdateUserAccountTypeByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserAccountTypeByUserId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUserAccountTypeByUserId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"accountType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountType"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<UpdateUserAccountTypeByUserIdMutation, UpdateUserAccountTypeByUserIdMutationVariables>;
 export const WithdrawBalanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"WithdrawBalance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"topUpCashierId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"withdrawBalance"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"topUpCashierId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"topUpCashierId"}}},{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}}]}}]}}]} as unknown as DocumentNode<WithdrawBalanceMutation, WithdrawBalanceMutationVariables>;
 export const SetBalanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetBalance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"balance"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setBalance"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"balance"},"value":{"kind":"Variable","name":{"kind":"Name","value":"balance"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<SetBalanceMutation, SetBalanceMutationVariables>;
-
 export const TransferBalanceByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TransferBalanceByUserId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"receiverId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transferBalanceByUserId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"receiverId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"receiverId"}}},{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"receiverWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"senderWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<TransferBalanceByUserIdMutation, TransferBalanceByUserIdMutationVariables>;
-export const TransferBalanceByUserEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TransferBalanceByUserEmail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"receiverEmail"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transferBalanceByUserEmail"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"receiverEmail"},"value":{"kind":"Variable","name":{"kind":"Name","value":"receiverEmail"}}},{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"receiverWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"senderWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<TransferBalanceByUserEmailMutation, TransferBalanceByUserEmailMutationVariables>;
-
+export const TransferBalanceByUserEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TransferBalanceByUserEmail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"receiverEmail"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transferBalanceByUserEmail"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"receiverEmail"},"value":{"kind":"Variable","name":{"kind":"Name","value":"receiverEmail"}}},{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"receiverWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"senderWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"senderWallet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"balance"}}]}}]}}]}}]} as unknown as DocumentNode<TransferBalanceByUserEmailMutation, TransferBalanceByUserEmailMutationVariables>;
 export const GetRecentTransactionsByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRecentTransactionsByUserId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"perPage"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRecentTransactionsByUserId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"perPage"},"value":{"kind":"Variable","name":{"kind":"Name","value":"perPage"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"receiverId"}},{"kind":"Field","name":{"kind":"Name","value":"senderId"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"receiver"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}}]}}]} as unknown as DocumentNode<GetRecentTransactionsByUserIdQuery, GetRecentTransactionsByUserIdQueryVariables>;
 export const GetUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"accountType"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;
 export const GetUserBalanceByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserBalanceByUserId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserBalanceByUserId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"balance"}}]}}]}}]} as unknown as DocumentNode<GetUserBalanceByUserIdQuery, GetUserBalanceByUserIdQueryVariables>;

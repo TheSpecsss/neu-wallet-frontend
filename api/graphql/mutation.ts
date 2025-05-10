@@ -107,12 +107,3 @@ export const TRANSFER_BY_EMAIL = gql(`
 }
 `);
 
-export const TRANSFER_BY_EMAIL = gql(`
-mutation TransferBalanceByUserEmail($receiverEmail: String!, $amount: Int!) {
-  transferBalanceByUserEmail(receiverEmail: $receiverEmail, amount: $amount) {
-    receiverWallet {
-      balance
-    }
-  }
-}
-`);
