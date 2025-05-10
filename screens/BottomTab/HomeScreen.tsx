@@ -79,7 +79,7 @@ const HomeScreen = ({ navigation }: Props) => {
       icon: checkoutLogo,
       screen:
         user?.accountType === "CASH_TOP_UP"
-          ? "TopUpCheckoutScreen"
+          ? "TopUpCheckOutScreen"
           : "CheckOutScreen",
     },
     {
