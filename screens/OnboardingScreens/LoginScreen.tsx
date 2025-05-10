@@ -48,6 +48,7 @@ const LoginScreen = ({ navigation }: Props) => {
         type: "error",
         text1: validation.error.errors[0].message,
       });
+      
       return;
     }
 

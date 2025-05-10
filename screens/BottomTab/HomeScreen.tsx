@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }: Props) => {
       case "PAYMENT":
         return "Payment";
       case "TRANSFER":
-        return "Send";
+        return "Transfer";
       case "WITHDRAW":
         return "Cashout";
       default:

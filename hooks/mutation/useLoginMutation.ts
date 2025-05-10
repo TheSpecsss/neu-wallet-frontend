@@ -54,7 +54,7 @@ export const useLoginMutation = (
         if (user) {
           navigation.navigate(
             user.accountType === "ADMIN" || user.accountType === "SUPER_ADMIN"
-              ? "AdminTopTab"
+              ? "AdminBlockedScreen"
               : "MainBottomTab"
           );
         }

@@ -124,6 +124,7 @@ const personLogo = `<svg width="83" height="83" viewBox="0 0 83 83" fill="none" 
 </svg>
 `;
 
+
 export {
   emailLogo, homeLogo, notificationLogo, profileLogo, topupLogo, walletLogo, scanQrLogo, sendLogo, backLogo, successLogo, expressSendLogo, qrcodeLogo, cameraLogo, NEUSun, loadBalanceLogo, checkoutLogo, logoutLogo, personLogo};
 
