@@ -1,7 +1,7 @@
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import type {
-  MutationPayArgs,
-  Wallet,
+	MutationPayArgs,
+	Wallet,
 } from "../../api/graphql/codegen/graphql";
 import api from "../../api/axiosInstance";
 import { print } from "graphql";
@@ -17,48 +17,48 @@ import { useSession } from "../../context/Session";
 type PayMutationGraphQLResponse = GraphQLResponse<{ pay?: Wallet }>;
 
 export const usePayMutation = (
-  type: TransactionTypeKind,
-  options?: Partial<
-    UseMutationOptions<PayMutationGraphQLResponse, Error, MutationPayArgs>
-  >
+	type: TransactionTypeKind,
+	options?: Partial<
+		UseMutationOptions<PayMutationGraphQLResponse, Error, MutationPayArgs>
+	>,
 ) => {
-  const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
-  const { user } = useSession();
+	const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
+	const { user } = useSession();
 
-  return useMutation({
-    mutationFn: async (args: MutationPayArgs) => {
-      const { data } = await api<PayMutationGraphQLResponse>({
-        data: {
-          query: print(PAY),
-          variables: args,
-        },
-      });
+	return useMutation({
+		mutationFn: async (args: MutationPayArgs) => {
+			const { data } = await api<PayMutationGraphQLResponse>({
+				data: {
+					query: print(PAY),
+					variables: args,
+				},
+			});
 
-      return data;
-    },
-    onSuccess: ({ data, errors }, variables) => {
-      if (errors) {
-        return Toast.show({
-          type: "error",
-          text1: errors[0].message,
-        });
-      }
+			return data;
+		},
+		onSuccess: ({ data, errors }, variables) => {
+			if (errors) {
+				return Toast.show({
+					type: "error",
+					text1: errors[0].message,
+				});
+			}
 
-      navigate("ConfirmTransactionScreen", {
-        receiverId: variables.cashierId,
-        senderId: user?.id || "",
-        amount: variables.amount,
-        date: new Date().toLocaleString(),
-        type,
-      });
-    },
-    onError: (error) => {
-      Toast.show({
-        type: "error",
-        text1: "Pay Failed",
-        text2: error.message || "An unexpected error occurred",
-      });
-    },
-    ...options,
-  });
+			navigate("ConfirmTransactionScreen", {
+				receiverId: variables.cashierId,
+				senderId: user?.id || "",
+				amount: variables.amount,
+				date: new Date().toLocaleString(),
+				type,
+			});
+		},
+		onError: (error) => {
+			Toast.show({
+				type: "error",
+				text1: "Pay Failed",
+				text2: error.message || "An unexpected error occurred",
+			});
+		},
+		...options,
+	});
 };
