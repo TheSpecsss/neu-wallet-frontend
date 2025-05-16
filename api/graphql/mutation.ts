@@ -71,11 +71,14 @@ export const SET_BALANCE = gql(`
   }
 }`);
 export const TRANSFER_BY_UID = gql(`
+
   mutation TransferBalanceByUserId($receiverId: String!, $amount: Int!) {
+
   transferBalanceByUserId(receiverId: $receiverId, amount: $amount) {
     receiverWallet {
       balance
       id
+
     }
     senderWallet {
       balance
@@ -93,6 +96,14 @@ export const TRANSFER_BY_EMAIL = gql(`
     senderWallet {
       balance
       id
+
+    }
+    senderWallet {
+      id
+      updatedAt
+      balance
     }
   }
-}`);
+}
+`);
+
