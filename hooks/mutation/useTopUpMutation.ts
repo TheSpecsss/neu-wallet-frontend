@@ -44,11 +44,12 @@ export const useTopUpMutation = (
 			}
 
 			navigate("ConfirmTransactionScreen", {
-				receiverId: variables.receiverId,
+				receiver: variables.receiverId,
 				senderId: user?.id || "",
 				amount: variables.amount,
 				date: new Date().toLocaleString(),
 				type,
+				method: "ID",
 			});
 		},
 		onError: (error) => {

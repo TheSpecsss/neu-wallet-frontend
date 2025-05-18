@@ -23,7 +23,7 @@ type Props = {
 };
 
 const ConfirmTransactionScreen = ({ route, navigation }: Props) => {
-	const { receiverId, senderId, amount, date, type } = route.params;
+	const { receiver, senderId, amount, date, type, method } = route.params;
 
 	const { user } = useSession();
 
@@ -35,8 +35,10 @@ const ConfirmTransactionScreen = ({ route, navigation }: Props) => {
 			<Text style={styles.title}>Transaction Successful</Text>
 			<View style={styles.detailsContainer}>
 				<View style={styles.detailItem}>
-					<Text style={styles.detailLabel}>Receiver ID:</Text>
-					<Text style={styles.detailValue}>{receiverId}</Text>
+					<Text style={styles.detailLabel}>
+						Receiver {method === "EMAIL" ? "Email" : "ID"}
+					</Text>
+					<Text style={styles.detailValue}>{receiver}</Text>
 				</View>
 				<View style={styles.detailItem}>
 					<Text style={styles.detailLabel}>Sender ID:</Text>
@@ -113,6 +115,9 @@ const styles = StyleSheet.create({
 		color: "#1E3A5F",
 		fontFamily: "klavika-bold",
 		fontSize: 20,
+		flexWrap: "wrap",
+		width: "55%",
+		textAlign: "right",
 	},
 	detailValueTime: {
 		color: "#1E3A5F",

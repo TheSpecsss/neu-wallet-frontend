@@ -49,11 +49,12 @@ export const useWithdrawBalanceMutation = (
 				});
 			}
 			navigate("ConfirmTransactionScreen", {
-				receiverId: variables.topUpCashierId,
+				receiver: variables.topUpCashierId,
 				senderId: user?.id || "",
 				amount: variables.amount,
 				date: new Date().toLocaleString(),
 				type,
+				method: "ID",
 			});
 		},
 		onError: (error) => {

@@ -45,11 +45,12 @@ export const usePayMutation = (
 			}
 
 			navigate("ConfirmTransactionScreen", {
-				receiverId: variables.cashierId,
+				receiver: variables.cashierId,
 				senderId: user?.id || "",
 				amount: variables.amount,
 				date: new Date().toLocaleString(),
 				type,
+				method: "ID",
 			});
 		},
 		onError: (error) => {
