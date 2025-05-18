@@ -1,11 +1,11 @@
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import type {
-  MutationTransferBalanceByUserIdArgs,
-  User,
+	MutationTransferBalanceByUserIdArgs,
+	User,
 } from "../../api/graphql/codegen/graphql";
 import api from "../../api/axiosInstance";
 import { print } from "graphql";
-import {  TRANSFER_BY_UID } from "../../api/graphql/mutation";
+import { TRANSFER_BY_UID } from "../../api/graphql/mutation";
 import type { GraphQLResponse } from "../../api/graphql/types";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
@@ -16,47 +16,52 @@ import { useSession } from "../../context/Session";
 type TransferMutationGraphQLResponse = GraphQLResponse<{ transfer?: User }>;
 
 export const useTransferUIDMutation = (
-  options?: Partial<
-    UseMutationOptions<TransferMutationGraphQLResponse, Error, MutationTransferBalanceByUserIdArgs>
-  >
+	options?: Partial<
+		UseMutationOptions<
+			TransferMutationGraphQLResponse,
+			Error,
+			MutationTransferBalanceByUserIdArgs
+		>
+	>,
 ) => {
-  const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
-  const { user } = useSession();
+	const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
+	const { user } = useSession();
 
-  return useMutation({
-    mutationFn: async (args: MutationTransferBalanceByUserIdArgs) => {
-      const { data } = await api<TransferMutationGraphQLResponse>({
-        data: {
-          query: print(TRANSFER_BY_UID),
-          variables: args,
-        },
-      });
+	return useMutation({
+		mutationFn: async (args: MutationTransferBalanceByUserIdArgs) => {
+			const { data } = await api<TransferMutationGraphQLResponse>({
+				data: {
+					query: print(TRANSFER_BY_UID),
+					variables: args,
+				},
+			});
 
-      return data;
-    },
-    onSuccess: ({ data, errors }, variables) => {
-      if (errors) {
-        return Toast.show({
-          type: "error",
-          text1: errors[0].message,
-        });
-      }
+			return data;
+		},
+		onSuccess: ({ errors }, variables) => {
+			if (errors) {
+				return Toast.show({
+					type: "error",
+					text1: errors[0].message,
+				});
+			}
 
-      navigate("ConfirmTransactionScreen", {
-        receiverId: variables.receiverId,
-        senderId: user?.id || "",
-        amount: variables.amount,
-        date: new Date().toLocaleString(),
-        type: "TRANSFER",
-      });
-    },
-    onError: (error) => {
-      Toast.show({
-        type: "error",
-        text1: "Transfer Failed",
-        text2: error.message || "An unexpected error occurred",
-      });
-    },
-    ...options,
-  });
+			navigate("ConfirmTransactionScreen", {
+				receiver: variables.receiverId,
+				senderId: user?.id || "",
+				amount: variables.amount,
+				date: new Date().toLocaleString(),
+				type: "TRANSFER",
+				method: "ID",
+			});
+		},
+		onError: (error) => {
+			Toast.show({
+				type: "error",
+				text1: "Transfer Failed",
+				text2: error.message || "An unexpected error occurred",
+			});
+		},
+		...options,
+	});
 };

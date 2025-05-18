@@ -11,11 +11,12 @@ export type MainStackParamList = {
   TopUpCashierReportScreen: undefined;
   TransactionReportScreen: undefined;
   ConfirmTransactionScreen: {
-    receiverId: string;
+    receiver: string;
     senderId: string;
     amount: number;
     date: string;
     type: TransactionTypeKind;
+    method: "ID" | "EMAIL";
   };
   DetailsScreen: { data: string };
   SendScreen: undefined;

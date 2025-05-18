@@ -34,7 +34,7 @@ export const useTransferEmailMutation = (
 
       return data;
     },
-    onSuccess: ({ data, errors }, variables) => {
+    onSuccess: ({ errors }, variables) => {
       if (errors) {
         return Toast.show({
           type: "error",
@@ -42,14 +42,13 @@ export const useTransferEmailMutation = (
         });
       }
 
-      console.log(data);
-
       navigate("ConfirmTransactionScreen", {
-        receiverId: variables.receiverEmail,
+        receiver: variables.receiverEmail,
         senderId: user?.id || "",
         amount: variables.amount,
         date: new Date().toLocaleString(),
         type: "TRANSFER",
+        method: "EMAIL",
       });
     },
     onError: (error) => {
