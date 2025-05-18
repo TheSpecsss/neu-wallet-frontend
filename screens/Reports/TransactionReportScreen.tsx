@@ -63,11 +63,11 @@ const TransactionReportScreen = ({ navigation }: Props) => {
 			);
 
 	const totalPayments = filteredTransactions
-		.filter((t) => t.type === "Payment")
+		.filter((t) => t.type === "PAYMENT")
 		.reduce((acc, t) => acc + t.amount, 0);
 
 	const totalTransactions = filteredTransactions.filter(
-		(t) => t.type === "Payment",
+		(t) => t.type === "PAYMENT",
 	).length;
 
 	const dynamicHeader = selectedDate
